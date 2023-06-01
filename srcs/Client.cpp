@@ -6,12 +6,16 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 11:49:14 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/01 17:23:31 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include <sys/socket.h>	// recv
+
+/* -------------------------------------------------------------------------- */
+/*                                Class Methods                               */
+/* -------------------------------------------------------------------------- */
 
 Client::Client(int fd) : fd(fd) {
 	std::cout << "Client created" << std::endl;
@@ -20,6 +24,10 @@ Client::Client(int fd) : fd(fd) {
 Client::~Client() {
 	std::cout << "Client destroyed" << std::endl;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                               Public Methods                               */
+/* -------------------------------------------------------------------------- */
 
 std::string	Client::recieveMessage(void) {
 	static const int	bufferSize = 512;
@@ -48,9 +56,33 @@ void		Client::sendMessage(std::string message) {
 	std::cout << "[Server -> Client]: " << message << std::endl;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                             Getters And Setters                            */
+/* -------------------------------------------------------------------------- */
+
 int			Client::getFd(void) const {
 	return (fd);
 }
+
+bool		Client::isRegistered(void) const {
+	return (registered);
+}
+
+void		Client::setRegistered(bool registered) {
+	this->registered = registered;
+}
+
+bool		Client::isAuthenticated(void) const {
+	return (authenticated);
+}
+
+void		Client::setAuthenticated(bool authenticated) {
+	this->authenticated = authenticated;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Exceptions                                 */
+/* -------------------------------------------------------------------------- */
 
 const char *Client::MessageTooLongException::what() const throw() {
 	return ("Message too long");

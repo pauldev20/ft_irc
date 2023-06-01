@@ -6,13 +6,17 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:15 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 11:48:39 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/01 17:18:06 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+
+/* -------------------------------------------------------------------------- */
+/*                                   Classes                                  */
+/* -------------------------------------------------------------------------- */
 
 class Client {
 	public:
@@ -23,6 +27,12 @@ class Client {
 		void		sendMessage(std::string message);
 
 		int getFd(void) const;
+
+		bool isRegistered(void) const;
+		void setRegistered(bool registered);
+
+		bool isAuthenticated(void) const;
+		void setAuthenticated(bool authenticated);
 
 		class MessageTooLongException: public std::exception
 		{
@@ -43,5 +53,7 @@ class Client {
 		};
 
 	private:
-		int fd;
+		int		fd;
+		bool	registered;
+		bool	authenticated;
 };

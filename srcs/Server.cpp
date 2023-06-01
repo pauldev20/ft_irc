@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 12:15:22 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/01 12:26:13 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,8 @@ void Server::run(void) {
 	struct timeval timeout;
 	timeout.tv_sec = 5;
 	timeout.tv_usec = 500;
-	fd_set testreads;
-	fd_set testwrites;
-	FD_ZERO(&testreads);
-	FD_ZERO(&testwrites);
-	testreads = this->reads;
-	testwrites = this->writes;
+	fd_set testreads = this->reads;
+	fd_set testwrites = this->writes;
 	int res = select(1000, &testreads, &testwrites, NULL, &timeout);
 	if (res == -1)
 	{
@@ -97,8 +93,12 @@ void Server::run(void) {
 			} else {
 				try {
 					std::string msg = this->connectedClients.find(i)->second->recieveMessage();
+					msg += "\r\n";
 					Command command;
-					parseMessage(command, msg);
+					if (parseMessage(command, msg) == ERROR) {
+						std::cout << "Error: parseMessage" << std::endl;
+						return ;
+					}
 					debug::debugCommand(command);
 					executeCommand(command);
 					// this->connectedClients.find(i)->second->sendMessage("Hello from server");
