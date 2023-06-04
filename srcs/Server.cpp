@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 12:26:13 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 15:56:10 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 #include "irc.hpp"
 
 Server::Server(int port, std::string password) : port(port), password(password), socketFd(-1) {
+	this->channels = NULL;
 	FD_ZERO(&(this->reads));
 	FD_ZERO(&(this->writes));
 	std::cout << "Server created" << std::endl;
 }
 
 Server::~Server() {
+	delete this->channels;
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) 
 		delete it->second;
@@ -90,6 +92,19 @@ void Server::run(void) {
 		if (FD_ISSET(i, &testreads)) {
 			if (i == this->socketFd) {
 				this->acceptNewConnection(i);
+
+				// @todo remove this!!!
+				if(!this->connectedClients.empty()) {
+					Client *client = (--this->connectedClients.end())->second;
+					client->sendMessage("Welcome to the IRC server");
+					if (this->channels == NULL)
+						this->channels = new Channel(client, "default");
+					else {
+						this->channels->addClient(client);
+						this->channels->sendMessageToAll("New client has joined the channel!");
+						this->channels->sendMessageToAllExcept("New client has joined the channel! (This message is only visible to other clients)", client);
+					}
+				}
 			} else {
 				try {
 					std::string msg = this->connectedClients.find(i)->second->recieveMessage();
