@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:28:30 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 21:33:16 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 #include <unistd.h>		// close
 #include "Command.hpp"	// Command
 #include "irc.hpp"
+
+/* -------------------------------------------------------------------------- */
+/*                                Class Methods                               */
+/* -------------------------------------------------------------------------- */
 
 Server::Server(int port, std::string password) : port(port), password(password), socketFd(-1) {
 	FD_ZERO(&(this->reads));
@@ -31,6 +35,70 @@ Server::~Server() {
 	std::cout << "Server destroyed" << std::endl;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                             Getters And Setters                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The function returns the port number of the server.
+ * 
+ * @return The `getPort` function is returning the value of the `port` member variable of the `Server`
+ * class.
+ */
+int		Server::getPort(void) const {
+	return (this->port);
+}
+
+/**
+ * The function returns a constant reference to the password of a server object.
+ * 
+ * @return A constant reference to a string object representing the password of the server.
+ */
+std::string	const &Server::getPassword(void) const {
+	return (this->password);
+}
+
+/**
+ * The function adds a channel to a vector of channels in a server object.
+ * 
+ * @param channel The parameter "channel" is a pointer to an object of the class "Channel". The
+ * function "addChannel" takes this pointer as an argument and adds it to a vector of Channel pointers
+ * called "channels" that belongs to the Server class.
+ */
+void	Server::addChannel(Channel *channel) {
+	this->channels.push_back(channel);
+}
+
+/**
+ * The function removes a given channel from a vector of channels in a server.
+ * 
+ * @param channel A pointer to a Channel object that needs to be removed from the vector of channels in
+ * the Server class.
+ * 
+ * @return nothing (void).
+ */
+void	Server::removeChannel(Channel *channel) {
+	std::vector<Channel*>::iterator it;
+	for (it = this->channels.begin(); it != this->channels.end(); it++) {
+		if (*it == channel) {
+			this->channels.erase(it);
+			return ;
+		}
+	}
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Public Methods                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The function starts a server by creating a socket, setting it to non-blocking, and binding it to a
+ * port.
+ * 
+ * @return The function does not have a return type, so it does not return anything. However, it may
+ * exit early and not execute the rest of the code if there are errors in creating the socket, setting
+ * socket options, binding the socket, or listening to the socket.
+ */
 void Server::start() {
 	std::cout << "Server started" << std::endl;
 
@@ -67,6 +135,13 @@ void Server::start() {
 	std::cout << "Server listening on port " << this->port << std::endl;
 }
 
+/**
+ * This function runs the server and handles incoming connections and messages from clients.
+ * 
+ * @return The function does not have a return type, so it does not return anything. However, it does
+ * have several return statements that are used to exit the function early in case of errors or
+ * timeouts.
+ */
 void Server::run(void) {
 	struct timeval timeout;
 	timeout.tv_sec = 5;
