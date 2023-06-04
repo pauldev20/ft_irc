@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:09:49 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 21:28:30 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,15 @@ void Server::run(void) {
 					std::string msg = this->connectedClients.find(i)->second->recieveMessage();
 					msg += "\r\n";
 					Command command;
-					if (parseMessage(command, msg) == ERROR) {
+					if (irc::parseMessage(command, msg) == ERROR) {
 						std::cout << "Error: parseMessage" << std::endl;
 						return ;
 					}
 					debug::debugCommand(command);
-					executeCommand(command);
+					if (irc::executeCommand(command, this, this->connectedClients.find(i)->second) == ERROR) {
+						std::cout << "Error: executeCommand" << std::endl;
+						return ;
+					}
 					// this->connectedClients.find(i)->second->sendMessage("Hello from server");
 				} catch (const Client::ConnectionErrorExcpetion& e) {
 					FD_CLR(i, &(this->reads));

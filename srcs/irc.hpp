@@ -13,7 +13,7 @@ namespace debug
 namespace irc
 {
 	int		parseMessage(Command& command, std::string& message);
-	int		executeCommand(const Command& command);
+	int		executeCommand(const Command& command, const Server* server, const Client* client);
 }
 
 #endif

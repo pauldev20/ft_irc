@@ -4,8 +4,8 @@
 
 Command::Command(std::string prefix, int id, std::vector<std::string> params)
 {
-	this->prefix = prefix;
-	this->id = id;
+	this->_prefix = prefix;
+	this->_id = id;
 	this->_params = params;
 }
 
@@ -19,12 +19,12 @@ Command::~Command()
 
 void	Command::setPrefix(std::string prefix)
 {
-	this->prefix = prefix;
+	this->_prefix = prefix;
 }
 
 void	Command::setId(int id)
 {
-	this->id = id;
+	this->_id = id;
 }
 
 void	Command::addParam(std::string param)
@@ -39,12 +39,12 @@ void	Command::setParams(std::vector<std::string> params)
 
 const std::string&	Command::getPrefix() const
 {
-	return (this->prefix);
+	return (this->_prefix);
 }
 
 const int&	Command::getId() const
 {
-	return (this->id);
+	return (this->_id);
 }
 
 const std::vector<std::string>&	Command::getParams() const
