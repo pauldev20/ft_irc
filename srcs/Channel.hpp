@@ -1,59 +1,63 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/01 11:13:15 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 17:18:06 by pgeeser          ###   ########.fr       */
+/*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
+/*   Updated: 2023/06/04 16:11:23 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
+#include <vector>		// std::vector
+#include "Client.hpp"	// CanClient
 
 /* -------------------------------------------------------------------------- */
 /*                                   Classes                                  */
 /* -------------------------------------------------------------------------- */
 
-class Client {
+class Channel {
 	public:
-		Client(int fd);
-		~Client();
+		Channel(Client *admin, std::string const &channelName);
+		~Channel(void);
 
-		std::string	recieveMessage(void);
-		void		sendMessage(std::string message);
+		std::string const &getName(void) const;
+		void	setName(std::string const &name);
 
-		int getFd(void) const;
+		Client	*getAdmin(void) const;
+	
+		void	addClient(Client *client);
+		void	removeClient(Client *client);
 
-		bool isRegistered(void) const;
-		void setRegistered(bool registered);
+		void	kickClient(Client *client);
+		void	unKickClient(Client *client);
 
-		bool isAuthenticated(void) const;
-		void setAuthenticated(bool authenticated);
+		void	sendMessageToAll(std::string const &message);
+		void	sendMessageToAllExcept(std::string const &message, Client *client);
 
-		class MessageTooLongException: public std::exception
+		class AllreadyInChannelExcpetion: public std::exception
 		{
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class ConnectionErrorExcpetion: public std::exception
+		class KickedClientExcpetion: public std::exception
 		{
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class ConnectionClosedException: public std::exception
+		class CantBeKickedExcpetion: public std::exception
 		{
 			public:
 				virtual const char *what() const throw();
 		};
 
 	private:
-		int		fd;
-		bool	registered;
-		bool	authenticated;
+		std::string				name;
+		std::vector<Client*>	clients;
+		std::vector<Client*>	kicked;
 };
