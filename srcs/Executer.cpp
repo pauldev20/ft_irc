@@ -1,4 +1,5 @@
 
+#include "irc.hpp"
 #include "Command.hpp"
 
 #include <iostream>
@@ -43,7 +44,7 @@ static const cmdFunc exec[] = {
 	cmdPING,
 };
 
-int	executeCommand(const Command& command)
+int	irc::executeCommand(const Command& command)
 {
 	if (command.getId() < 0 || command.getId() > 4)
 		return (ERROR);

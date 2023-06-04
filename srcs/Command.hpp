@@ -27,9 +27,9 @@ enum CommandID
 class Command
 {
 	private:
-		std::string						prefix; // @note potentially separate object / more complex, also the prefix doesn't belong to the command
-		int								id;
-		std::vector<std::string>		params;
+		std::string						_prefix; // @note potentially separate object / more complex, also the prefix doesn't belong to the command
+		int								_id;
+		std::vector<std::string>		_params;
 	public:		
 										Command();
 										Command(std::string prefix, int id, std::vector<std::string> params);
@@ -42,8 +42,5 @@ class Command
 		const int&						getId() const;
 		const std::vector<std::string>&	getParams() const;
 };
-
-int	parseMessage(Command& command, std::string& message);
-int	executeCommand(const Command& command);
 
 #endif

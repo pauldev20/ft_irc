@@ -10,4 +10,10 @@ namespace debug
 	void	debugCommand(const Command& command);
 }
 
+namespace irc
+{
+	int		parseMessage(Command& command, std::string& message);
+	int		executeCommand(const Command& command);
+}
+
 #endif
