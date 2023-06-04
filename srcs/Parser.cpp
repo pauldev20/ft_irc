@@ -1,14 +1,51 @@
 
+#include "irc.hpp"
 #include "Command.hpp"
 
 #include <string>
 #include <algorithm> // std::all_of
 #include <cctype> // std::isdigit, std::isalpha
+#include <cstring> // strlen
 
 #define MESSAGE_MAX 512
 #define DELIM ' '
 #define CRLF "\r\n"
 #define COLON ':'
+
+/*
+BNF for IRC messages:
+<message>  ::= [':' <prefix> ' ' ] <command> <params> <crlf>
+<prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
+<command>  ::= <letter> { <letter> } | <number> <number> <number>
+<params>   ::= [ ':' <trailing> | <middle> <params> ]
+
+<middle>   ::= <Any *non-empty* sequence of octets not including SPACE
+               or NUL or CR or LF, the first of which may not be ':'>
+<trailing> ::= <Any, possibly *empty*, sequence of octets not including
+                 NUL or CR or LF>
+
+<crlf>     ::= CR LF (/r/n)
+*/
+
+static bool	is_all_digit(const std::string& str)
+{
+	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; ++i)
+	{
+		if (!isdigit(*i))
+			return false;
+	}
+	return true;
+}
+
+static bool	is_all_alpha(const std::string& str)
+{
+	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; ++i)
+	{
+		if (!isalpha(*i))
+			return false;
+	}
+	return true;
+}
 
 static	std::string getNextToken(std::string& message)
 {
@@ -41,8 +78,7 @@ static int	handleCommand(Command& command, std::string& message)
 
 	if (token.empty())
 		return (ERROR);
-	if (!std::all_of(token.begin(), token.end(), std::isdigit)
-		&& !std::all_of(token.begin(), token.end(), std::isalpha))
+	if (!is_all_alpha(token) && !is_all_digit(token))
 		return (ERROR);
 	if (token == CMD_KICK)
 		command.setId(ID_KICK);
@@ -75,7 +111,7 @@ static int	handleParams(Command& command, std::string& message)
 	return (SUCCESS);
 }
 
-int	parseMessage(Command& command, std::string& message)
+int	irc::parseMessage(Command& command, std::string& message)
 {
 	if (message.find(CRLF) == std::string::npos)
 		return (ERROR);
