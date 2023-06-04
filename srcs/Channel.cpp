@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:12:00 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 21:33:58 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,25 @@ std::string const &Channel::getName(void) const {
  */
 void	Channel::setName(std::string const &name) {
 	this->name = name;
+}
+
+/**
+ * The function returns a constant reference to the topic of a channel.
+ * 
+ * @return A constant reference to a string object representing the topic of the channel.
+ */
+std::string const &Channel::getTopic(void) const {
+	return (this->topic);
+}
+
+/**
+ * This function sets the topic of a channel in C++.
+ * 
+ * @param topic The parameter "topic" is a constant reference to a string. It is used to set the topic
+ * of a channel object.
+ */
+void	Channel::setTopic(std::string const &topic) {
+	this->topic = topic;
 }
 
 /**
