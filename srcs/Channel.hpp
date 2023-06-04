@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:04:22 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 21:11:41 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@ class Channel {
 
 		std::string const &getName(void) const;
 		void	setName(std::string const &name);
+
+		std::string const &getTopic(void) const;
+		void	setTopic(std::string const &topic);
 
 		Client	*getAdmin(void) const;
 	
@@ -58,6 +61,7 @@ class Channel {
 
 	private:
 		std::string				name;
+		std::string				topic;
 		std::vector<Client*>	clients;
 		std::vector<Client*>	kicked;
 };

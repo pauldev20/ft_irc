@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:04:06 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 21:12:00 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Channel::Channel(Client *admin, std::string const &channelName) : name(channelName) {
+Channel::Channel(Client *admin, std::string const &channelName) : name(channelName), topic("") {
 	this->clients.push_back(admin);
 }
 
