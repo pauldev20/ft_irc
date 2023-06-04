@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 16:02:46 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 16:11:23 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ class Channel {
 		};
 
 		class KickedClientExcpetion: public std::exception
+		{
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class CantBeKickedExcpetion: public std::exception
 		{
 			public:
 				virtual const char *what() const throw();
