@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 16:02:42 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/04 16:12:32 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,20 @@ void	Channel::removeClient(Client *client) {
 /**
  * The function removes a client from a channel and adds them to a list of kicked clients.
  * 
- * @param client The "client" parameter is a pointer to an object of the "Client" class. It is the
- * client that needs to be kicked from the channel.
+ * @param client The "client" parameter is a pointer to a Client object that represents the client to
+ * be kicked from the channel.
+ * 
+ * @return nothing (void).
  */
 void	Channel::kickClient(Client *client) {
-	this->removeClient(client);
-	this->kicked.push_back(client);
+	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+		if (*it == client) {
+			this->kicked.push_back(client);
+			this->clients.erase(it);
+			return ;
+		}
+	}
+	throw Channel::CantBeKickedExcpetion();
 }
 
 /**
@@ -164,4 +172,8 @@ const char *Channel::AllreadyInChannelExcpetion::what() const throw() {
 
 const char *Channel::KickedClientExcpetion::what() const throw() {
 	return ("Client is kicked and can't join channel");
+}
+
+const char *Channel::CantBeKickedExcpetion::what() const throw() {
+	return ("Client can't be kicked from channel, since he is not part of it");
 }
