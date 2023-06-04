@@ -6,7 +6,7 @@
 #    By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 17:21:47 by pgeeser           #+#    #+#              #
-#    Updated: 2023/06/01 12:12:33 by pgeeser          ###   ########.fr        #
+#    Updated: 2023/06/04 15:50:19 by pgeeser          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME		:= ircserv
 CC			:= c++
 CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 
-SRCFILES	:= main.cpp Server.cpp Client.cpp Parser.cpp Command.cpp Executer.cpp Debug.cpp
+SRCFILES	:= main.cpp Server.cpp Client.cpp Parser.cpp Command.cpp Executer.cpp Debug.cpp Channel.cpp
 
 # ---------------------------------------------------------------------------- #
 #                                     DIRS                                     #
