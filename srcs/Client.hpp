@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:15 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 17:18:06 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 18:35:10 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,13 @@ class Client {
 		Client(int fd);
 		~Client();
 
-		std::string	recieveMessage(void);
-		void		sendMessage(std::string message);
+		// recieve data
+		void		recieveData(void);
+		std::string	readRecievedData(void);
+
+		// send data
+		void		addDataToBuffer(std::string data);
+		void		sendMessage(void);
 
 		int getFd(void) const;
 
@@ -53,7 +58,9 @@ class Client {
 		};
 
 	private:
-		int		fd;
-		bool	registered;
-		bool	authenticated;
+		int			fd;
+		bool		registered;
+		bool		authenticated;
+		std::string	recieveBuffer;
+		std::string	sendBuffer;
 };
