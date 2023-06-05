@@ -256,7 +256,7 @@ void	Server::recieveData(int fd) {
 				printError("parseMessage");
 				continue ;
 			}
-			debug::debugCommand(command);
+			debug::printCommand(command);
 			if (irc::executeCommand(command, this, this->connectedClients.find(fd)->second) == ERROR) {
 				printError("executeCommand");
 				continue ;
