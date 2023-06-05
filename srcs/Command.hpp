@@ -5,10 +5,6 @@
 #include <string>
 #include <vector>
 
-#define ERROR -1
-#define SUCCESS 0
-#define PARAM_MAX 15
-
 #define CMD_KICK "KICK"
 #define CMD_INVITE "INVITE"
 #define CMD_TOPIC "TOPIC"

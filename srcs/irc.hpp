@@ -5,6 +5,10 @@
 #include "Command.hpp"
 #include "Server.hpp"
 
+#define ERROR -1
+#define SUCCESS 0
+#define PARAM_MAX 15
+
 namespace debug
 {
 	void	printCommand(const Command& command);
