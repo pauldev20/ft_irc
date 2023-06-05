@@ -74,4 +74,10 @@ re: fclean
 debug:
 	$(MAKE) CPPFLAGS='-g' re
 
-.PHONY: all clean fclean re debug
+run: all
+	@./$(NAME)
+
+val: all
+	@valgrind --leak-check=full ./$(NAME)
+
+.PHONY: all clean fclean re debug run val
