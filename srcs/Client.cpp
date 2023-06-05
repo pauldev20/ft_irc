@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: fyuzhyk <fyuzhyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/01 17:23:31 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/02 14:18:33 by fyuzhyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,15 @@ Client::~Client() {
 /* -------------------------------------------------------------------------- */
 
 std::string	Client::recieveMessage(void) {
+	// @note wieso als var anstatt makro?
 	static const int	bufferSize = 512;
 	char				buffer[bufferSize];
 	memset(buffer, 0, bufferSize);
 	int ret = recv(this->fd, buffer, bufferSize, 0);
 	std::string msg(buffer);
 	if (msg.length() > 0)
+		// @note wieso zeigt der pfeil vom client zum server? dachte der client
+		// empfängt in diesem fall die msg?
 		std::cout << "[Client -> Server]: " << msg;
 	if (ret == bufferSize) {
 		throw MessageTooLongException();
