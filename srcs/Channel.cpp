@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:33:58 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 18:48:54 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,8 @@ void	Channel::unKickClient(Client *client) {
  */
 void	Channel::sendMessageToAll(std::string const &message) {
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-		(*it)->sendMessage(message);
+		(*it)->addDataToBuffer(message);
+		(*it)->sendData();
 	}
 }
 
@@ -176,8 +177,10 @@ void	Channel::sendMessageToAll(std::string const &message) {
  */
 void	Channel::sendMessageToAllExcept(std::string const &message, Client *client) {
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-		if (*it != client)
-			(*it)->sendMessage(message);
+		if (*it != client) {
+			(*it)->addDataToBuffer(message);
+			(*it)->sendData();
+		}
 	}
 }
 
