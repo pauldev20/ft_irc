@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:33:16 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 18:24:35 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,66 @@
 #include "irc.hpp"
 
 /* -------------------------------------------------------------------------- */
+/*                                   Helpers                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The function creates and returns a struct pollfd with the specified file descriptor and events.
+ * 
+ * @param fd The file descriptor for the file or socket being polled.
+ * @param events The events parameter is a bitmask specifying the events the caller is interested in
+ * for the file descriptor. It can be a combination of the following constants:
+ * 
+ * @return A struct of type `pollfd` with the specified `fd`, `events`, and `revents` values.
+ */
+static struct pollfd	pollfd(int fd, short events) {
+	struct pollfd pfd;
+	pfd.fd = fd;
+	pfd.events = events;
+	pfd.revents = 0;
+	return (pfd);
+}
+
+/**
+ * The function removes a specific element from a vector of pollfd structures based on its file
+ * descriptor.
+ * 
+ * @param vector A reference to a vector of struct pollfd elements.
+ * @param element The element parameter is a struct pollfd variable that represents the poll file
+ * descriptor to be removed from the vector. The function iterates through the vector and removes the
+ * element with the same file descriptor as the one passed in.
+ */
+static void				removePollfdFromVector(std::vector<struct pollfd> &vector, int fd) {
+	std::vector<struct pollfd>::iterator it;
+	for (it = vector.begin(); it != vector.end(); it++)
+		if ((*it).fd == fd)
+			break ;
+	if (it != vector.end())
+		vector.erase(it);
+}
+
+static void				printError(std::string message, bool fatal = false) {
+	std::cerr << "\033[31mError\033[0m: " << message << std::endl;
+	if (fatal)
+		throw EXIT_FAILURE;
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
 Server::Server(int port, std::string password) : port(port), password(password), socketFd(-1) {
-	FD_ZERO(&(this->reads));
-	FD_ZERO(&(this->writes));
-	std::cout << "Server created" << std::endl;
+	this->fds.reserve(MAX_FDS);
+	//@todo debug print
+	// std::cout << "Server created" << std::endl;
 }
 
 Server::~Server() {
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) 
 		delete it->second;
-	std::cout << "Server destroyed" << std::endl;
+		//@todo debug print
+	// std::cout << "Server destroyed" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -100,21 +146,18 @@ void	Server::removeChannel(Channel *channel) {
  * socket options, binding the socket, or listening to the socket.
  */
 void Server::start() {
-	std::cout << "Server started" << std::endl;
-
 	// Creating socket file descriptor
 	int fd = socket(AF_INET, SOCK_STREAM, 0);	// create socket -> AF_INET(Address Family Internet): IPv4, SOCK_STREAM: TCP
-	fcntl(fd, F_SETFL, O_NONBLOCK);				// set socket to non-blocking -> will also work for the incoming connections since they will inherit that state from the listening socket.
-	if (fd == -1)
-	{
-		std::cout << "Error: socket" << std::endl;
-		return ;
-	}
+	if (fd < 0)
+		printError("socket", true);
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)		// set socket to non-blocking -> will also work for the incoming connections since they will inherit that state from the listening socket.
+		printError("fcntl", true);
 	this->socketFd = fd;
 
 	//Allow socket descriptor to be reuseable
 	int option = 1;
-	setsockopt(this->socketFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));	// set socket options -> SOL_SOCKET: socket level, SO_REUSEADDR: reuse address
+	if (setsockopt(this->socketFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0)	// set socket options -> SOL_SOCKET: socket level, SO_REUSEADDR: reuse address
+		printError("setsockopt", true);
 
 	// Forcefully attaching socket to the port ('??')
 	this->address.sin_family = AF_INET;			// AF_INET(Address Family Internet): IPv4
@@ -122,17 +165,10 @@ void Server::start() {
 	this->address.sin_port = htons(this->port);	// htons(host to network short): convert a 16-bit quantity from the host byte order to the network byte order
 	int res = bind(this->socketFd, (struct sockaddr*)&(this->address), sizeof(this->address));
 	if (res == -1)
-	{
-		std::cout << "Error: bind" << std::endl;
-		return ;
-	}
+		printError("bind", true);
 	if (listen(this->socketFd, 3) < 0)
-    {
-        std::cout << "Error: listen" << std::endl;
-		return ;
-    }
-	FD_SET(this->socketFd, &this->reads);
-	std::cout << "Server listening on port " << this->port << std::endl;
+		printError("listen", true);
+	this->fds.push_back(pollfd(this->socketFd, POLLIN));
 }
 
 /**
@@ -143,28 +179,22 @@ void Server::start() {
  * timeouts.
  */
 void Server::run(void) {
-	struct timeval timeout;
-	timeout.tv_sec = 5;
-	timeout.tv_usec = 500;
-	fd_set testreads = this->reads;
-	fd_set testwrites = this->writes;
-	int res = select(1000, &testreads, &testwrites, NULL, &timeout);
+	int res = poll(&this->fds[0], this->fds.size(), 5000);
 	if (res == -1)
-	{
-		std::cout << "Error: select" << std::endl;
-		return ;
-	}
+		return (printError("poll"));
 	else if (res == 0)
 	{
-		std::cout << "Timeout" << std::endl;
+		//@todo debug print
+		// std::cout << "Timeout" << std::endl;
 		return ;
 	}
 
-	for (int i = 0; i < 1000; i++)
+	size_t loopSize = this->fds.size();
+	for (size_t i = 0; i < loopSize; i++)
     {
-		if (FD_ISSET(i, &testreads)) {
-			if (i == this->socketFd) {
-				this->acceptNewConnection(i);
+		if (this->fds[i].revents & POLLIN) {
+			if (this->fds[i].fd == this->socketFd) {
+				this->acceptNewConnection(this->fds[i].fd);
 
 				// @todo remove this!!!
 				if(!this->connectedClients.empty()) {
@@ -179,49 +209,63 @@ void Server::run(void) {
 					}
 				}
 			} else {
-				try {
-					std::string msg = this->connectedClients.find(i)->second->recieveMessage();
-					msg += "\r\n";
-					Command command;
-					if (irc::parseMessage(command, msg) == ERROR) {
-						std::cout << "Error: parseMessage" << std::endl;
-						return ;
-					}
-					debug::debugCommand(command);
-					if (irc::executeCommand(command, this, this->connectedClients.find(i)->second) == ERROR) {
-						std::cout << "Error: executeCommand" << std::endl;
-						return ;
-					}
-					// this->connectedClients.find(i)->second->sendMessage("Hello from server");
-				} catch (const Client::ConnectionErrorExcpetion& e) {
-					FD_CLR(i, &(this->reads));
-					FD_CLR(i, &(this->writes));
-					close(i);
-					this->connectedClients.erase(i);
-					std::cout << "recv error" << std::endl;
-				} catch (const Client::ConnectionClosedException& e) {
-					FD_CLR(i, &(this->reads));
-					FD_CLR(i, &(this->writes));
-					close(i);
-					this->connectedClients.erase(i);
-					std::cout << "[Server]: Connection closed" << std::endl;
-				}
+				this->recieveData(this->fds[i].fd);
 			}
 		}
 	}
 }
 
+/**
+ * The function accepts a new client connection and adds it to the list of connected clients.
+ * 
+ * @param fd fd is the file descriptor of the server socket that is listening for incoming connections.
+ * 
+ * @return The function does not have a return type, so nothing is being returned.
+ */
 void	Server::acceptNewConnection(int fd) {
 	struct sockaddr_in	clientAddr;
 	unsigned int		size = sizeof(clientAddr);
 	int clientSockFd = accept(fd, (struct sockaddr*)&clientAddr, &size);
-	if (clientSockFd < 0)
-	{
-		std::cout << "Error: accept" << std::endl;
-		return ;
-	}
-	FD_SET(clientSockFd, &(this->reads));
-	FD_SET(clientSockFd, &(this->writes));
+	if (clientSockFd == -1)
+		return (printError("accept"));
+	this->fds.push_back(pollfd(clientSockFd, POLLIN));
 	this->connectedClients[clientSockFd] = new Client(clientSockFd);
 	std::cout << "[Server]: New connection established" << std::endl;
+}
+
+/**
+ * The function receives data from a client, parses and executes a command, and handles exceptions
+ * related to the client's connection.
+ * 
+ * @param fd The parameter `fd` is an integer representing the file descriptor of the client socket
+ * that the server is currently receiving data from.
+ * 
+ * @return nothing (void).
+ */
+void	Server::recieveData(int fd) {
+	try {
+		std::string msg = this->connectedClients.find(fd)->second->recieveMessage();
+		// @todo remove this!!!
+		msg += "\r\n";
+		Command command;
+		if (irc::parseMessage(command, msg) == ERROR)
+			return (printError("parseMessage"));
+		debug::debugCommand(command);
+		if (irc::executeCommand(command, this, this->connectedClients.find(fd)->second) == ERROR)
+			return (printError("executeCommand"));
+	} catch (const Client::ConnectionErrorExcpetion& e) {
+		close(fd);
+		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
+			(*it)->removeClient(this->connectedClients.find(fd)->second);
+		this->connectedClients.erase(fd);
+		removePollfdFromVector(this->fds, fd);
+		std::cout << "[Server]: Connection recieve error" << std::endl;
+	} catch (const Client::ConnectionClosedException& e) {
+		close(fd);
+		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
+			(*it)->removeClient(this->connectedClients.find(fd)->second);
+		this->connectedClients.erase(fd);
+		removePollfdFromVector(this->fds, fd);
+		std::cout << "[Server]: Connection closed" << std::endl;
+	}
 }
