@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:56:11 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 19:15:24 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,11 @@ Client::~Client() {
  * The function receives data from a client and handles exceptions for different scenarios.
  */
 void	Client::recieveData(void) {
-	std::string			msg1;
 	std::vector<char> 	buffer(MAX_BUF_LENGTH);
-	// memset(buffer, 0, bufferSize); //@todo idk if allowed?
 	int ret = recv(this->fd, &buffer[0], buffer.size(), 0);
-	std::string msg = "";
+	std::string msg(buffer.begin(), buffer.end());
 	if (ret > 0) {
-		msg = std::string(buffer.begin(), buffer.end());
+		this->recieveBuffer += msg;
 		std::cout << "[Client(" << this->fd << ") -> Server]: " << msg;
 	}
 	if (ret == MAX_BUF_LENGTH) {
@@ -56,24 +54,23 @@ void	Client::recieveData(void) {
 		this->recieveBuffer.clear();
 		throw ConnectionClosedException();
 	}
-	this->recieveBuffer += msg;
 }
 
 /**
- * The function reads and returns the received data from a client, clearing the receive buffer if a
- * complete message is found.
+ * This function reads and returns a string from a receive buffer until it finds a "\r\n" sequence.
  * 
- * @return If the `recieveBuffer` contains a complete message (i.e. ends with "\r\n"), then the
- * function returns the message as a `std::string` and clears the `recieveBuffer`. If the
- * `recieveBuffer` does not contain a complete message, then an empty string is returned.
+ * @return This function returns a string containing the data received by the client up until the first
+ * occurrence of "\r\n" (carriage return and line feed). If "\r\n" is not found in the receive buffer,
+ * an empty string is returned. The function also updates the receive buffer to remove the data that
+ * has been returned.
  */
 std::string	Client::readRecievedData(void) {
-	std::string msg = this->recieveBuffer;
-	if (msg.length() > 0 && msg.find("\r\n") != std::string::npos)
-		this->recieveBuffer.clear();
-	else
+	std::string buffCpy = this->recieveBuffer;
+	size_t crlfPos = buffCpy.find("\r\n");
+	if (crlfPos == std::string::npos)
 		return ("");
-	return (msg);
+	this->recieveBuffer = buffCpy.substr(crlfPos + 2);
+	return (buffCpy.substr(0, crlfPos + 2));
 }
 
 /**
