@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:57:48 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 19:16:50 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,28 +236,32 @@ void	Server::acceptNewConnection(int fd) {
 }
 
 /**
- * The function receives data from a client, parses and executes a command, and handles exceptions
- * related to the client's connection.
+ * This function receives data from a client and executes commands based on the received messages.
  * 
  * @param fd The parameter `fd` is an integer representing the file descriptor of the client socket
  * that the server is currently receiving data from.
  * 
- * @return nothing (void).
+ * @return The function does not have a return type, so it does not return anything.
  */
 void	Server::recieveData(int fd) {
 	try {
 		this->connectedClients.find(fd)->second->recieveData();
-		std::string msg = this->connectedClients.find(fd)->second->readRecievedData();
-		if (msg.empty())
-			return ;
-		// @todo remove this!!!
-		msg += "\r\n";
-		Command command;
-		if (irc::parseMessage(command, msg) == ERROR)
-			return (printError("parseMessage"));
-		debug::debugCommand(command);
-		if (irc::executeCommand(command, this, this->connectedClients.find(fd)->second) == ERROR)
-			return (printError("executeCommand"));
+
+		while (true) {
+			std::string msg = this->connectedClients.find(fd)->second->readRecievedData();
+			if (msg.empty())
+				break ;
+			Command command;
+			if (irc::parseMessage(command, msg) == ERROR) {
+				printError("parseMessage");
+				continue ;
+			}
+			debug::debugCommand(command);
+			if (irc::executeCommand(command, this, this->connectedClients.find(fd)->second) == ERROR) {
+				printError("executeCommand");
+				continue ;
+			}
+		}
 	} catch (const Client::ConnectionErrorExcpetion& e) {
 		close(fd);
 		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
