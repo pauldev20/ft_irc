@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:24:35 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 18:57:48 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,18 +196,20 @@ void Server::run(void) {
 			if (this->fds[i].fd == this->socketFd) {
 				this->acceptNewConnection(this->fds[i].fd);
 
-				// @todo remove this!!!
-				if(!this->connectedClients.empty()) {
-					Client *client = (--this->connectedClients.end())->second;
-					client->sendMessage("Welcome to the IRC server");
-					if (this->channels.empty())
-						this->channels.push_back(new Channel(client, "default"));
-					else {
-						(*--this->channels.end())->addClient(client);
-						(*--this->channels.end())->sendMessageToAll("New client has joined the channel!");
-						(*--this->channels.end())->sendMessageToAllExcept("New client has joined the channel! (This message is only visible to other clients)", client);
-					}
-				}
+				// // @todo remove this!!!
+				// if(!this->connectedClients.empty()) {
+				// 	Client *client = (--this->connectedClients.end())->second;
+				// 	client->addDataToBuffer("Welcome to the IRC server");
+				// 	client->sendData();
+				// 	if (this->channels.empty())
+				// 		this->channels.push_back(new Channel(client, "default"));
+				// 	else {
+				// 		(*--this->channels.end())->addClient(client);
+				// 		//@todo should channels also have a buffer
+				// 		(*--this->channels.end())->sendMessageToAll("New client has joined the channel!");
+				// 		(*--this->channels.end())->sendMessageToAllExcept("New client has joined the channel! (This message is only visible to other clients)", client);
+				// 	}
+				// }
 			} else {
 				this->recieveData(this->fds[i].fd);
 			}
@@ -244,7 +246,10 @@ void	Server::acceptNewConnection(int fd) {
  */
 void	Server::recieveData(int fd) {
 	try {
-		std::string msg = this->connectedClients.find(fd)->second->recieveMessage();
+		this->connectedClients.find(fd)->second->recieveData();
+		std::string msg = this->connectedClients.find(fd)->second->readRecievedData();
+		if (msg.empty())
+			return ;
 		// @todo remove this!!!
 		msg += "\r\n";
 		Command command;

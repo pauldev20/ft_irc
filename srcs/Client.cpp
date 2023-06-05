@@ -6,12 +6,14 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:44:04 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/05 18:56:11 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include <sys/socket.h>	// recv
+
+#define MAX_BUF_LENGTH 512
 
 /* -------------------------------------------------------------------------- */
 /*                                Class Methods                               */
@@ -35,14 +37,16 @@ Client::~Client() {
  * The function receives data from a client and handles exceptions for different scenarios.
  */
 void	Client::recieveData(void) {
-	static const int	bufferSize = 512;
-	char				buffer[bufferSize];
+	std::string			msg1;
+	std::vector<char> 	buffer(MAX_BUF_LENGTH);
 	// memset(buffer, 0, bufferSize); //@todo idk if allowed?
-	int ret = recv(this->fd, buffer, bufferSize, 0);
-	std::string msg(buffer);
-	if (msg.length() > 0)
+	int ret = recv(this->fd, &buffer[0], buffer.size(), 0);
+	std::string msg = "";
+	if (ret > 0) {
+		msg = std::string(buffer.begin(), buffer.end());
 		std::cout << "[Client(" << this->fd << ") -> Server]: " << msg;
-	if (ret == bufferSize) {
+	}
+	if (ret == MAX_BUF_LENGTH) {
 		this->recieveBuffer.clear();
 		throw MessageTooLongException();
 	} else if (ret < 0) {
@@ -83,11 +87,11 @@ void	Client::addDataToBuffer(std::string data) {
 }
 
 /**
- * This function sends a message from the server to a client and prints it to the console.
+ * The function sends data from a client to a server and prints the sent data to the console.
  * 
  * @return The function does not have a return type specified, so it does not return anything.
  */
-void		Client::sendMessage(void) {
+void		Client::sendData(void) {
 	int ret = send(this->fd, this->sendBuffer.c_str(), this->sendBuffer.length(), 0);
 	if (ret < 0) {
 		std::cout << "send error" << std::endl;
