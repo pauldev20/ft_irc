@@ -7,7 +7,7 @@
 
 namespace debug
 {
-	void	debugCommand(const Command& command);
+	void	printCommand(const Command& command);
 }
 
 namespace irc

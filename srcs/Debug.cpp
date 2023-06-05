@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-void	debug::debugCommand(const Command& command)
+void	debug::printCommand(const Command& command)
 {
 	std::cout << "prefix: " << command.getPrefix() << std::endl;
 	std::cout << "command: " << command.getId() << std::endl;

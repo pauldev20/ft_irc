@@ -12,6 +12,7 @@
 
 #include "Client.hpp"
 #include <sys/socket.h>	// recv
+#include <vector>		// std::vector
 
 #define MAX_BUF_LENGTH 512
 
