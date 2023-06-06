@@ -5,15 +5,19 @@
 #include "Message.hpp"
 #include "Server.hpp"
 
+#define ERROR -1
+#define SUCCESS 0
+#define PARAM_MAX 15
+
 namespace debug
 {
-	void	debugMessage(const Message& message);
+	void	printMessage(const Message& message);
 }
 
 namespace irc
 {
-	int		parseMessage(Message& message, std::string& msg);
-	int		executeMessage(Message& message, Server* server, Client* client);
+	int	parseMessage(Message& message, std::string& msg);
+	int	executeMessage(Message& message, Server* server, Client* client);
 }
 
 namespace replies

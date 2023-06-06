@@ -6,12 +6,11 @@
 #include <string>
 #include <vector>
 
-void	debug::debugMessage(const Message& message)
+void	debug::printMessage(const Message& command)
 {
-	std::cout << "prefix: " << message.getPrefix() << std::endl;
-	std::cout << "command: " << message.getId() << std::endl;
-	std::cout << "params: ";
-	for (std::vector<std::string>::const_iterator it = message.getParams().begin(); it != message.getParams().end(); it++)
-		std::cout << *it << " ";
+	std::cout << "prefix: " << command.getPrefix() << std::endl;
+	std::cout << "params:" << std::endl;
+	for (std::vector<std::string>::const_iterator it = command.getParams().begin(); it != command.getParams().end(); it++)
+		std::cout << "	[" << *it << "]" << std::endl;
 	std::cout << std::endl;
 }

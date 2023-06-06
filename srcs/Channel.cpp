@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 13:23:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 14:16:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,6 @@ void	Channel::addClient(Client *client) {
 			break ;
 		}
 	}
-	for (std::vector<Client*>::iterator it = this->kicked.begin(); it != this->kicked.end(); it++) {
-		if (*it == client) {
-			throw Channel::KickedClientExcpetion();
-		}
-	}
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
 		if (*it == client) {
 			throw Channel::AllreadyInChannelExcpetion();
@@ -161,43 +156,7 @@ void	Channel::removeClient(Client *client) {
 	}
 }
 
-// @todo method to remove client from all lists, not just clients -> when user leaves server??
-
-/**
- * The function removes a client from a channel and adds them to a list of kicked clients.
- *
- * @param client The "client" parameter is a pointer to a Client object that represents the client to
- * be kicked from the channel.
- *
- * @return nothing (void).
- */
-void	Channel::kickClient(Client *client) {
-	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-		if (*it == client) {
-			this->kicked.push_back(client);
-			this->clients.erase(it);
-			return ;
-		}
-	}
-	throw Channel::CantBeKickedExcpetion();
-}
-
-/**
- * The function removes a client from the list of kicked clients in a channel.
- *
- * @param client A pointer to a Client object that needs to be removed from the vector of kicked
- * clients in a Channel object.
- *
- * @return nothing (void).
- */
-void	Channel::unKickClient(Client *client) {
-	for (std::vector<Client*>::iterator it = this->kicked.begin(); it != this->kicked.end(); it++) {
-		if (*it == client) {
-			this->kicked.erase(it);
-			return ;
-		}
-	}
-}
+// @todo method to remove client from all lists, not just clients (invited, operators) -> when user leaves server??
 
 /**
  * The function sends a message to all clients in a channel.
@@ -251,14 +210,6 @@ bool    Channel::checkChannelNameValidity(std::string const &channel_name) {
 
 const char *Channel::AllreadyInChannelExcpetion::what() const throw() {
 	return ("Client is allready in channel");
-}
-
-const char *Channel::KickedClientExcpetion::what() const throw() {
-	return ("Client is kicked and can't join channel");
-}
-
-const char *Channel::CantBeKickedExcpetion::what() const throw() {
-	return ("Client can't be kicked from channel, since he is not part of it");
 }
 
 const char *Channel::ChannelFullExcpetion::what() const throw() {

@@ -1,11 +1,15 @@
+
 #include "Message.hpp"
+#include "cmds/Command.hpp"
+#include "cmds/Commands.hpp"
 
 #include <string>
 
-Message::Message(std::string prefix, int id, std::vector<std::string> params)
+Message::Message(std::string prefix, Command* cmd, std::string cmd_name, std::vector<std::string> params)
 {
 	this->_prefix = prefix;
-	this->_id = id;
+	this->_cmd = cmd;
+	this->_cmd_name = cmd_name;
 	this->_params = params;
 }
 
@@ -22,14 +26,26 @@ void	Message::setPrefix(std::string prefix)
 	this->_prefix = prefix;
 }
 
-void	Message::setId(int id)
+void	Message::setCmd(Command* cmd)
 {
-	this->_id = id;
+	this->_cmd = cmd;
+}
+
+void	Message::setCmdName(std::string cmd_name)
+{
+	this->_cmd_name = cmd_name;
+}
+
+void	Message::setCmdAll(Command* cmd, std::string cmd_name)
+{
+	this->_cmd = cmd;
+	this->_cmd_name = cmd_name;
 }
 
 void	Message::addParam(std::string param)
 {
-	this->_params.push_back(param);
+	if (!param.empty())
+		this->_params.push_back(param);
 }
 
 void	Message::setParams(std::vector<std::string> params)
@@ -42,9 +58,14 @@ const std::string&	Message::getPrefix() const
 	return (this->_prefix);
 }
 
-const int&	Message::getId() const
+Command*	Message::getCmd() const
 {
-	return (this->_id);
+	return (this->_cmd);
+}
+
+const std::string	Message::getCmdName() const
+{
+	return (this->_cmd_name);
 }
 
 const std::vector<std::string>&	Message::getParams() const
