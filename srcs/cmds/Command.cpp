@@ -14,8 +14,6 @@
 #include "irc.hpp"
 
 Command::Command(bool needsPass, bool needsRegistration) : checkRegister(needsRegistration), checkPass(needsPass) {
-	this->checkRegister;
-	this->checkPass;
 }
 
 Command::~Command() {

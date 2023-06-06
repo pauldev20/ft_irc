@@ -15,6 +15,8 @@
 #include "Command.hpp"
 #include "irc.hpp"
 
+class Message;
+
 class CAP : public Command {
 	public:
 		CAP(void);

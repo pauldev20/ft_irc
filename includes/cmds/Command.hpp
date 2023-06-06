@@ -16,6 +16,8 @@
 #include "Server.hpp"
 #include "Client.hpp"
 
+class Message;
+
 class Command {
 	public:
 		Command(bool needsPass = true, bool needsRegistration = true);
@@ -28,5 +30,5 @@ class Command {
 		bool		checkPass;
 
 	protected:
-		virtual void exec(Message& message, Server* server, Client* client)=0;
+		virtual void exec(Message& message, Server* server, Client* client) = 0;
 };
