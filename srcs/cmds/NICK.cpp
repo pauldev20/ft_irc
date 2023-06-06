@@ -35,7 +35,7 @@ void NICK::exec(Message& message, Server* server, Client* client) {
 		return ;
 	}
     if (!server->checkNicknameValidity(params[0])) {
-        client->addDataToBuffer(replies::ERR_ERRONEUSNICKNAME(params[0]));
+        // client->addDataToBuffer(replies::ERR_ERRONEUSNICKNAME(params[0]));
         client->sendData();
         return ;
     }

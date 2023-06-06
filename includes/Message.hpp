@@ -2,52 +2,50 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
+#include "Server.hpp"
+#include "Client.hpp"
+#include "cmds/Command.hpp"
+
 #include <string>
 #include <vector>
 
-#define ERROR -1
-#define SUCCESS 0
-#define PARAM_MAX 15
-
 #define CMD_CAP "CAP"
-#define CMD_PING "PING"
-#define CMD_PASS "PASS"
 #define CMD_NICK "NICK"
 #define CMD_USER "USER"
 #define CMD_QUIT "QUIT"
-#define CMD_PRIVMSG "PRIVMSG"
 #define CMD_JOIN "JOIN"
 #define CMD_PART "PART"
+#define CMD_PRIVMSG "PRIVMSG"
+#define CMD_PASS "PASS"
+#define CMD_KICK "KICK"
+#define CMD_INVITE "INVITE"
+#define CMD_TOPIC "TOPIC"
+#define CMD_MODE "MODE"
+#define CMD_PING "PING"
 
-enum MessageID
-{
-	ID_CAP,
-	ID_PING,
-	ID_PASS,
-	ID_NICK,
-	ID_USER,
-	ID_QUIT,
-	ID_PRIVMSG,
-	ID_JOIN,
-	ID_PART
-};
+class Command;
+// @todo circular dependency fuck shit
 
 class Message
 {
 	private:
 		std::string						_prefix; // @note potentially separate object / more complex, also the prefix doesn't belong to the command
-		int								_id;
+		Command*						_cmd;
+		std::string						_cmd_name;
 		std::vector<std::string>		_params;
 	public:		
 										Message();
-										Message(std::string prefix, int id, std::vector<std::string> params);
+										Message(std::string prefix, Command* cmd, std::string cmd_name, std::vector<std::string> params);
 										~Message();
 		void							setPrefix(std::string prefix);
-		void							setId(int id);
+		void							setCmd(Command* cmd);
+		void							setCmdName(std::string cmd_name);
+		void							setCmdAll(Command* cmd, std::string cmd_name);
 		void							addParam(std::string param);
 		void							setParams(std::vector<std::string> params);
 		const std::string&				getPrefix() const;
-		const int&						getId() const;
+		Command*						getCmd() const;
+		const std::string				getCmdName() const;
 		const std::vector<std::string>&	getParams() const;
 };
 
