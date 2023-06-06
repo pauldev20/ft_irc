@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:20 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 15:58:45 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:51:05 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ class Server {
 
 		void				addChannel(Channel *channel);
 		void				removeChannel(Channel *channel);
+		Channel				*getChannelByName(std::string const &name);
+
+		bool				checkNickname(std::string const &nickname);
+
+		Client				*getClientByNickname(std::string const &nickname);
 
 	private:
 		int 						port;
@@ -43,5 +48,5 @@ class Server {
 		std::vector<Channel*>		channels;
 
 		void						acceptNewConnection(int fd);
-		void						recieveData(int fd);
+		void						receiveData(int fd);
 };

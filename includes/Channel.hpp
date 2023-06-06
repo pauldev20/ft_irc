@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/04 21:11:41 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:55:55 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Channel {
 
 		void	sendMessageToAll(std::string const &message);
 		void	sendMessageToAllExcept(std::string const &message, Client *client);
+
+		bool	isClientInChannel(Client *client);
 
 		class AllreadyInChannelExcpetion: public std::exception
 		{

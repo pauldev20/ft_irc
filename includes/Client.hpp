@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:15 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:47:21 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:18:50 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ class Client {
 		Client(int fd);
 		~Client();
 
-		// recieve data
-		void		recieveData(void);
-		std::string	readRecievedData(void);
+		// receive data
+		void		receiveData(void);
+		std::string	readReceivedData(void);
 
 		// send data
 		void		addDataToBuffer(std::string data);
@@ -38,6 +38,15 @@ class Client {
 
 		bool isAuthenticated(void) const;
 		void setAuthenticated(bool authenticated);
+
+		void setUsername(std::string name);
+		std::string const &getUsername(void) const;
+
+		void setFullName(std::string fullName);
+		std::string const &getFullName(void) const;
+
+		void setNickname(std::string nickname);
+		std::string const &getNickname(void) const;
 
 		class MessageTooLongException: public std::exception
 		{
@@ -61,6 +70,9 @@ class Client {
 		int			fd;
 		bool		registered;
 		bool		authenticated;
-		std::string	recieveBuffer;
+		std::string	username;
+		std::string	fullName;
+		std::string	nickname;
+		std::string	receiveBuffer;
 		std::string	sendBuffer;
 };

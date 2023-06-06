@@ -6,12 +6,13 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 19:15:24 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:18:15 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include <sys/socket.h>	// recv
+#include <algorithm>	// std::remove
 
 #define MAX_BUF_LENGTH 512
 
@@ -34,26 +35,24 @@ Client::~Client() {
 /* -------------------------------------------------------------------------- */
 
 /**
- * The function receives data from a client and handles exceptions for different scenarios.
+ * The function receive data from a client and handles exceptions for different scenarios.
  */
-void	Client::recieveData(void) {
+void	Client::receiveData(void) {
 	std::vector<char> 	buffer(MAX_BUF_LENGTH);
 	int ret = recv(this->fd, &buffer[0], buffer.size(), 0);
 	std::string msg(buffer.begin(), buffer.end());
-	if (ret > 0) {
-		this->recieveBuffer += msg;
-		std::cout << "[Client(" << this->fd << ") -> Server]: " << msg;
-	}
 	if (ret == MAX_BUF_LENGTH) {
-		this->recieveBuffer.clear();
 		throw MessageTooLongException();
 	} else if (ret < 0) {
-		this->recieveBuffer.clear();
+		this->receiveBuffer.clear();
 		throw ConnectionErrorExcpetion();
 	} else if (ret == 0) {
-		this->recieveBuffer.clear();
+		this->receiveBuffer.clear();
 		throw ConnectionClosedException();
 	}
+	msg.resize(ret); // resize to actual size (not MAX_BUF_LENGTH)
+	this->receiveBuffer += msg;
+	// std::cout << "[Client(" << this->fd << ") -> Server]: " << msg; //@todo debug print
 }
 
 /**
@@ -64,12 +63,13 @@ void	Client::recieveData(void) {
  * an empty string is returned. The function also updates the receive buffer to remove the data that
  * has been returned.
  */
-std::string	Client::readRecievedData(void) {
-	std::string buffCpy = this->recieveBuffer;
+std::string	Client::readReceivedData(void) {
+	std::string buffCpy = this->receiveBuffer;
 	size_t crlfPos = buffCpy.find("\r\n");
 	if (crlfPos == std::string::npos)
 		return ("");
-	this->recieveBuffer = buffCpy.substr(crlfPos + 2);
+	this->receiveBuffer = buffCpy.substr(crlfPos + 2);
+	std::cout << "[Client(" << this->fd << ") -> Server]: " << buffCpy.substr(0, crlfPos + 2);
 	return (buffCpy.substr(0, crlfPos + 2));
 }
 
@@ -94,7 +94,7 @@ void		Client::sendData(void) {
 		std::cout << "send error" << std::endl;
 		return ;
 	} else
-	std::cout << "[Server -> Client(" << this->fd << ")]: " << this->sendBuffer << std::endl;
+	std::cout << "[Server -> Client(" << this->fd << ")]: " << this->sendBuffer;
 	this->sendBuffer.clear();
 }
 
@@ -120,6 +120,30 @@ bool		Client::isAuthenticated(void) const {
 
 void		Client::setAuthenticated(bool authenticated) {
 	this->authenticated = authenticated;
+}
+
+void		Client::setUsername(std::string username) {
+	this->username = username;
+}
+
+std::string	const &Client::getUsername(void) const {
+	return (username);
+}
+
+void		Client::setFullName(std::string fullName) {
+	this->fullName = fullName;
+}
+
+std::string	const &Client::getFullName(void) const {
+	return (fullName);
+}
+
+void		Client::setNickname(std::string nickname) {
+	this->nickname = nickname;
+}
+
+std::string	const &Client::getNickname(void) const {
+	return (nickname);
 }
 
 /* -------------------------------------------------------------------------- */

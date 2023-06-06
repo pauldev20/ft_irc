@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 19:16:50 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:51:41 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <sys/select.h> // select
 #include <fcntl.h>		// fcntl
 #include <unistd.h>		// close
-#include "Command.hpp"	// Command
+#include "Message.hpp"
 #include "irc.hpp"
 
 /* -------------------------------------------------------------------------- */
@@ -133,6 +133,15 @@ void	Server::removeChannel(Channel *channel) {
 	}
 }
 
+Channel	*Server::getChannelByName(std::string const &name) {
+	std::vector<Channel*>::iterator it;
+	for (it = this->channels.begin(); it != this->channels.end(); it++) {
+		if ((*it)->getName() == name)
+			return (*it);
+	}
+	return (NULL);
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Public Methods                               */
 /* -------------------------------------------------------------------------- */
@@ -195,27 +204,34 @@ void Server::run(void) {
 		if (this->fds[i].revents & POLLIN) {
 			if (this->fds[i].fd == this->socketFd) {
 				this->acceptNewConnection(this->fds[i].fd);
-
-				// // @todo remove this!!!
-				// if(!this->connectedClients.empty()) {
-				// 	Client *client = (--this->connectedClients.end())->second;
-				// 	client->addDataToBuffer("Welcome to the IRC server");
-				// 	client->sendData();
-				// 	if (this->channels.empty())
-				// 		this->channels.push_back(new Channel(client, "default"));
-				// 	else {
-				// 		(*--this->channels.end())->addClient(client);
-				// 		//@todo should channels also have a buffer
-				// 		(*--this->channels.end())->sendMessageToAll("New client has joined the channel!");
-				// 		(*--this->channels.end())->sendMessageToAllExcept("New client has joined the channel! (This message is only visible to other clients)", client);
-				// 	}
-				// }
 			} else {
-				this->recieveData(this->fds[i].fd);
+				this->receiveData(this->fds[i].fd);
 			}
 		}
 	}
 }
+
+bool	Server::checkNickname(std::string const &nickname) {
+	std::map<int, Client*>::iterator it;
+	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) {
+		if (it->second->getNickname() == nickname)
+			return (false);
+	}
+	return (true);
+}
+
+Client	*Server::getClientByNickname(std::string const &nickname) {
+	std::map<int, Client*>::iterator it;
+	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) {
+		if (it->second->getNickname() == nickname)
+			return (it->second);
+	}
+	return (NULL);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Private Methods                              */
+/* -------------------------------------------------------------------------- */
 
 /**
  * The function accepts a new client connection and adds it to the list of connected clients.
@@ -243,22 +259,21 @@ void	Server::acceptNewConnection(int fd) {
  * 
  * @return The function does not have a return type, so it does not return anything.
  */
-void	Server::recieveData(int fd) {
+void	Server::receiveData(int fd) {
 	try {
-		this->connectedClients.find(fd)->second->recieveData();
-
+		this->connectedClients.find(fd)->second->receiveData();
 		while (true) {
-			std::string msg = this->connectedClients.find(fd)->second->readRecievedData();
+			std::string msg = this->connectedClients.find(fd)->second->readReceivedData();
 			if (msg.empty())
 				break ;
-			Command command;
-			if (irc::parseMessage(command, msg) == ERROR) {
+			Message message;
+			if (irc::parseMessage(message, msg) == ERROR) {
 				printError("parseMessage");
 				continue ;
 			}
-			debug::debugCommand(command);
-			if (irc::executeCommand(command, this, this->connectedClients.find(fd)->second) == ERROR) {
-				printError("executeCommand");
+			// debug::debugMessage(message);
+			if (irc::executeMessage(message, this, this->connectedClients.find(fd)->second) == ERROR) {
+				printError("executeMessage");
 				continue ;
 			}
 		}
@@ -268,7 +283,7 @@ void	Server::recieveData(int fd) {
 			(*it)->removeClient(this->connectedClients.find(fd)->second);
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
-		std::cout << "[Server]: Connection recieve error" << std::endl;
+		std::cout << "[Server]: Connection receive error" << std::endl;
 	} catch (const Client::ConnectionClosedException& e) {
 		close(fd);
 		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
@@ -276,5 +291,7 @@ void	Server::recieveData(int fd) {
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
 		std::cout << "[Server]: Connection closed" << std::endl;
+	} catch (const Client::MessageTooLongException& e) {
+		std::cout << "[Server]: Message received was too long" << std::endl;
 	}
 }

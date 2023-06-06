@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 18:48:54 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 01:55:52 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,15 @@ void	Channel::sendMessageToAllExcept(std::string const &message, Client *client)
 			(*it)->sendData();
 		}
 	}
+}
+
+bool	Channel::isClientInChannel(Client *client) {
+	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+		if (*it == client) {
+			return (true);
+		}
+	}
+	return (false);
 }
 
 /* -------------------------------------------------------------------------- */
