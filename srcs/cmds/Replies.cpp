@@ -72,6 +72,10 @@ namespace	replies {
 	{
 		return std::string(":") + "Servername" + " 431 " + " :Nickname not given\r\n";
 	}
+    std::string ERR_ERRONEUSNICKNAME(const std::string& nick)
+    {
+        return std::string(":") + "Servername" + " 432 " + nick + " :Erroneus nickname\r\n";
+    }
 	std::string RPL_NICKCHANGE(const std::string& old_nick, const std::string& new_nick, const std::string& user)
 	{
 		return std::string(":") + old_nick + "!" + user + "@" + SERVER + " " + "NICK" + " :" + new_nick + "\r\n";
