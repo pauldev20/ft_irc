@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:41:03 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 00:46:20 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 14:41:09 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include "irc.hpp"
 
 Command::Command(bool needsPass, bool needsRegistration) : checkRegister(needsRegistration), checkPass(needsPass) {
-	this->checkRegister;
-	this->checkPass;
 }
 
 Command::~Command() {
