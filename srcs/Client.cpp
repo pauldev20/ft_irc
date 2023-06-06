@@ -6,13 +6,13 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:18:15 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 02:02:14 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include <sys/socket.h>	// recv
-#include <algorithm>	// std::remove
+#include <vector>		// std::vector
 
 #define MAX_BUF_LENGTH 512
 
