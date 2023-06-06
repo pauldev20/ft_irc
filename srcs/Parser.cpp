@@ -68,7 +68,7 @@ static	std::string getNextToken(std::string& message, bool isTrailing)
 	std::string token;
 
 	if (isTrailing == true)
-		message.erase(0, 0);
+		message.erase(0, 1);
 	if (isTrailing == true
 		|| message.find(DELIM) == std::string::npos
 		|| message.find(DELIM) > message.find(CRLF))
