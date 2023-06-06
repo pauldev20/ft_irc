@@ -6,7 +6,7 @@
 #    By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 17:21:47 by pgeeser           #+#    #+#              #
-#    Updated: 2023/06/06 02:00:57 by pgeeser          ###   ########.fr        #
+#    Updated: 2023/06/06 11:23:12 by pgeeser          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
 SRCFILES	:= main.cpp Server.cpp Client.cpp Message.cpp Parser.cpp Executer.cpp Debug.cpp Channel.cpp
 
 # ----------------------------------- CMDs ----------------------------------- #
-SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp cmds/NICK.cpp cmds/USER.cpp cmds/PING.cpp cmds/QUIT.cpp cmds/PRIVMSG.cpp
+SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp cmds/NICK.cpp cmds/USER.cpp cmds/PING.cpp cmds/QUIT.cpp cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp
 
 INCLUDES	:= -I./includes
 

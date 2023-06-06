@@ -90,6 +90,10 @@ static int	handleMessage(Message& Message, std::string& message)
 		Message.setId(ID_QUIT);
 	else if (token == CMD_PRIVMSG)
 		Message.setId(ID_PRIVMSG);
+	else if (token == CMD_JOIN)
+		Message.setId(ID_JOIN);
+	else if (token == CMD_PART)
+		Message.setId(ID_PART);
 	else
 	{
 		std::cout << "ERROR: Unknown command: " << token << std::endl;

@@ -32,6 +32,10 @@ namespace replies
 	std::string ERR_NOSUCHNICK(const std::string& nick, const std::string channel_name);
 	std::string	RPL_PRIVMSG(const std::string& nick, const std::string& user, const std::string& target, const std::string& msg);
 	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name);
+	std::string RPL_JOIN(const std::string& nick, const std::string& user, const std::string& channel_name);
+	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name);
+	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name);
+	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason);
 }
 
 #endif
