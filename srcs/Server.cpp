@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 02:04:01 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 21:07:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ bool    Server::checkNicknameValidity(std::string const &nickname) {
     for (size_t i = 0; i < nickname.length(); i++) {
         if (i == 0 && (!isalpha(nickname[i]) && nickname[i] != '_' && nickname[i] != '-'))
             return (false);
-        if (!isalnum(nickname[i]) && nickname[i] != '_' && nickname[i] != '-')
+        if (!std::isalnum(nickname[i]) && nickname[i] != '_' && nickname[i] != '-')
             return (false);
     }
     return (true);

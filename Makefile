@@ -81,7 +81,7 @@ debug:
 	$(MAKE) CPPFLAGS='-g' re
 
 run: all
-	@./$(NAME)
+	@./$(NAME) 6667 1234
 
 val: all
 	@valgrind --leak-check=full ./$(NAME)
