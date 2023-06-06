@@ -9,20 +9,6 @@
 #include <string>
 #include <vector>
 
-#define CMD_CAP "CAP"
-#define CMD_NICK "NICK"
-#define CMD_USER "USER"
-#define CMD_QUIT "QUIT"
-#define CMD_JOIN "JOIN"
-#define CMD_PART "PART"
-#define CMD_PRIVMSG "PRIVMSG"
-#define CMD_PASS "PASS"
-#define CMD_KICK "KICK"
-#define CMD_INVITE "INVITE"
-#define CMD_TOPIC "TOPIC"
-#define CMD_MODE "MODE"
-#define CMD_PING "PING"
-
 class Command;
 // @todo circular dependency fuck shit
 
