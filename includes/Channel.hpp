@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 11:20:46 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 14:14:54 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,26 +49,11 @@ class Channel {
 
 		bool	isClientInChannel(Client *client);
 
-		void	kickClient(Client *client);
-		void	unKickClient(Client *client);
-
 		void	sendMessageToAll(std::string const &message);
 		void	sendMessageToAllExcept(std::string const &message, Client *client);
 
 
 		class AllreadyInChannelExcpetion: public std::exception
-		{
-			public:
-				virtual const char *what() const throw();
-		};
-
-		class KickedClientExcpetion: public std::exception
-		{
-			public:
-				virtual const char *what() const throw();
-		};
-
-		class CantBeKickedExcpetion: public std::exception
 		{
 			public:
 				virtual const char *what() const throw();
@@ -90,7 +75,6 @@ class Channel {
 		std::string				name;
 		std::string				topic;
 		std::vector<Client*>	clients;
-		std::vector<Client*>	kicked;
 		std::string				password;
 		size_t					userLimit;
 		bool					inviteOnly;
