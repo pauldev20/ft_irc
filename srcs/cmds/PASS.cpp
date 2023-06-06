@@ -21,6 +21,11 @@ void PASS::exec(Message& message, Server* server, Client* client) {
 		client->sendData();
 		return ;
 	}
+    if (message.getParams()[0].empty()) {
+        client->addDataToBuffer(replies::ERR_NEEDMOREPARAMS("PASS"));
+        client->sendData();
+        return ;
+    }
 	if (message.getParams()[0] == server->getPassword())
 		client->setAuthenticated(true);
 	else {
