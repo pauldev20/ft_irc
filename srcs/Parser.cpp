@@ -87,7 +87,10 @@ static	std::string getNextToken(std::string& message, bool isTrailing)
 static void	handlePrefix(Message& command, std::string& message)
 {
 	if (message[0] == COLON)
+	{
+		message.erase(0, 1);
 		command.setPrefix(getNextToken(message, false));
+	}
 }
 
 static int	handleCommand(Message& command, std::string& message)
