@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 23:17:01 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:20:45 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 16:06:39 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void NICK::exec(Message& message, Server* server, Client* client) {
 		return ;
 	}
     if (!server->checkNicknameValidity(params[0])) {
-        // client->addDataToBuffer(replies::ERR_ERRONEUSNICKNAME(params[0]));
+        client->addDataToBuffer(replies::ERR_ERRONEUSNICKNAME(params[0]));
         client->sendData();
         return ;
     }
