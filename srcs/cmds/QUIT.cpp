@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 01:26:27 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:32:01 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 16:31:29 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ void QUIT::exec(Message& message, Server* server, Client* client) {
 	// @todo is a quit message possible/needed?
 	client->addDataToBuffer(replies::RPL_QUIT(client->getNickname(), client->getUsername())); //@todo is this really correct? username?
 	client->sendData();
+	// @todo fix Connection receive error
 }

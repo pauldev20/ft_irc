@@ -136,6 +136,11 @@ static int	handleCommand(Message& command, std::string& message)
 		static PART part;
 		command.setCmdAll(&part, CMD_PART);
 	}
+	else if (token == CMD_QUIT)
+	{
+		static QUIT quit;
+		command.setCmdAll(&quit, CMD_QUIT);
+	}
 	else
 		return (ERROR);
 	return (SUCCESS);
