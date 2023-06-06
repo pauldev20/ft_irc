@@ -1,17 +1,17 @@
 
 #include "irc.hpp"
-#include "Command.hpp"
+#include "Message.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
-void	debug::debugCommand(const Command& command)
+void	debug::debugMessage(const Message& message)
 {
-	std::cout << "prefix: " << command.getPrefix() << std::endl;
-	std::cout << "command: " << command.getId() << std::endl;
+	std::cout << "prefix: " << message.getPrefix() << std::endl;
+	std::cout << "command: " << message.getId() << std::endl;
 	std::cout << "params: ";
-	for (std::vector<std::string>::const_iterator it = command.getParams().begin(); it != command.getParams().end(); it++)
+	for (std::vector<std::string>::const_iterator it = message.getParams().begin(); it != message.getParams().end(); it++)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 }

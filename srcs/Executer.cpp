@@ -1,63 +1,61 @@
 
 #include "irc.hpp"
-#include "Command.hpp"
+#include "Message.hpp"
+#include "cmds/Commands.hpp"
 
 #include <iostream>
 
-typedef void (*cmdFunc)(const Command& command, const Server* server, const Client* client);
+typedef void (*cmdFunc)(Message& message, Server* server, Client* client);
 
-static void	cmdKICK(const Command& command, const Server* server, const Client* client)
+static void	cmdCAP(Message& message, Server* server, Client* client)
 {
-	std::cout << "cmd_id: " << command.getId() << std::endl;
-	std::cout << "cmdKICK executed!" << std::endl;
-	(void)server;
-	(void)client;
+	CAP().execute(message, server, client);
 }
 
-static void	cmdINVITE(const Command& command, const Server* server, const Client* client)
+static void	cmdPING(Message& message, Server* server, Client* client)
 {
-	std::cout << "cmd_id: " << command.getId() << std::endl;
-	std::cout << "cmdINVITE executed!" << std::endl;
-	(void)server;
-	(void)client;
+	PING().execute(message, server, client);
 }
 
-static void	cmdTOPIC(const Command& command, const Server* server, const Client* client)
+static void	cmdPASS(Message& message, Server* server, Client* client)
 {
-	std::cout << "cmd_id: " << command.getId() << std::endl;
-	std::cout << "cmdTOPIC executed!" << std::endl;
-	(void)server;
-	(void)client;
+	PASS().execute(message, server, client);
 }
 
-static void	cmdMODE(const Command& command, const Server* server, const Client* client)
+static void	cmdNICK(Message& message, Server* server, Client* client)
 {
-	std::cout << "cmd_id: " << command.getId() << std::endl;
-	std::cout << "cmdMODE executed!" << std::endl;
-	(void)server;
-	(void)client;
+	NICK().execute(message, server, client);
 }
 
-static void	cmdPING(const Command& command, const Server* server, const Client* client)
+static void	cmdUSER(Message& message, Server* server, Client* client)
 {
-	std::cout << "cmd_id: " << command.getId() << std::endl;
-	std::cout << "cmdPING executed!" << std::endl;
-	(void)server;
-	(void)client;
+	USER().execute(message, server, client);
+}
+
+static void	cmdQUIT(Message& message, Server* server, Client* client)
+{
+	QUIT().execute(message, server, client);
+}
+
+static void	cmdPRIVMSG(Message& message, Server* server, Client* client)
+{
+	PRIVMSG().execute(message, server, client);
 }
 
 static const cmdFunc exec[] = {
-	cmdKICK,
-	cmdINVITE,
-	cmdTOPIC,
-	cmdMODE,
+	cmdCAP,
 	cmdPING,
+	cmdPASS,
+	cmdNICK,
+	cmdUSER,
+	cmdQUIT,
+	cmdPRIVMSG
 };
 
-int	irc::executeCommand(const Command& command, const Server* server, const Client* client)
+int	irc::executeMessage(Message& message, Server* server, Client* client)
 {
-	if (command.getId() < 0 || command.getId() > 4)
+	if (message.getId() < 0 || message.getId() > 6)
 		return (ERROR);
-	exec[command.getId()](command, server, client);
+	exec[message.getId()](message, server, client);
 	return (SUCCESS);
 }

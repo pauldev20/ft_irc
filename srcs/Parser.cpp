@@ -1,6 +1,6 @@
 
 #include "irc.hpp"
-#include "Command.hpp"
+#include "Message.hpp"
 
 #include <string>
 #include <algorithm> // std::all_of
@@ -29,21 +29,17 @@ BNF for IRC messages:
 
 static bool	is_all_digit(const std::string& str)
 {
-	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; ++i)
-	{
+	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; i++)
 		if (!isdigit(*i))
 			return false;
-	}
 	return true;
 }
 
 static bool	is_all_alpha(const std::string& str)
 {
-	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; ++i)
-	{
+	for (std::string::const_iterator i = str.begin(), j = str.end(); i != j; i++)
 		if (!isalpha(*i))
 			return false;
-	}
 	return true;
 }
 
@@ -66,13 +62,13 @@ static	std::string getNextToken(std::string& message)
 	return (token);
 }
 
-static void	handlePrefix(Command& command, std::string& message)
+static void	handlePrefix(Message& Message, std::string& message)
 {
 	if (message[0] == COLON)
-		command.setPrefix(getNextToken(message));
+		Message.setPrefix(getNextToken(message));
 }
 
-static int	handleCommand(Command& command, std::string& message)
+static int	handleMessage(Message& Message, std::string& message)
 {
 	std::string token = getNextToken(message);
 
@@ -80,22 +76,29 @@ static int	handleCommand(Command& command, std::string& message)
 		return (ERROR);
 	if (!is_all_alpha(token) && !is_all_digit(token))
 		return (ERROR);
-	if (token == CMD_KICK)
-		command.setId(ID_KICK);
-	else if (token == CMD_INVITE)
-		command.setId(ID_INVITE);
-	else if (token == CMD_TOPIC)
-		command.setId(ID_TOPIC);
-	else if (token == CMD_MODE)
-		command.setId(ID_MODE);
+	if (token == CMD_CAP)
+		Message.setId(ID_CAP);
 	else if (token == CMD_PING)
-		command.setId(ID_PING);
+		Message.setId(ID_PING);
+	else if (token == CMD_PASS)
+		Message.setId(ID_PASS);
+	else if (token == CMD_NICK)
+		Message.setId(ID_NICK);
+	else if (token == CMD_USER)
+		Message.setId(ID_USER);
+	else if (token == CMD_QUIT)
+		Message.setId(ID_QUIT);
+	else if (token == CMD_PRIVMSG)
+		Message.setId(ID_PRIVMSG);
 	else
+	{
+		std::cout << "ERROR: Unknown command: " << token << std::endl;
 		return (ERROR);
+	}
 	return (SUCCESS);
 }
 
-static int	handleParams(Command& command, std::string& message)
+static int	handleParams(Message& Message, std::string& message)
 {
 	std::string	token;
 
@@ -106,24 +109,24 @@ static int	handleParams(Command& command, std::string& message)
 		token = getNextToken(message);
 		if (token.empty())
 			break ;
-		command.addParam(token);
+		Message.addParam(token);
 	}
 	return (SUCCESS);
 }
 
-int	irc::parseMessage(Command& command, std::string& message)
+int	irc::parseMessage(Message& message, std::string& msg)
 {
-	if (message.find(CRLF) == std::string::npos)
+	if (msg.find(CRLF) == std::string::npos)
 		return (ERROR);
-	if (message.find(CRLF) > MESSAGE_MAX)
+	if (msg.find(CRLF) > MESSAGE_MAX)
 		return (ERROR);
 
-	handlePrefix(command, message);
-	if (handleCommand(command, message) == ERROR)
+	handlePrefix(message, msg);
+	if (handleMessage(message, msg) == ERROR)
 		return (ERROR);
-	if (handleParams(command, message) == ERROR)
+	if (handleParams(message, msg) == ERROR)
 		return (ERROR);
-	if (message.substr(0, strlen(CRLF)) != CRLF)
+	if (msg.substr(0, strlen(CRLF)) != CRLF)
 		return (ERROR);
 	return (SUCCESS);
 }
