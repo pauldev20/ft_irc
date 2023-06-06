@@ -36,6 +36,7 @@ namespace replies
 	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name);
 	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name);
 	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason);
+	std::string ERR_BANNEDFROMCHAN(const std::string& nick, const std::string& channel_name);
 }
 
 #endif

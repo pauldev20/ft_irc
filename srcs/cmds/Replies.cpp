@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 11:07:40 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 13:26:23 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,15 @@ namespace	replies {
 	}
 	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name)
 	{
-		return std::string(":") + SERVER + " 471 " + nick + " " + channel_name + " :Cannot join channel (+l) - the channel is full\r\n";
+		return std::string(":") + SERVER + " 471 " + nick + " " + channel_name + " :Cannot join channel (+l)\r\n";
 	}
 	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name)
 	{
-		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i) - you must be invited\r\n";
+		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i)\r\n";
+	}
+	std::string ERR_BANNEDFROMCHAN(const std::string& nick, const std::string& channel_name)
+	{
+		return std::string(":") + SERVER + " 474 " + nick + " " + channel_name + " :Cannot join channel (+b)\r\n";
 	}
 
 	/* ------------------------------ PART_COMMAND ------------------------------ */

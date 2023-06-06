@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 11:03:53 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 14:07:48 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ JOIN::JOIN(void) : Command(true, true) {
 }
 
 void JOIN::exec(Message& message, Server* server, Client* client) {
+	//@todo should channel names allways start with '#'?
+	std::cout << "JOIN" << std::endl;
 	Channel *channel = server->getChannelByName(message.getParams()[0]);
 	if (channel == NULL) {
 		channel = new Channel(client, message.getParams()[0]);
@@ -28,16 +30,17 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
 			client->addDataToBuffer(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
 			client->sendData();
 			return ;
-			return ;
 		} catch (const Channel::InviteOnlyExcpetion &e) {
 			client->addDataToBuffer(replies::ERR_INVITEONLYCHAN(client->getNickname(), channel->getName()));
 			client->sendData();
 			return ;
 		} catch (const Channel::KickedClientExcpetion &e) {
-			//@todo add error messages???
+			client->addDataToBuffer(replies::ERR_BANNEDFROMCHAN(client->getNickname(), channel->getName()));
+			client->sendData();
 			return ;
 		} catch (const Channel::AllreadyInChannelExcpetion &e) {
-			//@todo add error messages???
+			client->addDataToBuffer(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
+			client->sendData();
 			return ;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 11:21:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 13:23:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ void	Channel::removeClient(Client *client) {
 		}
 	}
 }
+
+// @todo method to remove client from all lists, not just clients -> when user leaves server??
 
 /**
  * The function removes a client from a channel and adds them to a list of kicked clients.
