@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 10:53:08 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 13:16:48 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void	Client::addDataToBuffer(std::string data) {
  * @return The function does not have a return type specified, so it does not return anything.
  */
 void		Client::sendData(void) {
+	//@todo check buffer!!!
 	int ret = send(this->fd, this->sendBuffer.c_str(), this->sendBuffer.length(), 0);
 	if (ret < 0) {
 		std::cout << "send error" << std::endl;
