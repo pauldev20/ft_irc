@@ -57,7 +57,7 @@ void	Client::receiveData(void) {
 
 /**
  * This function reads and returns a string from a receive buffer until it finds a "\r\n" sequence.
- * 
+ *
  * @return This function returns a string containing the data received by the client up until the first
  * occurrence of "\r\n" (carriage return and line feed). If "\r\n" is not found in the receive buffer,
  * an empty string is returned. The function also updates the receive buffer to remove the data that
@@ -75,7 +75,7 @@ std::string	Client::readReceivedData(void) {
 
 /**
  * This function adds a string of data to the send buffer of a client object.
- * 
+ *
  * @param data The parameter "data" is a string variable that represents the data that needs to be
  * added to the send buffer.
  */
@@ -85,7 +85,7 @@ void	Client::addDataToBuffer(std::string data) {
 
 /**
  * The function sends data from a client to a server and prints the sent data to the console.
- * 
+ *
  * @return The function does not have a return type specified, so it does not return anything.
  */
 void		Client::sendData(void) {

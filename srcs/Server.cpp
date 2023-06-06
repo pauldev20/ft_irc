@@ -226,7 +226,7 @@ bool    Server::checkNicknameValidity(std::string const &nickname) {
     if (nickname.length() > 16)
         return (false);
     for (size_t i = 0; i < nickname.length(); i++) {
-        if (i == 0 && (!isalpha(nickname[i]) || nickname[i] != '_' || nickname[i] != '-'))
+        if (i == 0 && (!isalpha(nickname[i]) && nickname[i] != '_' && nickname[i] != '-'))
             return (false);
         if (!isalnum(nickname[i]) && nickname[i] != '_' && nickname[i] != '-')
             return (false);
