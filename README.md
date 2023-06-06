@@ -10,9 +10,11 @@ Authentication:
 
 Basics:
 - `PRIVMSG <nickname> <message>`
+- `PING`
 
 Channels (user limits, passwords, invite-only):
-- `JOIN <channel> <~passowrd~>`
+- `JOIN <channel> <~password~>`
+- `PART <channel1, channel2> <reason>`
 - `OPER <nickname> <password???>`
 - `KICK <channel1, channel2> <user1, user2> reason`
 - `INVITE <nickname> <channel>`
@@ -31,3 +33,4 @@ Channels (user limits, passwords, invite-only):
 ## TODO
 
 - check whats up with `:/\0` in passwords and usernames??
+- make possible to use `nc`

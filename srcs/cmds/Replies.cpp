@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:57:36 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 11:07:40 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,6 @@ namespace	replies {
 		return std::string(":") + "Servername" + " 401 " + nick + " " + channel_name + " :No such nick/channel\r\n";
 	}
 
-	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name)
-	{
-		return std::string(":") + "Servername" +  " 404 " + nick + " " + channel_name + " :Cannot send to channel\r\n";
-	}
-
 	/* ------------------------------- CAP_COMMAND ------------------------------ */
 	std::string RPL_CAP(void) {
 		// std::cout << "RPL_CAP sent to Client" << std::endl; //@todo make debug
@@ -92,5 +87,29 @@ namespace	replies {
 	std::string	RPL_PRIVMSG(const std::string& nick, const std::string& user, const std::string& target, const std::string& msg)
 	{
 		return std::string(":") + nick + "!" + user + "@" + SERVER + " PRIVMSG " + target + " :" + msg + "\r\n";
+	}
+	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name)
+	{
+		return std::string(":") + "Servername" +  " 404 " + nick + " " + channel_name + " :Cannot send to channel\r\n";
+	}
+
+	/* ------------------------------ JOIN_COMMAND ------------------------------ */
+	std::string RPL_JOIN(const std::string& nick, const std::string& user, const std::string& channel_name)
+	{
+		return std::string(":") + nick + "!" + user + "@" + SERVER + " JOIN " + channel_name + " * :" + user + "\r\n";
+	}
+	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name)
+	{
+		return std::string(":") + SERVER + " 471 " + nick + " " + channel_name + " :Cannot join channel (+l) - the channel is full\r\n";
+	}
+	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name)
+	{
+		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i) - you must be invited\r\n";
+	}
+
+	/* ------------------------------ PART_COMMAND ------------------------------ */
+	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason)
+	{
+		return std::string(":") + nick + "!" + user + "@" + SERVER + " PART " + channel_name + " " + reason + "!" +  "\r\n";
 	}
 };

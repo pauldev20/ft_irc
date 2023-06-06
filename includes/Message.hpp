@@ -16,6 +16,8 @@
 #define CMD_USER "USER"
 #define CMD_QUIT "QUIT"
 #define CMD_PRIVMSG "PRIVMSG"
+#define CMD_JOIN "JOIN"
+#define CMD_PART "PART"
 
 enum MessageID
 {
@@ -25,7 +27,9 @@ enum MessageID
 	ID_NICK,
 	ID_USER,
 	ID_QUIT,
-	ID_PRIVMSG
+	ID_PRIVMSG,
+	ID_JOIN,
+	ID_PART
 };
 
 class Message

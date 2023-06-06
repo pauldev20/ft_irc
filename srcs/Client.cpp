@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 02:02:14 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 10:53:08 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Client::Client(int fd) : fd(fd) {
+Client::Client(int fd) : fd(fd), username(""), fullName(""), nickname(""), receiveBuffer(""), sendBuffer("") {
 	//@todo debug print
 	// std::cout << "Client created" << std::endl;
 }

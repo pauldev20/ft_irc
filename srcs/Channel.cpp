@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:55:52 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 11:21:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Channel::Channel(Client *admin, std::string const &channelName) : name(channelName), topic("") {
-	this->clients.push_back(admin);
+Channel::Channel(Client *oper, std::string const &channelName) : name(channelName), topic(""), password(""), userLimit(0), inviteOnly(false) {
+	this->clients.push_back(oper);
 }
 
 Channel::~Channel() {
@@ -28,22 +28,21 @@ Channel::~Channel() {
 /* -------------------------------------------------------------------------- */
 
 /**
+ * The function returns the number of clients in a channel.
+ * 
+ * @return The number of clients in a channel.
+ */
+size_t	Channel::getClientCount(void) const {
+	return (this->clients.size());
+}
+
+/**
  * The function returns the name of a channel as a constant reference to a string.
  * 
  * @return A constant reference to a string object representing the name of the channel.
  */
 std::string const &Channel::getName(void) const {
 	return (this->name);
-}
-
-/**
- * This function sets the name of a channel object in C++.
- * 
- * @param name The parameter "name" is a constant reference to a string. It is used to set the name of
- * a channel object.
- */
-void	Channel::setName(std::string const &name) {
-	this->name = name;
 }
 
 /**
@@ -65,20 +64,47 @@ void	Channel::setTopic(std::string const &topic) {
 	this->topic = topic;
 }
 
-/**
- * The function returns a pointer to the first client in the channel's client list, which is assumed to
- * be the admin.
- * 
- * @return A pointer to the first client in the `clients` array, which is assumed to be the admin
- * client.
- */
-Client	*Channel::getAdmin(void) const {
-	return (this->clients[0]);
+void	Channel::addOperator(Client *oper) {
+	//@todo only if oper is in channel
+	this->operators.push_back(oper);
+}
+
+void	Channel::removeOperator(Client *oper) {
+	for (std::vector<Client*>::iterator it = this->operators.begin(); it != this->operators.end(); it++) {
+		if (*it == oper) {
+			this->operators.erase(it);
+			return ;
+		}
+	}
+}
+
+bool	Channel::isOperator(Client *client) const {
+	return (std::find(this->operators.begin(), this->operators.end(), client) != this->operators.end());
+}
+
+std::string const &Channel::getPassword(void) const {
+	return (this->password);
+}
+
+void	Channel::setPassword(std::string const &password) {
+	this->password = password;
+}
+
+void	Channel::setUserLimit(int userLimit) {
+	this->userLimit = userLimit;
+}
+
+void	Channel::setInviteOnly(bool inviteOnly) {
+	this->inviteOnly = inviteOnly;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                               Public Methods                               */
 /* -------------------------------------------------------------------------- */
+
+void	Channel::addInvited(Client *client) {
+	this->invited.push_back(client);
+}
 
 /**
  * The function adds a client to a channel while checking if the client has already been kicked or is
@@ -87,6 +113,18 @@ Client	*Channel::getAdmin(void) const {
  * @param client A pointer to a Client object that is being added to the Channel's list of clients.
  */
 void	Channel::addClient(Client *client) {
+	if (this->userLimit > 0 && this->clients.size() >= this->userLimit) {
+		throw Channel::ChannelFullExcpetion();
+	}
+	if (this->inviteOnly && std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
+		throw Channel::InviteOnlyExcpetion();
+	}
+	for (std::vector<Client*>::iterator it = this->invited.begin(); it != this->invited.end(); it++) {
+		if (*it == client) {
+			this->invited.erase(it);
+			break ;
+		}
+	}
 	for (std::vector<Client*>::iterator it = this->kicked.begin(); it != this->kicked.end(); it++) {
 		if (*it == client) {
 			throw Channel::KickedClientExcpetion();
@@ -110,6 +148,7 @@ void	Channel::addClient(Client *client) {
  * @return nothing (void).
  */
 void	Channel::removeClient(Client *client) {
+	//@todo remove from operators if part of them
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
 		if (*it == client) {
 			this->clients.erase(it);
@@ -207,4 +246,12 @@ const char *Channel::KickedClientExcpetion::what() const throw() {
 
 const char *Channel::CantBeKickedExcpetion::what() const throw() {
 	return ("Client can't be kicked from channel, since he is not part of it");
+}
+
+const char *Channel::ChannelFullExcpetion::what() const throw() {
+	return ("Channel is full");
+}
+
+const char *Channel::InviteOnlyExcpetion::what() const throw() {
+	return ("Channel is invite only");
 }

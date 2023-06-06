@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:41:47 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:39:27 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 11:08:30 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,22 @@ class QUIT : public Command {
 class PRIVMSG : public Command {
 	public:
 		PRIVMSG(void);
+		
+	private:
+		void exec(Message& message, Server* server, Client* client);
+};
+
+class JOIN : public Command {
+	public:
+		JOIN(void);
+		
+	private:
+		void exec(Message& message, Server* server, Client* client);
+};
+
+class PART : public Command {
+	public:
+		PART(void);
 		
 	private:
 		void exec(Message& message, Server* server, Client* client);
