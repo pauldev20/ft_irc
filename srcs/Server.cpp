@@ -24,11 +24,11 @@
 
 /**
  * The function creates and returns a struct pollfd with the specified file descriptor and events.
- * 
+ *
  * @param fd The file descriptor for the file or socket being polled.
  * @param events The events parameter is a bitmask specifying the events the caller is interested in
  * for the file descriptor. It can be a combination of the following constants:
- * 
+ *
  * @return A struct of type `pollfd` with the specified `fd`, `events`, and `revents` values.
  */
 static struct pollfd	pollfd(int fd, short events) {
@@ -42,7 +42,7 @@ static struct pollfd	pollfd(int fd, short events) {
 /**
  * The function removes a specific element from a vector of pollfd structures based on its file
  * descriptor.
- * 
+ *
  * @param vector A reference to a vector of struct pollfd elements.
  * @param element The element parameter is a struct pollfd variable that represents the poll file
  * descriptor to be removed from the vector. The function iterates through the vector and removes the
@@ -75,7 +75,7 @@ Server::Server(int port, std::string password) : port(port), password(password),
 
 Server::~Server() {
 	std::map<int, Client*>::iterator it;
-	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) 
+	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++)
 		delete it->second;
 		//@todo debug print
 	// std::cout << "Server destroyed" << std::endl;
@@ -87,7 +87,7 @@ Server::~Server() {
 
 /**
  * The function returns the port number of the server.
- * 
+ *
  * @return The `getPort` function is returning the value of the `port` member variable of the `Server`
  * class.
  */
@@ -97,7 +97,7 @@ int		Server::getPort(void) const {
 
 /**
  * The function returns a constant reference to the password of a server object.
- * 
+ *
  * @return A constant reference to a string object representing the password of the server.
  */
 std::string	const &Server::getPassword(void) const {
@@ -106,7 +106,7 @@ std::string	const &Server::getPassword(void) const {
 
 /**
  * The function adds a channel to a vector of channels in a server object.
- * 
+ *
  * @param channel The parameter "channel" is a pointer to an object of the class "Channel". The
  * function "addChannel" takes this pointer as an argument and adds it to a vector of Channel pointers
  * called "channels" that belongs to the Server class.
@@ -117,10 +117,10 @@ void	Server::addChannel(Channel *channel) {
 
 /**
  * The function removes a given channel from a vector of channels in a server.
- * 
+ *
  * @param channel A pointer to a Channel object that needs to be removed from the vector of channels in
  * the Server class.
- * 
+ *
  * @return nothing (void).
  */
 void	Server::removeChannel(Channel *channel) {
@@ -149,7 +149,7 @@ Channel	*Server::getChannelByName(std::string const &name) {
 /**
  * The function starts a server by creating a socket, setting it to non-blocking, and binding it to a
  * port.
- * 
+ *
  * @return The function does not have a return type, so it does not return anything. However, it may
  * exit early and not execute the rest of the code if there are errors in creating the socket, setting
  * socket options, binding the socket, or listening to the socket.
@@ -182,7 +182,7 @@ void Server::start() {
 
 /**
  * This function runs the server and handles incoming connections and messages from clients.
- * 
+ *
  * @return The function does not have a return type, so it does not return anything. However, it does
  * have several return statements that are used to exit the function early in case of errors or
  * timeouts.
@@ -220,6 +220,20 @@ bool	Server::checkNickname(std::string const &nickname) {
 	return (true);
 }
 
+bool    Server::checkNicknameValidity(std::string const &nickname) {
+    if (nickname.empty())
+        return (false);
+    if (nickname.length() > 16)
+        return (false);
+    for (size_t i = 0; i < nickname.length(); i++) {
+        if (i == 0 && (!isalpha(nickname[i]) || nickname[i] != '_' || nickname[i] != '-'))
+            return (false);
+        if (!isalnum(nickname[i]) && nickname[i] != '_' && nickname[i] != '-')
+            return (false);
+    }
+    return (true);
+}
+
 Client	*Server::getClientByNickname(std::string const &nickname) {
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) {
@@ -235,9 +249,9 @@ Client	*Server::getClientByNickname(std::string const &nickname) {
 
 /**
  * The function accepts a new client connection and adds it to the list of connected clients.
- * 
+ *
  * @param fd fd is the file descriptor of the server socket that is listening for incoming connections.
- * 
+ *
  * @return The function does not have a return type, so nothing is being returned.
  */
 void	Server::acceptNewConnection(int fd) {
@@ -253,10 +267,10 @@ void	Server::acceptNewConnection(int fd) {
 
 /**
  * This function receives data from a client and executes commands based on the received messages.
- * 
+ *
  * @param fd The parameter `fd` is an integer representing the file descriptor of the client socket
  * that the server is currently receiving data from.
- * 
+ *
  * @return The function does not have a return type, so it does not return anything.
  */
 void	Server::receiveData(int fd) {

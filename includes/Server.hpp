@@ -35,6 +35,7 @@ class Server {
 		Channel				*getChannelByName(std::string const &name);
 
 		bool				checkNickname(std::string const &nickname);
+        bool                checkNicknameValidity(std::string const &nickname);
 
 		Client				*getClientByNickname(std::string const &nickname);
 

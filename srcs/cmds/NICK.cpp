@@ -34,12 +34,17 @@ void NICK::exec(Message& message, Server* server, Client* client) {
 		client->sendData();
 		return ;
 	}
+    if (!server->checkNicknameValidity(params[0])) {
+        client->addDataToBuffer(replies::ERR_ERRONEUSNICKNAME(params[0]));
+        client->sendData();
+        return ;
+    }
 	if (!client->getNickname().empty()) {
 		client->addDataToBuffer(replies::RPL_NICKCHANGE(client->getNickname(), params[0], "")); // @todo add username??
 	}
 	client->setNickname(params[0]);
 	// @todo check this in one function and combine with USER command
-	if (!client->getNickname().empty() && !client->getNickname().empty() && !client->getFullName().empty() && !client->isRegistered()) {
+	if (!client->getNickname().empty() && !client->getUsername().empty() && !client->getFullName().empty() && !client->isRegistered()) {
 		client->setRegistered(true);
 		client->addDataToBuffer(replies::RPL_WELCOME(client->getNickname(), ""));
 		client->sendData();
