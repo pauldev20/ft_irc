@@ -28,7 +28,6 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
 			client->addDataToBuffer(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
 			client->sendData();
 			return ;
-			return ;
 		} catch (const Channel::InviteOnlyExcpetion &e) {
 			client->addDataToBuffer(replies::ERR_INVITEONLYCHAN(client->getNickname(), channel->getName()));
 			client->sendData();
