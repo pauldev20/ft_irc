@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 13:16:48 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 10:55:20 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,20 @@
 #define MAX_BUF_LENGTH 512
 
 /* -------------------------------------------------------------------------- */
+/*                                   Helpers                                  */
+/* -------------------------------------------------------------------------- */
+
+// static std::string	findFirst(std::string const &str, size_t N) {
+// 	if (str.size() < N)
+// 		return (str);
+// 	return (str.substr(0, N));
+// }
+
+/* -------------------------------------------------------------------------- */
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Client::Client(int fd) : fd(fd), username(""), fullName(""), nickname(""), receiveBuffer(""), sendBuffer("") {
+Client::Client(int fd) : fd(fd), registered(false), authenticated(false), disconnected(false), username(""), fullName(""), nickname(""), receiveBuffer("") {
 	//@todo debug print
 	// std::cout << "Client created" << std::endl;
 }
@@ -45,12 +55,14 @@ void	Client::receiveData(void) {
 		throw MessageTooLongException();
 	} else if (ret < 0) {
 		this->receiveBuffer.clear();
-		throw ConnectionErrorExcpetion();
+		if (!this->disconnected)
+			throw ConnectionErrorExcpetion();
+		throw ConnectionClosedException();
 	} else if (ret == 0) {
 		this->receiveBuffer.clear();
 		throw ConnectionClosedException();
 	}
-	msg.resize(ret); // resize to actual size (not MAX_BUF_LENGTH)
+	msg.resize(ret);
 	this->receiveBuffer += msg;
 	// std::cout << "[Client(" << this->fd << ") -> Server]: " << msg; //@todo debug print
 }
@@ -74,29 +86,17 @@ std::string	Client::readReceivedData(void) {
 }
 
 /**
- * This function adds a string of data to the send buffer of a client object.
- *
- * @param data The parameter "data" is a string variable that represents the data that needs to be
- * added to the send buffer.
- */
-void	Client::addDataToBuffer(std::string data) {
-	this->sendBuffer += data;
-}
-
-/**
  * The function sends data from a client to a server and prints the sent data to the console.
  *
  * @return The function does not have a return type specified, so it does not return anything.
  */
-void		Client::sendData(void) {
-	//@todo check buffer!!!
-	int ret = send(this->fd, this->sendBuffer.c_str(), this->sendBuffer.length(), 0);
+void		Client::sendData(std::string str) {
+	int ret = send(this->fd, str.c_str(), str.length(), 0);
 	if (ret < 0) {
 		std::cout << "send error" << std::endl;
 		return ;
-	} else
-	std::cout << "[Server -> Client(" << this->fd << ")]: " << this->sendBuffer;
-	this->sendBuffer.clear();
+	}
+	std::cout << "[Server -> Client(" << this->fd << ")]: " << str;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -105,6 +105,10 @@ void		Client::sendData(void) {
 
 int			Client::getFd(void) const {
 	return (fd);
+}
+
+void		Client::setDisconnected(bool disconnected) {
+	this->disconnected = disconnected;
 }
 
 bool		Client::isRegistered(void) const {

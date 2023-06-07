@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 14:16:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 11:22:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,17 @@ void	Channel::setTopic(std::string const &topic) {
 }
 
 void	Channel::addOperator(Client *oper) {
-	//@todo only if oper is in channel
-	this->operators.push_back(oper);
+	for (std::vector<Client*>::iterator it = this->operators.begin(); it != this->operators.end(); it++) {
+		if (*it == oper) {
+			return ;
+		}
+	}
+	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+		if (*it == oper) {
+			this->operators.push_back(oper);
+			return ;
+		}
+	}
 }
 
 void	Channel::removeOperator(Client *oper) {
@@ -147,7 +156,6 @@ void	Channel::addClient(Client *client) {
  * @return nothing (void).
  */
 void	Channel::removeClient(Client *client) {
-	//@todo remove from operators if part of them
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
 		if (*it == client) {
 			this->clients.erase(it);
@@ -156,7 +164,26 @@ void	Channel::removeClient(Client *client) {
 	}
 }
 
-// @todo method to remove client from all lists, not just clients (invited, operators) -> when user leaves server??
+void	Channel::removeClientFromAll(Client *client) {
+	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+		if (*it == client) {
+			this->clients.erase(it);
+			break ;
+		}
+	}
+	for (std::vector<Client*>::iterator it = this->invited.begin(); it != this->invited.end(); it++) {
+		if (*it == client) {
+			this->invited.erase(it);
+			break ;
+		}
+	}
+	for (std::vector<Client*>::iterator it = this->operators.begin(); it != this->operators.end(); it++) {
+		if (*it == client) {
+			this->operators.erase(it);
+			break ;
+		}
+	}
+}
 
 /**
  * The function sends a message to all clients in a channel.
@@ -166,8 +193,7 @@ void	Channel::removeClient(Client *client) {
  */
 void	Channel::sendMessageToAll(std::string const &message) {
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-		(*it)->addDataToBuffer(message);
-		(*it)->sendData();
+		(*it)->sendData(message);
 	}
 }
 
@@ -182,8 +208,7 @@ void	Channel::sendMessageToAll(std::string const &message) {
 void	Channel::sendMessageToAllExcept(std::string const &message, Client *client) {
 	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
 		if (*it != client) {
-			(*it)->addDataToBuffer(message);
-			(*it)->sendData();
+			(*it)->sendData(message);
 		}
 	}
 }
