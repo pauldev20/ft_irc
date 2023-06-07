@@ -45,7 +45,7 @@ void KICK::exec(Message& message, Server* server, Client* client) {
                 continue ;
             }
             if (!channel->isClientInChannel(target)) {
-                client->sendData(replies::ERR_USERNOTINCHANNEL(params[1], channel_list[i]));
+                client->sendData(replies::ERR_USERNOTINCHANNEL(target_list[j], channel_list[i]));
                 continue ;
             }
             channel->sendMessageToAll(replies::RPL_KICK(client->getNickname(), client->getUsername(), channel_list[i], target_list[j], params.size() > 2 ? params[2] : ""));
