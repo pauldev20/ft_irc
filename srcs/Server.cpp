@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 10:49:05 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 14:56:46 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,20 +218,6 @@ bool	Server::checkNickname(std::string const &nickname) {
 			return (false);
 	}
 	return (true);
-}
-
-bool    Server::checkNicknameValidity(std::string const &nickname) {
-    if (nickname.empty())
-        return (false);
-    if (nickname.length() > 16)
-        return (false);
-    for (size_t i = 0; i < nickname.length(); i++) {
-        if (i == 0 && (!isalpha(nickname[i]) && nickname[i] != '_' && nickname[i] != '-'))
-            return (false);
-        if (!std::isalnum(nickname[i]) && nickname[i] != '_' && nickname[i] != '-')
-            return (false);
-    }
-    return (true);
 }
 
 Client	*Server::getClientByNickname(std::string const &nickname) {

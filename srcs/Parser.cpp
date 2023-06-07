@@ -146,6 +146,11 @@ static int	handleCommand(Message& command, std::string& message)
 		static QUIT quit;
 		command.setCmdAll(&quit, CMD_QUIT);
 	}
+	else if (token == CMD_KICK)
+	{
+		static KICK kick;
+		command.setCmdAll(&kick, CMD_KICK);
+	}
 	else
 		return (ERROR);
 	return (SUCCESS);
