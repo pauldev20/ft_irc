@@ -26,7 +26,7 @@ void PART::exec(Message& message, Server* server, Client* client) {
             return ;
         }
         channel->removeClient(client);
-        client->sendData(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), params[1]));
+        channel->sendMessageToAll(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), channel_list[i]));
         if (channel->getClientCount() == 0) {
             server->removeChannel(channel);
         }
