@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 11:22:29 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 15:39:10 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,20 @@ namespace	replies {
 		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i)\r\n";
 	}
 
+	std::string RPL_NAMREPLY(const std::string& nick, const std::string& channel_name, const std::string& names_list)
+	{
+		return std::string(":") + SERVER + " 353 " + nick + " = " + channel_name + " :" +  names_list + "\r\n";
+	}
+
+	std::string RPL_ENDOFNAMES(const std::string& nick, const std::string& channel_name)
+	{
+		return std::string(":")  + SERVER + " 366 " + nick + " " + channel_name + " :END of NAMES list\r\n";
+	}
+
 	/* ------------------------------ PART_COMMAND ------------------------------ */
 	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason)
 	{
-		return std::string(":") + nick + "!" + user + "@" + SERVER + " PART " + channel_name + " " + reason + "!" +  "\r\n";
+		return std::string(":") + nick + "!" + user + "@" + SERVER + " PART " + channel_name + " " + reason + "\r\n";
 	}
 
     /* ------------------------------ TOPIC_COMMAND ----------------------------- */
@@ -167,6 +177,12 @@ namespace	replies {
     {
         return std::string(":") + nick + "!" + user + "@" + SERVER + " INVITE " + target + " " + channel_name + "\r\n";
     }
+
+	/* ------------------------------ KICK_COMMAND ------------------------------ */
+	std::string RPL_KICK(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target, const std::string reason)
+	{
+		return std::string(":") +  nick + "!" + user + "@" + SERVER + " KICK " + channel_name + " " + target + " :" + reason + "\r\n";
+	}
 
     /* ------------------------------- MODE_COMMAND ------------------------------ */
     std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode)

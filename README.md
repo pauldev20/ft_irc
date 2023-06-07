@@ -15,11 +15,11 @@ Basics:
 Channels (user limits, passwords, invite-only):
 - `JOIN <channel> <~password~>`
 - `PART <channel1, channel2> <reason>`
-<!-- - `OPER <nickname> <password???>` -->
-- `KICK <channel1, channel2> <user1, user2> reason`
+- `KICK <channel1, channel2> <user1, user2> <reason>`
 - `INVITE <nickname> <channel>`
 - `TOPIC <channel> <newtopic>` ?? can also read?
 - `MODE <channel> <i, t, k, o, l>`
+<!-- - `OPER <nickname> <password???>` -->
 
 
 ## WEECHAT Setup

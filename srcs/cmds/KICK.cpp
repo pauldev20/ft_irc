@@ -1,7 +1,7 @@
 
 #include "cmds/Commands.hpp"
 
-KICK::KICK(void) : Command(true, true) {
+KICK::KICK(void) : Command() {
 }
 
 void KICK::exec(Message& message, Server* server, Client* client) {

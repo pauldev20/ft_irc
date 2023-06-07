@@ -6,12 +6,19 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 11:30:17 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 15:05:18 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmds/Commands.hpp"
 #include "Channel.hpp"
+
+static bool	checkChannelNameValidity(std::string const &name) {
+	if (name.size() > 0 && name[0] != '#') {
+		return false;
+	}
+	return true;
+}
 
 #include <string>
 #include <sstream>
@@ -21,6 +28,10 @@ JOIN::JOIN(void) : Command(true, true) {
 }
 
 void JOIN::exec(Message& message, Server* server, Client* client) {
+    if (checkChannelNameValidity(message.getParams()[0]) == false) {
+        client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), message.getParams()[0]));
+        return ;
+    }
 	//@todo add check for valid channel name (# and &)?
     std::vector<std::string> channel_list = JOIN::splitString(message.getParams()[0], ',');
     for (size_t i = 0; i < channel_list.size(); i++) {
