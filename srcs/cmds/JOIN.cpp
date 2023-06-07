@@ -17,7 +17,7 @@ JOIN::JOIN(void) : Command(true, true) {
 }
 
 void JOIN::exec(Message& message, Server* server, Client* client) {
-	//@todo should channel names allways start with '#'?
+	//@todo add check for valid channel name (# and &)?
 	Channel *channel = server->getChannelByName(message.getParams()[0]);
 	if (channel == NULL) {
 		channel = new Channel(client, message.getParams()[0]);

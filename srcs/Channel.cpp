@@ -29,7 +29,7 @@ Channel::~Channel() {
 
 /**
  * The function returns the number of clients in a channel.
- * 
+ *
  * @return The number of clients in a channel.
  */
 size_t	Channel::getClientCount(void) const {
@@ -38,7 +38,7 @@ size_t	Channel::getClientCount(void) const {
 
 /**
  * The function returns the name of a channel as a constant reference to a string.
- * 
+ *
  * @return A constant reference to a string object representing the name of the channel.
  */
 std::string const &Channel::getName(void) const {
@@ -47,7 +47,7 @@ std::string const &Channel::getName(void) const {
 
 /**
  * The function returns a constant reference to the topic of a channel.
- * 
+ *
  * @return A constant reference to a string object representing the topic of the channel.
  */
 std::string const &Channel::getTopic(void) const {
@@ -56,7 +56,7 @@ std::string const &Channel::getTopic(void) const {
 
 /**
  * This function sets the topic of a channel in C++.
- * 
+ *
  * @param topic The parameter "topic" is a constant reference to a string. It is used to set the topic
  * of a channel object.
  */
@@ -98,6 +98,10 @@ void	Channel::setInviteOnly(bool inviteOnly) {
 	this->inviteOnly = inviteOnly;
 }
 
+bool    Channel::isInviteOnly(void) const {
+    return (this->inviteOnly);
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Public Methods                               */
 /* -------------------------------------------------------------------------- */
@@ -109,7 +113,7 @@ void	Channel::addInvited(Client *client) {
 /**
  * The function adds a client to a channel while checking if the client has already been kicked or is
  * already in the channel.
- * 
+ *
  * @param client A pointer to a Client object that is being added to the Channel's list of clients.
  */
 void	Channel::addClient(Client *client) {
@@ -135,11 +139,11 @@ void	Channel::addClient(Client *client) {
 
 /**
  * This function removes a client from a vector of clients in a channel.
- * 
+ *
  * @param client The parameter "client" is a pointer to an object of the class "Client". It is used in
  * the function "removeClient" of the class "Channel" to remove a specific client from the vector of
  * clients stored in the channel object.
- * 
+ *
  * @return nothing (void).
  */
 void	Channel::removeClient(Client *client) {
@@ -156,7 +160,7 @@ void	Channel::removeClient(Client *client) {
 
 /**
  * The function sends a message to all clients in a channel.
- * 
+ *
  * @param message A constant reference to a string object that represents the message to be sent to all
  * clients in the channel.
  */
@@ -169,7 +173,7 @@ void	Channel::sendMessageToAll(std::string const &message) {
 
 /**
  * This function sends a message to all clients in a channel except for a specified client.
- * 
+ *
  * @param message A string containing the message to be sent to all clients in the channel except for
  * the specified client.
  * @param client The "client" parameter is a pointer to a Client object. It is used to identify the
@@ -191,6 +195,13 @@ bool	Channel::isClientInChannel(Client *client) {
 		}
 	}
 	return (false);
+}
+
+bool    Channel::checkChannelNameValidity(std::string const &channel_name) {
+    if (channel_name[0] != '#' && channel_name[0] != '&') {
+        return (false);
+    }
+    return (true);
 }
 
 /* -------------------------------------------------------------------------- */

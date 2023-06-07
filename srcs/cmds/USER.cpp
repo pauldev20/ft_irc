@@ -31,7 +31,7 @@ void USER::exec(Message& message, Server* server, Client* client) {
 	client->setUsername(params[0]);
 	client->setFullName(params[3]);
 	// @todo check this in one function and combine with NICK command
-	if (!client->getNickname().empty() && !client->getNickname().empty() && !client->getFullName().empty() && !client->isRegistered()) {
+	if (!client->getNickname().empty() && !client->getUsername().empty() && !client->getFullName().empty() && !client->isRegistered()) {
 		client->setRegistered(true);
 		client->addDataToBuffer(replies::RPL_WELCOME(client->getNickname(), ""));
 		client->sendData();

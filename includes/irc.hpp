@@ -40,7 +40,16 @@ namespace replies
 	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name);
 	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name);
 	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason);
-	std::string ERR_ERRONEUSNICKNAME(const std::string& nick);
+	std::string ERR_BANNEDFROMCHAN(const std::string& nick, const std::string& channel_name);
+    std::string ERR_ERRONEUSNICKNAME(const std::string& nick);
+    std::string ERR_NOSUCHCHANNEL(const std::string& nick, const std::string channel_name);
+    std::string ERR_NOTONCHANNEL(const std::string& nick, const std::string channel_name);
+    std::string ERR_USERNOTINCHANNEL(const std::string& nick, const std::string channel_name);
+    std::string RPL_TOPIC(const std::string& nick, const std::string& channel_name, const std::string& topic);
+    std::string RPL_NOTOPIC(const std::string& nick, const std::string& channel_name);
+    std::string ERR_CHANOPRIVSNEEDED(const std::string& nick, const std::string channel_name);
+    std::string ERR_USERONCHANNEL(const std::string& nick, const std::string channel_name);
+    std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target);
 }
 
 #endif
