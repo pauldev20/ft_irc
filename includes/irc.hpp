@@ -50,6 +50,9 @@ namespace replies
     std::string ERR_CHANOPRIVSNEEDED(const std::string& nick, const std::string channel_name);
     std::string ERR_USERONCHANNEL(const std::string& nick, const std::string channel_name);
     std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target);
+    std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode);
+    std::string ERR_UNKNOWNMODE(const std::string& nick, const char mode);
+    std::string ERR_TOOMANYARGS(const std::string& nick, const char mode);
 }
 
 #endif
