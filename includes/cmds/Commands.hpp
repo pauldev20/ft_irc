@@ -112,3 +112,16 @@ class INVITE : public Command {
     private:
         void exec(Message& message, Server* server, Client* client);
 };
+
+class MODE : public Command {
+    public:
+        MODE(void);
+
+    private:
+        void exec(Message& message, Server* server, Client* client);
+        void setInviteOnly(Channel* channel, Client* client, bool set);
+        void setTopicRestriction(Channel* channel, Client* client, bool set);
+        void setOperator(Channel* channel, Client* client, Client* target, bool set);
+        void setPassword(Channel* channel, Client* client, std::string password);
+        void setUserLimit(Channel *channel, Client* client, size_t limit);
+};
