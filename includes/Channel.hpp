@@ -43,6 +43,9 @@ class Channel {
 		void	setInviteOnly(bool inviteOnly);
         bool    isInviteOnly(void) const;
 
+        void    setTopicRestriction(bool set);
+        bool    isTopicRestriction(void) const;
+
 		void	addInvited(Client *client);
 
 		void	addClient(Client *client);
@@ -77,6 +80,7 @@ class Channel {
 	private:
 		std::string				name;
 		std::string				topic;
+        bool                    topicRestriction; // @note needs to be true per default!
 		std::vector<Client*>	clients;
 		std::string				password;
 		size_t					userLimit;

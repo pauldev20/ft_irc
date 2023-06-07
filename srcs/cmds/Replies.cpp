@@ -76,6 +76,11 @@ namespace	replies {
         return std::string(":") + "Servername" + " 443 " + nick + " " + channel_name + " :is already on channel\r\n";
     }
 
+    std::string ERR_KEYSET(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 467 " + nick + " " + channel_name + " :Channel key already set\r\n";
+    }
+
 	/* ------------------------------- CAP_COMMAND ------------------------------ */
 	std::string RPL_CAP(void) {
 		// std::cout << "RPL_CAP sent to Client" << std::endl; //@todo make debug
@@ -161,5 +166,21 @@ namespace	replies {
     std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target)
     {
         return std::string(":") + nick + "!" + user + "@" + SERVER + " INVITE " + target + " " + channel_name + "\r\n";
+    }
+
+    /* ------------------------------- MODE_COMMAND ------------------------------ */
+    std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode)
+    {
+        return std::string(":") + nick + "!" + user + "@" + SERVER + " MODE " + channel_name + " " + mode + "\r\n";
+    }
+
+    std::string ERR_UNKNOWNMODE(const std::string& nick, const char mode)
+    {
+        return std::string(":") + SERVER + " 420 " + nick + " " + mode + " :wtf is this flag bro\r\n";
+    }
+
+    std::string ERR_TOOMANYARGS(const std::string& nick, const char mode)
+    {
+        return std::string(":") + SERVER + " 420 " + nick + " " + mode + " :too many arguments\r\n";
     }
 };
