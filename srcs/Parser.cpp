@@ -150,6 +150,10 @@ static int	handleCommand(Message& command, std::string& message)
 	{
 		static MODE mode;
 		command.setCmdAll(&mode, CMD_MODE);
+	else if (token == CMD_KICK)
+	{
+		static KICK kick;
+		command.setCmdAll(&kick, CMD_KICK);
 	}
 	else
 		return (ERROR);

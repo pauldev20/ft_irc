@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:20 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 01:51:05 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 14:56:54 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ class Server {
 		Channel				*getChannelByName(std::string const &name);
 
 		bool				checkNickname(std::string const &nickname);
-        bool                checkNicknameValidity(std::string const &nickname);
 
 		Client				*getClientByNickname(std::string const &nickname);
 
