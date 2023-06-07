@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 21:05:00 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 11:22:29 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ namespace	replies {
     }
 
 	/* ------------------------------- CAP_COMMAND ------------------------------ */
-	std::string RPL_CAP(void) {
-		// std::cout << "RPL_CAP sent to Client" << std::endl; //@todo make debug
+	std::string RPL_CAP(void)
+	{
 		return (std::string(":") + SERVER + " CAP * LS :cap reply...\r\n");
 	}
 

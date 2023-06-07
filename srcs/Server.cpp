@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 21:07:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 10:49:05 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,14 +294,14 @@ void	Server::receiveData(int fd) {
 	} catch (const Client::ConnectionErrorExcpetion& e) {
 		close(fd);
 		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
-			(*it)->removeClient(this->connectedClients.find(fd)->second);
+			(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
 		std::cout << "[Server]: Connection receive error" << std::endl;
 	} catch (const Client::ConnectionClosedException& e) {
 		close(fd);
 		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
-			(*it)->removeClient(this->connectedClients.find(fd)->second);
+			(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
 		std::cout << "[Server]: Connection closed" << std::endl;
