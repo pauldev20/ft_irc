@@ -20,7 +20,7 @@ class Message;
 class CAP : public Command {
 	public:
 		CAP(void);
-	
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -28,7 +28,7 @@ class CAP : public Command {
 class PING : public Command {
 	public:
 		PING(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -36,7 +36,7 @@ class PING : public Command {
 class PASS : public Command {
 	public:
 		PASS(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -44,7 +44,7 @@ class PASS : public Command {
 class NICK : public Command {
 	public:
 		NICK(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -52,7 +52,7 @@ class NICK : public Command {
 class USER : public Command {
 	public:
 		USER(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -60,7 +60,7 @@ class USER : public Command {
 class QUIT : public Command {
 	public:
 		QUIT(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -68,7 +68,7 @@ class QUIT : public Command {
 class PRIVMSG : public Command {
 	public:
 		PRIVMSG(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -76,7 +76,7 @@ class PRIVMSG : public Command {
 class JOIN : public Command {
 	public:
 		JOIN(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
 };
@@ -84,7 +84,31 @@ class JOIN : public Command {
 class PART : public Command {
 	public:
 		PART(void);
-		
+
 	private:
 		void exec(Message& message, Server* server, Client* client);
+};
+
+class KICK : public Command {
+    public:
+        KICK(void);
+
+    private:
+        void exec(Message& message, Server* server, Client* client);
+};
+
+class TOPIC : public Command {
+    public:
+        TOPIC(void);
+
+    private:
+        void exec(Message& message, Server* server, Client* client);
+};
+
+class INVITE : public Command {
+    public:
+        INVITE(void);
+
+    private:
+        void exec(Message& message, Server* server, Client* client);
 };

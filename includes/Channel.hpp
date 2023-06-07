@@ -41,6 +41,7 @@ class Channel {
 		void	setUserLimit(int userLimit);
 
 		void	setInviteOnly(bool inviteOnly);
+        bool    isInviteOnly(void) const;
 
 		void	addInvited(Client *client);
 
@@ -51,6 +52,8 @@ class Channel {
 
 		void	sendMessageToAll(std::string const &message);
 		void	sendMessageToAllExcept(std::string const &message, Client *client);
+
+        bool    checkChannelNameValidity(std::string const &channel_name);
 
 
 		class AllreadyInChannelExcpetion: public std::exception

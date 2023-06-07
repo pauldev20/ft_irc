@@ -51,6 +51,31 @@ namespace	replies {
 		return std::string(":") + "Servername" + " 401 " + nick + " " + channel_name + " :No such nick/channel\r\n";
 	}
 
+    std::string ERR_NOSUCHCHANNEL(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 403 " + nick + " " + channel_name + " :No such channel\r\n";
+    }
+
+    std::string ERR_NOTONCHANNEL(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 442 " + nick + " " + channel_name + " :You're not on that channel\r\n";
+    }
+
+    std::string ERR_USERNOTINCHANNEL(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 441 " + nick + " " + channel_name + " :They aren't on that channel\r\n";
+    }
+
+    std::string ERR_CHANOPRIVSNEEDED(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 482 " + nick + " " + channel_name + " :You're not channel operator\r\n";
+    }
+
+    std::string ERR_USERONCHANNEL(const std::string& nick, const std::string channel_name)
+    {
+        return std::string(":") + "Servername" + " 443 " + nick + " " + channel_name + " :is already on channel\r\n";
+    }
+
 	/* ------------------------------- CAP_COMMAND ------------------------------ */
 	std::string RPL_CAP(void) {
 		// std::cout << "RPL_CAP sent to Client" << std::endl; //@todo make debug
@@ -92,6 +117,7 @@ namespace	replies {
 	{
 		return std::string(":") + nick + "!" + user + "@" + SERVER + " PRIVMSG " + target + " :" + msg + "\r\n";
 	}
+
 	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name)
 	{
 		return std::string(":") + "Servername" +  " 404 " + nick + " " + channel_name + " :Cannot send to channel\r\n";
@@ -102,10 +128,12 @@ namespace	replies {
 	{
 		return std::string(":") + nick + "!" + user + "@" + SERVER + " JOIN " + channel_name + " * :" + user + "\r\n";
 	}
+
 	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name)
 	{
 		return std::string(":") + SERVER + " 471 " + nick + " " + channel_name + " :Cannot join channel (+l)\r\n";
 	}
+
 	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name)
 	{
 		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i)\r\n";
@@ -116,4 +144,22 @@ namespace	replies {
 	{
 		return std::string(":") + nick + "!" + user + "@" + SERVER + " PART " + channel_name + " " + reason + "!" +  "\r\n";
 	}
+
+    /* ------------------------------ TOPIC_COMMAND ----------------------------- */
+    // @note copilots suggestions. let's see if it works!
+    std::string RPL_TOPIC(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& topic)
+    {
+        return std::string(":") + nick + "!" + user + "@" + SERVER + " TOPIC " + channel_name + " :" + topic + "\r\n";
+    }
+
+    std::string RPL_NOTOPIC(const std::string& nick, const std::string& user, const std::string& channel_name)
+    {
+        return std::string(":") + nick + "!" + user + "@" + SERVER + " TOPIC " + channel_name + " :No topic is set\r\n";
+    }
+
+    /* ------------------------------ INVITE_COMMAND ----------------------------- */
+    std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target)
+    {
+        return std::string(":") + nick + "!" + user + "@" + SERVER + " INVITE " + target + " " + channel_name + "\r\n";
+    }
 };
