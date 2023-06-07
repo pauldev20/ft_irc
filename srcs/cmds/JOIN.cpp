@@ -6,18 +6,28 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 11:30:17 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 15:05:18 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmds/Commands.hpp"
 #include "Channel.hpp"
 
-JOIN::JOIN(void) : Command(true, true) {
+static bool	checkChannelNameValidity(std::string const &name) {
+	if (name.size() > 0 && name[0] != '#') {
+		return false;
+	}
+	return true;
+}
+
+JOIN::JOIN(void) : Command() {
 }
 
 void JOIN::exec(Message& message, Server* server, Client* client) {
-	//@todo add check for valid channel name (# and &)?
+	if (checkChannelNameValidity(message.getParams()[0]) == false) {
+		client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), message.getParams()[0]));
+		return ;
+	}
 	Channel *channel = server->getChannelByName(message.getParams()[0]);
 	if (channel == NULL) {
 		channel = new Channel(client, message.getParams()[0]);
@@ -36,7 +46,7 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
 			return ;
 		}
 	}
-	client->sendData(replies::RPL_JOIN(client->getNickname(), client->getUsername(), channel->getName()));
-	//@todo should there be a join message for the others??
-	//@todo 353 & 366 replies!
+	channel->sendMessageToAll(replies::RPL_JOIN(client->getNickname(), client->getUsername(), channel->getName()));
+	client->sendData(replies::RPL_NAMREPLY(client->getNickname(), channel->getName(), channel->getClientList()));
+	client->sendData(replies::RPL_ENDOFNAMES(client->getNickname(), channel->getName()));
 }

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 11:22:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 14:39:02 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 Channel::Channel(Client *oper, std::string const &channelName) : name(channelName), topic(""), password(""), userLimit(0), inviteOnly(false) {
 	this->clients.push_back(oper);
+	this->operators.push_back(oper);
 }
 
 Channel::~Channel() {
@@ -183,6 +184,24 @@ void	Channel::removeClientFromAll(Client *client) {
 			break ;
 		}
 	}
+}
+
+std::string Channel::getClientList(void) {
+	std::string clientList;
+	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+		if (it == this->clients.begin()) {
+			if (std::find(this->operators.begin(), this->operators.end(), *it) != this->operators.end())
+				clientList = "@" + (*it)->getNickname();
+			else
+				clientList = (*it)->getNickname();
+		} else {
+			if (std::find(this->operators.begin(), this->operators.end(), *it) != this->operators.end())
+				clientList += " @" + (*it)->getNickname();
+			else
+				clientList += " " + (*it)->getNickname();
+		}
+	}
+	return (clientList);
 }
 
 /**

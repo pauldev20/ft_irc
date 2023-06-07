@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 10:35:30 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 14:35:30 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Channel {
 		void	addClient(Client *client);
 		void	removeClient(Client *client);
 		void	removeClientFromAll(Client *client);
+		std::string	getClientList(void);
 
 		bool	isClientInChannel(Client *client);
 
