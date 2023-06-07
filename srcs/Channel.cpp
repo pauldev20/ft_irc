@@ -18,6 +18,7 @@
 
 Channel::Channel(Client *oper, std::string const &channelName) : name(channelName), topic(""), password(""), userLimit(0), inviteOnly(false) {
 	this->clients.push_back(oper);
+    this->operators.push_back(oper);
 }
 
 Channel::~Channel() {

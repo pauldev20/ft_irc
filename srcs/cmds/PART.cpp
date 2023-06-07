@@ -22,14 +22,17 @@ void PART::exec(Message& message, Server* server, Client* client) {
 	// 	std::cout << (*it) << std::endl;
 	// }
 	//@todo implement leaving of multiple! channels
-	Channel *channel = server->getChannelByName(params[0]);
-	if (channel == NULL) {
-		client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
-		return ;
-	}
-	channel->removeClient(client);
-	client->sendData(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), params[1]));
-	if (channel->getClientCount() == 0) {
-		server->removeChannel(channel);
-	}
+    std::vector<std::string> channel_list = PART::splitString(params[0], ',');
+    for (size_t i = 0; i < channel_list.size(); i++) {
+        Channel *channel = server->getChannelByName(channel_list[i]);
+        if (channel == NULL) {
+            client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
+            return ;
+        }
+        channel->removeClient(client);
+        client->sendData(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), params[1]));
+        if (channel->getClientCount() == 0) {
+            server->removeChannel(channel);
+        }
+    }
 }
