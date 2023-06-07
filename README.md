@@ -33,4 +33,5 @@ Channels (user limits, passwords, invite-only):
 ## TODO
 
 - check whats up with `:/\0` in passwords and usernames??
-- make possible to use `nc`
+- should a user be still operator after getting kicked
+- send all messages in a channel to all users??? JOIN, QUIT, PART???
