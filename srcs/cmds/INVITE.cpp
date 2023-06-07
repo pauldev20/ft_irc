@@ -1,7 +1,6 @@
 #include "cmds/Commands.hpp"
 
-// @note correct with false, false?
-INVITE::INVITE(void) : Command(true, true) {
+INVITE::INVITE(void) : Command() {
 }
 
 void INVITE::exec(Message& message, Server* server, Client* client) {
