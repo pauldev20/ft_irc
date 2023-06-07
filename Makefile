@@ -22,7 +22,9 @@ CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
 SRCFILES	:= main.cpp Server.cpp Client.cpp Message.cpp Parser.cpp Executer.cpp Debug.cpp Channel.cpp
 
 # ----------------------------------- CMDs ----------------------------------- #
-SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp cmds/NICK.cpp cmds/USER.cpp cmds/PING.cpp cmds/QUIT.cpp cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp
+SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp \
+			   cmds/NICK.cpp cmds/USER.cpp cmds/PING.cpp cmds/QUIT.cpp \
+			   cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp cmds/MODE.cpp
 
 INCLUDES	:= -I./includes
 

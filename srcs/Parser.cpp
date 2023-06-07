@@ -146,6 +146,11 @@ static int	handleCommand(Message& command, std::string& message)
 		static QUIT quit;
 		command.setCmdAll(&quit, CMD_QUIT);
 	}
+    else if (token == CMD_MODE)
+	{
+		static MODE mode;
+		command.setCmdAll(&mode, CMD_MODE);
+	}
 	else
 		return (ERROR);
 	return (SUCCESS);

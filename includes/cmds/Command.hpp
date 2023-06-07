@@ -23,13 +23,14 @@ class Command {
 		Command(bool needsPass = true, bool needsRegistration = true);
 		~Command();
 
-		void			execute(Message& message, Server* server, Client* client);
+		void			            execute(Message& message, Server* server, Client* client);
+        std::vector<std::string>    splitString(const std::string& input, char delimiter);
 
 	private:
-		bool		checkRegister;
-		bool		checkPass;
+		bool		                checkRegister;
+		bool		                checkPass;
 
 	protected:
-		virtual void	exec(Message& message, Server* server, Client* client) = 0;
-		void			checkRegistered(Client *client) const;
+		virtual void	            exec(Message& message, Server* server, Client* client) = 0;
+		void			            checkRegistered(Client *client) const;
 };
