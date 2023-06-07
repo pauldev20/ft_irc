@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 16:15:49 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/06 21:25:18 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,5 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
 	}
 	client->addDataToBuffer(replies::RPL_JOIN(client->getNickname(), client->getUsername(), channel->getName()));
 	client->sendData();
+	//@todo should there be a join message for the others??
 }
