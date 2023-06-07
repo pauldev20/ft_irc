@@ -53,6 +53,9 @@ namespace replies
 	std::string RPL_NAMREPLY(const std::string& nick, const std::string& channel_name, const std::string& names_list);
 	std::string RPL_ENDOFNAMES(const std::string& nick, const std::string& channel_name);
 	std::string RPL_KICK(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target, const std::string reason);
+    std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode);
+    std::string ERR_UNKNOWNMODE(const std::string& nick, const char mode);
+    std::string ERR_TOOMANYARGS(const std::string& nick, const char mode);
 };
 
 #endif

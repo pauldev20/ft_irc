@@ -248,6 +248,14 @@ bool    Channel::checkChannelNameValidity(std::string const &channel_name) {
     return (true);
 }
 
+bool    Channel::isTopicRestriction(void) const {
+    return (this->topicRestriction);
+}
+
+void    Channel::setTopicRestriction(bool set) {
+    this->topicRestriction = set;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                 Excpetions                                 */
 /* -------------------------------------------------------------------------- */
