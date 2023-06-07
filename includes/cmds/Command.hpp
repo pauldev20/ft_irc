@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:39:44 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/06 14:52:17 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 10:20:37 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@ class Command {
 		Command(bool needsPass = true, bool needsRegistration = true);
 		~Command();
 
-		void	execute(Message& message, Server* server, Client* client);
+		void			execute(Message& message, Server* server, Client* client);
 
 	private:
 		bool		checkRegister;
 		bool		checkPass;
 
 	protected:
-		virtual void exec(Message& message, Server* server, Client* client) = 0;
+		virtual void	exec(Message& message, Server* server, Client* client) = 0;
+		void			checkRegistered(Client *client) const;
 };
