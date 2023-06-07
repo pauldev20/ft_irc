@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 11:08:13 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 17:03:20 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 17:35:42 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void PART::exec(Message& message, Server* server, Client* client) {
             client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
             continue ;
         }
+        channel->sendMessageToAll(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), params.size() > 1 ? params[1] : ""));
         channel->removeClient(client);
-        channel->sendMessageToAll(replies::RPL_PART(client->getNickname(), client->getUsername(), channel->getName(), channel_list[i]));
         if (channel->getClientCount() == 0) {
             server->removeChannel(channel);
         }
