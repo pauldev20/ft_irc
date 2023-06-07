@@ -8,8 +8,7 @@ TOPIC::TOPIC(void) : Command(true, true) {
 void TOPIC::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
     if (server->getChannelByName(params[0]) == NULL) {
-        client->addDataToBuffer(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
-        client->sendData();
+        client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
         return ;
     }
     Channel *channel = server->getChannelByName(params[0]);
@@ -18,20 +17,17 @@ void TOPIC::exec(Message& message, Server* server, Client* client) {
     // @note if param == 1, the topic of the channel needs to be returned
     if (params.size() == 1) {
         if (topic.empty()) {
-            client->addDataToBuffer(replies::RPL_NOTOPIC(client->getNickname(), params[0]));
-            client->sendData();
+            client->sendData(replies::RPL_NOTOPIC(client->getNickname(), params[0]));
             return ;
         } else {
-            client->addDataToBuffer(replies::RPL_TOPIC(client->getNickname(), params[0], topic));
-            client->sendData();
+            client->sendData(replies::RPL_TOPIC(client->getNickname(), params[0], topic));
             return ;
         }
     }
     if (params.size() == 2) {
         // @note if user is not operator, he cannot change the topic
         if (!channel->isOperator(client)) {
-            client->addDataToBuffer(replies::ERR_CHANOPRIVSNEEDED(client->getNickname(), params[0]));
-            client->sendData();
+            client->sendData(replies::ERR_CHANOPRIVSNEEDED(client->getNickname(), params[0]));
             return ;
         }
         // topic needs to be set. but if the second param is empty, the topic needs to be removed

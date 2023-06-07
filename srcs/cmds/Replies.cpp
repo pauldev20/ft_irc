@@ -162,14 +162,14 @@ namespace	replies {
 
     /* ------------------------------ TOPIC_COMMAND ----------------------------- */
     // @note copilots suggestions. let's see if it works!
-    std::string RPL_TOPIC(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& topic)
+    std::string RPL_TOPIC(const std::string& nick, const std::string& channel_name, const std::string& topic)
     {
-        return std::string(":") + nick + "!" + user + "@" + SERVER + " TOPIC " + channel_name + " :" + topic + "\r\n";
+        return std::string(":") + nick + "!" + "@" + SERVER + " TOPIC " + channel_name + " :" + topic + "\r\n";
     }
 
-    std::string RPL_NOTOPIC(const std::string& nick, const std::string& user, const std::string& channel_name)
+    std::string RPL_NOTOPIC(const std::string& nick, const std::string& channel_name)
     {
-        return std::string(":") + nick + "!" + user + "@" + SERVER + " TOPIC " + channel_name + " :No topic is set\r\n";
+        return std::string(":") + nick + "!" + "@" + SERVER + " TOPIC " + channel_name + " :No topic is set\r\n";
     }
 
     /* ------------------------------ INVITE_COMMAND ----------------------------- */

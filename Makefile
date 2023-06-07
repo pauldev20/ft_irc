@@ -24,7 +24,8 @@ SRCFILES	:= main.cpp Server.cpp Client.cpp Message.cpp Parser.cpp Executer.cpp D
 # ----------------------------------- CMDs ----------------------------------- #
 SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp \
 			   cmds/NICK.cpp cmds/USER.cpp cmds/PING.cpp cmds/QUIT.cpp \
-			   cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp cmds/MODE.cpp
+			   cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp cmds/MODE.cpp \
+			   cmds/TOPIC.cpp cmds/INVITE.cpp cmds/KICK.cpp\
 
 INCLUDES	:= -I./includes
 
