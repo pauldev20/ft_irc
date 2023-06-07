@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 01:07:49 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/05 15:56:45 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 17:13:29 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(int argc, char **argv)
 	std::cout << std::endl;
 
 	try {
+		// @todo check if port and password is valid
 		Server server(atoi(argv[1]), argv[2]);
 		std::cout << "\033[33mServer starting...\033[0m" << std::endl;
 		server.start();

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 17:05:44 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 17:37:12 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static bool	checkChannelNameValidity(std::string const &name) {
 JOIN::JOIN(void) : Command(true, true) {
 }
 
+//@todo add password support
 void JOIN::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> channel_list = JOIN::splitString(message.getParams()[0], ',');
     for (size_t i = 0; i < channel_list.size(); i++) {

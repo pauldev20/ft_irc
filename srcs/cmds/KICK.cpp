@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 17:08:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 17:08:49 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/07 17:19:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 KICK::KICK(void) : Command() {
 }
 
+//@todo kick multiple users
 void KICK::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
     if (params.size() < 2) {
@@ -47,8 +48,8 @@ void KICK::exec(Message& message, Server* server, Client* client) {
                 client->sendData(replies::ERR_USERNOTINCHANNEL(params[1], channel_list[i]));
                 continue ;
             }
-            channel->removeClient(target);
             channel->sendMessageToAll(replies::RPL_KICK(client->getNickname(), client->getUsername(), channel_list[i], target_list[j], params.size() > 2 ? params[2] : ""));
+            channel->removeClient(target);
         }
     }
 }
