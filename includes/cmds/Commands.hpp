@@ -118,10 +118,11 @@ class MODE : public Command {
         MODE(void);
 
     private:
-        void exec(Message& message, Server* server, Client* client);
-        void setInviteOnly(Channel* channel, bool set);
-        void setTopicRestriction(Channel* channel, bool set);
-        void setOperator(Channel* channel, Client* target, bool set);
-        void setPassword(Channel* channel, std::string password);
-        void setUserLimit(Channel *channel, size_t limit);
+        void        exec(Message& message, Server* server, Client* client);
+        void        setInviteOnly(Channel* channel, bool set);
+        void        setTopicRestriction(Channel* channel, bool set);
+        void        setOperator(Channel* channel, Client* target, bool set);
+        void        setPassword(Channel* channel, std::string password);
+        void        setUserLimit(Channel *channel, size_t limit);
+        std::string getCurrentModes(Channel* channel);
 };

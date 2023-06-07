@@ -39,6 +39,7 @@ class Channel {
 		void	setPassword(std::string const &password);
 
 		void	setUserLimit(int userLimit);
+        size_t  getUserLimit(void) const;
 
 		void	setInviteOnly(bool inviteOnly);
         bool    isInviteOnly(void) const;

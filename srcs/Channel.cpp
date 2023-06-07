@@ -112,6 +112,10 @@ bool    Channel::isInviteOnly(void) const {
     return (this->inviteOnly);
 }
 
+size_t  Channel::getUserLimit(void) const {
+    return (this->userLimit);
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Public Methods                               */
 /* -------------------------------------------------------------------------- */

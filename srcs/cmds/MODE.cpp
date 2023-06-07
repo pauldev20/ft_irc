@@ -6,6 +6,22 @@
 MODE::MODE(void) : Command (false, false) {
 }
 
+std::string MODE::getCurrentModes(Channel* channel) {
+    std::string modeString;
+
+    if (channel->isInviteOnly())
+        modeString.append("i ");
+    if (channel->isTopicRestriction())
+        modeString.append("t ");
+    if (channel->getPassword() != "")
+        modeString.append("k ");
+    if (channel->getUserLimit() != 0) {
+        modeString.append("l=");
+        modeString.append(std::to_string(channel->getUserLimit()));
+    }
+    return (modeString);
+}
+
 // @todo if the MODE cmd is called w/o arguments, the server should return the
 // modes of the channel
 // @note if one instruction should fail bc of false parameters or similar stuff,
@@ -21,7 +37,7 @@ void MODE::exec(Message& message, Server* server, Client* client) {
     // flags can be called like '+i-t' or '+i,-t'
     // need to check if there are at least 2 params (channel name and flags as one string)
     if (params.size() < 2) {
-        client->sendData(replies::ERR_NEEDMOREPARAMS("MODE"));
+        client->sendData(replies::RPL_CHANNELMODEIS(client->getNickname(), client->getUsername(), params[0], getCurrentModes(server->getChannelByName(params[0]))));
         return ;
     }
     Channel *channel = server->getChannelByName(params[0]);
