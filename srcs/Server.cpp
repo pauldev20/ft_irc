@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 00:03:19 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 12:26:37 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,12 @@ static void				printError(std::string message, bool fatal = false) {
 
 Server::Server(int port, std::string password) : port(port), password(password), socketFd(-1) {
 	this->fds.reserve(MAX_FDS);
-	//@todo debug print
-	// std::cout << "Server created" << std::endl;
 }
 
 Server::~Server() {
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++)
 		delete it->second;
-		//@todo debug print
-	// std::cout << "Server destroyed" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -193,11 +189,7 @@ void Server::run(void) {
 	if (res == -1)
 		return (printError("poll"));
 	else if (res == 0)
-	{
-		//@todo debug print
-		// std::cout << "Timeout" << std::endl;
 		return ;
-	}
 
 	for (size_t i = 0; i < this->fds.size(); i++)
     {

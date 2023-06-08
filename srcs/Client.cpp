@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:03:54 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 12:22:00 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,13 @@
 #define MAX_BUF_LENGTH 512
 
 /* -------------------------------------------------------------------------- */
-/*                                   Helpers                                  */
-/* -------------------------------------------------------------------------- */
-
-// static std::string	findFirst(std::string const &str, size_t N) {
-// 	if (str.size() < N)
-// 		return (str);
-// 	return (str.substr(0, N));
-// }
-
-/* -------------------------------------------------------------------------- */
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
 Client::Client(int fd) : fd(fd), registered(false), authenticated(false), disconnected(false), username(""), fullName(""), nickname(""), receiveBuffer("") {
-	//@todo debug print
-	// std::cout << "Client created" << std::endl;
 }
 
 Client::~Client() {
-	//@todo debug print
-	// std::cout << "Client destroyed" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -64,7 +50,6 @@ void	Client::receiveData(void) {
 	}
 	msg.resize(ret);
 	this->receiveBuffer += msg;
-	// std::cout << "[Client(" << this->fd << ") -> Server]: " << msg; //@todo debug print
 }
 
 /**
