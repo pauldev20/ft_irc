@@ -2,8 +2,7 @@
 #include "cmds/Commands.hpp"
 #include <sstream>
 
-// @note correct with false, false?
-MODE::MODE(void) : Command (false, false) {
+MODE::MODE(void) : Command () {
 }
 
 std::string MODE::getCurrentModes(Channel* channel) {
@@ -17,7 +16,9 @@ std::string MODE::getCurrentModes(Channel* channel) {
         modeString.append("k ");
     if (channel->getUserLimit() != 0) {
         modeString.append("l=");
-        modeString.append(std::to_string(channel->getUserLimit()));
+        std::ostringstream tmp;
+        tmp << channel->getUserLimit();
+        modeString.append(tmp.str());
     }
     return (modeString);
 }
@@ -36,19 +37,19 @@ void MODE::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
     // flags can be called like '+i-t' or '+i,-t'
     // need to check if there are at least 2 params (channel name and flags as one string)
-    if (params.size() < 2) {
-        client->sendData(replies::RPL_CHANNELMODEIS(client->getNickname(), client->getUsername(), params[0], getCurrentModes(server->getChannelByName(params[0]))));
-        return ;
-    }
     Channel *channel = server->getChannelByName(params[0]);
     // check if valid channel name was provided
     if (channel == NULL) {
-        client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), params[0]));
+        client->sendData(replies::ERR_NOSUCHCHANNEL(client, params[0]));
+        return ;
+    }
+    if (params.size() < 2) {
+        client->sendData(replies::RPL_CHANNELMODEIS(client, channel->getName(), getCurrentModes(channel)));
         return ;
     }
     // check if client is channel operator
     if (!channel->isOperator(client)) {
-        client->sendData(replies::ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
+        client->sendData(replies::ERR_CHANOPRIVSNEEDED(client, channel->getName()));
         return ;
     }
     // also check if the provided flags can be executed
@@ -57,7 +58,7 @@ void MODE::exec(Message& message, Server* server, Client* client) {
         if (flags.find(params[1].c_str(), i, 1) == std::string::npos
             && params[1].find("+") == std::string::npos
             && params[1].find("-") == std::string::npos) {
-            client->sendData(replies::ERR_UNKNOWNMODE(client->getNickname(), params[1][i]));
+            client->sendData(replies::ERR_UMODEUNKNOWNFLAG(client));
             return ;
         } else {
             // if the flag is valid, exec the right function
@@ -78,7 +79,7 @@ void MODE::exec(Message& message, Server* server, Client* client) {
                     if (params.size() > 2)
                         setPassword(channel, params[2]);
                     else {
-                        client->sendData(replies::ERR_NEEDMOREPARAMS("MODE"));
+                        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
                         return ;
                     }
                 }
@@ -93,17 +94,18 @@ void MODE::exec(Message& message, Server* server, Client* client) {
             }
             if (params[1][i] == 'o') {
                 if (params.size() < 3) {
-                    client->sendData(replies::ERR_NEEDMOREPARAMS("MODE"));
+                    client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
                     return ;
                 }
                 Client* target = server->getClientByNickname(params[2]);
+                // @todo new operator dont get published into channel!!!!!!!!!
                 if (target != NULL) {
                     if (params[1][i - 1] == '+')
                         setOperator(channel, target, true);
                     else
                         setOperator(channel, target, false);
                 } else {
-                    client->sendData(replies::ERR_NOSUCHNICK(client->getNickname(), params[2]));
+                    client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
                     return ;
                 }
             }
@@ -116,7 +118,7 @@ void MODE::exec(Message& message, Server* server, Client* client) {
                         setUserLimit(channel, limit);
                     }
                     else {
-                        client->sendData(replies::ERR_NEEDMOREPARAMS("MODE"));
+                        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
                         return ;
                     }
                 }
@@ -137,7 +139,7 @@ void MODE::exec(Message& message, Server* server, Client* client) {
     }
     // this is send at the very end
     // @note check if the user changing the mode is receiving some kind of msg
-    client->sendData(replies::RPL_CHANNELMODEIS(client->getNickname(), client->getUsername(), channel->getName(), modeString));
+    channel->sendMessageToAll(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString));
 }
 
 // i - set/remove invite-only; operator only

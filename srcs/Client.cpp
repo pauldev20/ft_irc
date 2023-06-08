@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:22:00 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 19:45:17 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ Client::~Client() {
  * The function receive data from a client and handles exceptions for different scenarios.
  */
 void	Client::receiveData(void) {
-	if (this->disconnected)
-		throw ConnectionClosedException();
 	std::vector<char> 	buffer(MAX_BUF_LENGTH);
 	int ret = recv(this->fd, &buffer[0], buffer.size(), 0);
 	std::string msg(buffer.begin(), buffer.end());
@@ -94,6 +92,10 @@ int			Client::getFd(void) const {
 
 void		Client::setDisconnected(bool disconnected) {
 	this->disconnected = disconnected;
+}
+
+bool		Client::isDisconnected(void) const {
+	return (disconnected);
 }
 
 bool		Client::isRegistered(void) const {

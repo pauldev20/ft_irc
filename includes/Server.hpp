@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:20 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 14:56:54 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 19:43:31 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,20 @@ class Server {
 	public:
 		Server(int port, std::string password);
 		~Server();
-		void 				start(void);
-		void 				run(void);
+		void 					start(void);
+		void 					run(void);
 
-		int					getPort(void) const;
-		std::string const	&getPassword(void) const;
+		int						getPort(void) const;
+		std::string const		&getPassword(void) const;
 
-		void				addChannel(Channel *channel);
-		void				removeChannel(Channel *channel);
-		Channel				*getChannelByName(std::string const &name);
+		void					addChannel(Channel *channel);
+		void					removeChannel(Channel *channel);
+		Channel					*getChannelByName(std::string const &name);
+		std::vector<Channel*>	&getChannels(void);
 
-		bool				checkNickname(std::string const &nickname);
+		bool					checkNickname(std::string const &nickname);
 
-		Client				*getClientByNickname(std::string const &nickname);
+		Client					*getClientByNickname(std::string const &nickname);
 
 	private:
 		int 						port;

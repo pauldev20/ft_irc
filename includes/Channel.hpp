@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 11:23:28 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 12:42:37 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ class Channel {
 	private:
 		std::string				name;
 		std::string				topic;
-        bool                    topicRestriction; // @note needs to be true per default!
+        bool                    topicRestriction;
 		std::vector<Client*>	clients;
 		std::string				password;
 		size_t					userLimit;
