@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 14:39:02 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 11:54:12 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Channel::Channel(Client *oper, std::string const &channelName) : name(channelName), topic(""), password(""), userLimit(0), inviteOnly(false) {
+Channel::Channel(Client *oper, std::string const &channelName, std::string const &password) : name(channelName), topic(""), password(password), userLimit(0), inviteOnly(false) {
 	this->clients.push_back(oper);
     this->operators.push_back(oper);
 }

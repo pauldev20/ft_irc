@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 14:35:30 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 11:23:28 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 class Channel {
 	public:
-		Channel(Client *oper, std::string const &channelName);
+		Channel(Client *oper, std::string const &channelName, std::string const &password = "");
 		~Channel(void);
 
 		size_t	getClientCount(void) const;
