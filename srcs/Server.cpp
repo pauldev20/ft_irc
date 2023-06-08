@@ -6,11 +6,12 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:26:37 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 00:45:40 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include <cstdlib>		// EXIT_FAILURE
 #include <sys/socket.h> // socket, bind, listen, accept
 #include <sys/select.h> // select
 #include <fcntl.h>		// fcntl
@@ -139,6 +140,10 @@ Channel	*Server::getChannelByName(std::string const &name) {
 	return (NULL);
 }
 
+std::vector<Channel*>	&Server::getChannels(void) {
+	return (this->channels);
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Public Methods                               */
 /* -------------------------------------------------------------------------- */
@@ -255,7 +260,8 @@ void	Server::receiveData(int fd) {
 	try {
 		this->connectedClients.find(fd)->second->receiveData();
 		while (true) {
-			std::string msg = this->connectedClients.find(fd)->second->readReceivedData();
+			Client *client = this->connectedClients.find(fd)->second;
+			std::string msg = client->readReceivedData();
 			if (msg.empty())
 				break ;
 			Message message;
@@ -264,22 +270,34 @@ void	Server::receiveData(int fd) {
 				continue ;
 			}
 			// debug::debugMessage(message);
-			if (irc::executeMessage(message, this, this->connectedClients.find(fd)->second) == ERROR) {
+			if (irc::executeMessage(message, this, client) == ERROR) {
 				printError("executeMessage");
 				continue ;
 			}
+			if (client->isDisconnected())
+				throw Client::ConnectionClosedException();
 		}
 	} catch (const Client::ConnectionErrorExcpetion& e) {
 		close(fd);
-		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
-			(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
+		Client *client = this->connectedClients.find(fd)->second;
+		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++) {
+			if ((*it)->isClientInChannel(client)) {
+				(*it)->sendMessageToAllExcept(replies::RPL_QUIT(client, "Unexpected error"), client);
+				(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
+			}
+		}
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
 		std::cout << "[Server]: Connection receive error" << std::endl;
 	} catch (const Client::ConnectionClosedException& e) {
 		close(fd);
-		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++)
-			(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
+		Client *client = this->connectedClients.find(fd)->second;
+		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++) {
+			if ((*it)->isClientInChannel(client)) {
+				(*it)->sendMessageToAllExcept(replies::RPL_QUIT(client, "Unexpected EOF"), client);
+				(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
+			}
+		}
 		this->connectedClients.erase(fd);
 		removePollfdFromVector(this->fds, fd);
 		std::cout << "[Server]: Connection closed" << std::endl;

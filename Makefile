@@ -6,7 +6,7 @@
 #    By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 17:21:47 by pgeeser           #+#    #+#              #
-#    Updated: 2023/06/07 15:17:28 by pgeeser          ###   ########.fr        #
+#    Updated: 2023/06/08 12:38:05 by pgeeser          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 
 NAME		:= ircserv
 CC			:= c++
-CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
+CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g
 
 # ----------------------------------- MAIN ----------------------------------- #
 SRCFILES	:= main.cpp Server.cpp Client.cpp Message.cpp Parser.cpp Executer.cpp Debug.cpp Channel.cpp
@@ -87,6 +87,6 @@ run: all
 	@./$(NAME) 6667 1234
 
 val: all
-	@valgrind --leak-check=full ./$(NAME)
+	@valgrind --leak-check=full ./$(NAME) 1233 1234
 
 .PHONY: all clean fclean re debug run val

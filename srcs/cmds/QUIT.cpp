@@ -6,19 +6,24 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 01:26:27 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:23:41 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 00:46:00 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmds/Commands.hpp"
 
-QUIT::QUIT(void) : Command(false, false) {
+QUIT::QUIT(void) : Command(false, false, false) {
 }
 
 void QUIT::exec(Message& message, Server* server, Client* client) {
-	(void)server;
-	(void)message;
-	// @todo is a quit message possible/needed?
-	client->sendData(replies::RPL_QUIT(client->getNickname(), client->getUsername()));	//@todo is this really correct? username?
+	std::vector<std::string> params = message.getParams();
+	std::vector<Channel*> &channels = server->getChannels();
+	for (std::vector<Channel*>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->isClientInChannel(client)) {
+			(*it)->sendMessageToAllExcept(replies::RPL_QUIT(client, params.size() > 0 ? params[0] : "Have fun staying poor!"), client);
+			continue ;
+		}
+	}
+	client->sendData(replies::RPL_QUIT(client, params.size() > 0 ? params[0] : "Have fun staying poor!"));
 	client->setDisconnected(true);
 }
