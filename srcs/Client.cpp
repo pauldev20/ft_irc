@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 10:55:20 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 00:13:25 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,7 @@ void	Client::receiveData(void) {
 		throw MessageTooLongException();
 	} else if (ret < 0) {
 		this->receiveBuffer.clear();
-		if (!this->disconnected)
-			throw ConnectionErrorExcpetion();
-		throw ConnectionClosedException();
+		throw ConnectionErrorExcpetion();
 	} else if (ret == 0) {
 		this->receiveBuffer.clear();
 		throw ConnectionClosedException();

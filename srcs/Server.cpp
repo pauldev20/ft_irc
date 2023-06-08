@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 14:56:46 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 00:03:19 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,12 @@ static struct pollfd	pollfd(int fd, short events) {
  */
 static void				removePollfdFromVector(std::vector<struct pollfd> &vector, int fd) {
 	std::vector<struct pollfd>::iterator it;
-	for (it = vector.begin(); it != vector.end(); it++)
-		if ((*it).fd == fd)
-			break ;
-	if (it != vector.end())
-		vector.erase(it);
+	for (it = vector.begin(); it != vector.end(); it++) {
+		if ((*it).fd == fd) {
+			vector.erase(it);
+			break ;	
+		}
+	}
 }
 
 static void				printError(std::string message, bool fatal = false) {
@@ -198,8 +199,7 @@ void Server::run(void) {
 		return ;
 	}
 
-	size_t loopSize = this->fds.size();
-	for (size_t i = 0; i < loopSize; i++)
+	for (size_t i = 0; i < this->fds.size(); i++)
     {
 		if (this->fds[i].revents & POLLIN) {
 			if (this->fds[i].fd == this->socketFd) {
