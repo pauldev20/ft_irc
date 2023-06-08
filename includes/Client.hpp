@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:15 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 10:51:07 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 19:44:25 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ class Client {
 
 		// send data
 		void		sendData(std::string str);
+		void		sendToAllChannelsOfClient(std::string const &str);
 
 		int getFd(void) const;
 
 		void setDisconnected(bool disconnected);
+		bool isDisconnected(void) const;
 
 		bool isRegistered(void) const;
 		void setRegistered(bool registered);

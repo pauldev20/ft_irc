@@ -22,40 +22,54 @@ namespace irc
 
 namespace replies
 {
-	std::string RPL_WELCOME(const std::string& nick, const std::string user);
+	/* ---------------------------------- BASIC --------------------------------- */
+	std::string RPL_WELCOME(Client *client);
+	/* --------------------------------- ERRORS --------------------------------- */
+	std::string ERR_PASSWDMISMATCH(Client *client);
+	std::string ERR_NOTREGISTERED(Client *client);
+	std::string ERR_NEEDMOREPARAMS(Client *client, std::string const &cmd);
+	std::string ERR_ALREADYREGISTRED(Client *client);
+	std::string ERR_NOSUCHNICK(Client *client, std::string const &channel_name);
+	std::string ERR_NOSUCHCHANNEL(Client *client, const std::string channel_name);
+	std::string ERR_NOTONCHANNEL(Client *client, const std::string channel_name);
+	std::string ERR_USERNOTINCHANNEL(Client *client, const std::string channel_name);
+	std::string ERR_CHANOPRIVSNEEDED(Client *client, const std::string channel_name);
+	std::string ERR_USERONCHANNEL(Client *client, Client *other, const std::string channel_name);
+	std::string ERR_KEYSET(Client *client, const std::string channel_name);
+	/* ------------------------------- CAP_COMMAND ------------------------------ */
 	std::string RPL_CAP(void);
-	std::string ERR_PASSWDMISMATCH(void);
-	std::string ERR_NOTREGISTERED(void);
-	std::string ERR_NEEDMOREPARAMS(const std::string& cmd);
-	std::string ERR_ALREADYREGISTRED(void);
-	std::string ERR_NICKNAMEINUSE(const std::string& nick);
-	std::string ERR_NONICKNAMEGIVEN(void);
-	std::string RPL_NICKCHANGE(const std::string& old_nick, const std::string& new_nick, const std::string& user);
-	std::string RPL_PING(const std::string& token);
-	std::string RPL_QUIT(const std::string& nick, const std::string& user);
-	std::string ERR_NOSUCHNICK(const std::string& nick, const std::string channel_name);
-	std::string	RPL_PRIVMSG(const std::string& nick, const std::string& user, const std::string& target, const std::string& msg);
-	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name);
-	std::string RPL_JOIN(const std::string& nick, const std::string& user, const std::string& channel_name);
-	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name);
-	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name);
-	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason);
-	std::string ERR_BANNEDFROMCHAN(const std::string& nick, const std::string& channel_name);
-    std::string ERR_ERRONEUSNICKNAME(const std::string& nick);
-    std::string ERR_NOSUCHCHANNEL(const std::string& nick, const std::string channel_name);
-    std::string ERR_NOTONCHANNEL(const std::string& nick, const std::string channel_name);
-    std::string ERR_USERNOTINCHANNEL(const std::string& nick, const std::string channel_name);
-    std::string RPL_TOPIC(const std::string& nick, const std::string& channel_name, const std::string& topic);
-    std::string RPL_NOTOPIC(const std::string& nick, const std::string& channel_name);
-    std::string ERR_CHANOPRIVSNEEDED(const std::string& nick, const std::string channel_name);
-    std::string ERR_USERONCHANNEL(const std::string& nick, const std::string channel_name);
-    std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target);
-	std::string RPL_NAMREPLY(const std::string& nick, const std::string& channel_name, const std::string& names_list);
-	std::string RPL_ENDOFNAMES(const std::string& nick, const std::string& channel_name);
-	std::string RPL_KICK(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target, const std::string reason);
-    std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode);
-    std::string ERR_UNKNOWNMODE(const std::string& nick, const char mode);
-    std::string ERR_TOOMANYARGS(const std::string& nick, const char mode);
+	/* ------------------------------ PING_COMMAND ------------------------------ */
+	std::string RPL_PING(std::string const &token);
+	/* ------------------------------ NICK_COMMAND ------------------------------ */
+	std::string ERR_NICKNAMEINUSE(Client *client, std::string const &nick);
+	std::string ERR_NONICKNAMEGIVEN(Client *client);
+    std::string ERR_ERRONEUSNICKNAME(Client *client, std::string const &nick);
+	/* ------------------------------ QUIT_COMMAND ------------------------------ */
+	std::string RPL_QUIT(Client *client, std::string const &msg);
+	/* ----------------------------- PRIVMSG_COMMAND ---------------------------- */
+	std::string	RPL_PRIVMSG(Client *client, std::string const &target, std::string const &msg);
+	std::string ERR_CANNOTSENDTOCHAN(Client *client, std::string const &channel_name);
+	/* ------------------------------ JOIN_COMMAND ------------------------------ */
+	std::string RPL_JOIN(Client *client, std::string const &channel_name);
+	std::string ERR_CHANNELISFULL(Client *client, std::string const &channel_name);
+	std::string ERR_INVITEONLYCHAN(Client *client, std::string const &channel_name);
+	std::string RPL_NAMREPLY(Client *client, std::string const &channel_name, std::string const &names_list);
+	std::string RPL_ENDOFNAMES(Client *client, std::string const &channel_name);
+	/* ------------------------------ PART_COMMAND ------------------------------ */
+	std::string RPL_PART(Client *client, std::string const &channel_name, const std::string reason);
+	/* ------------------------------ TOPIC_COMMAND ----------------------------- */
+	std::string RPL_TOPIC(Client *client, const std::string& channel_name, const std::string& topic);
+	std::string RPL_TOPICCHANGE(Client *client, const std::string& channel_name, const std::string& topic);
+	std::string RPL_NOTOPIC(Client *client, const std::string& channel_name);
+	/* ------------------------------ INVITE_COMMAND ----------------------------- */
+    std::string RPL_INVITE(Client *client, std::string const &channel_name, std::string const &target);
+	/* ------------------------------ KICK_COMMAND ------------------------------ */
+	std::string RPL_KICK(Client *client, std::string const &channel_name, std::string const &target, const std::string reason);
+	/* ------------------------------- MODE_COMMAND ------------------------------ */
+    std::string RPL_CHANNELMODEIS(Client *client, std::string const &channel_name, std::string const &modes);
+	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode);
+	std::string ERR_UMODEUNKNOWNFLAG(Client *client);
+	std::string ERR_TOOMANYARGS(Client *client, const char mode);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:05:39 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 00:41:42 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ static bool	checkChannelNameValidity(std::string const &name) {
 	return true;
 }
 
-JOIN::JOIN(void) : Command(true, true) {
+JOIN::JOIN(void) : Command() {
 }
 
 void JOIN::exec(Message& message, Server* server, Client* client) {
-    std::vector<std::string> channel_list = JOIN::splitString(message.getParams()[0], ',');
+    std::vector<std::string> channel_list = this->splitString(message.getParams()[0], ',');
     for (size_t i = 0; i < channel_list.size(); i++) {
 		if (checkChannelNameValidity(channel_list[i]) == false) {
-			client->sendData(replies::ERR_NOSUCHCHANNEL(client->getNickname(), message.getParams()[0]));
+			client->sendData(replies::ERR_NOSUCHCHANNEL(client, message.getParams()[0]));
 			continue ;
 		}
         Channel *channel = server->getChannelByName(channel_list[i]);
@@ -40,24 +40,24 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
             try {
 				if (channel->getPassword() != "") {
 					if (message.getParams().size() < 2 || message.getParams()[1] != channel->getPassword()) {
-						client->sendData(replies::ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
+						client->sendData(replies::ERR_CHANOPRIVSNEEDED(client, channel->getName()));
 						continue ;
 					}
 				}
 				channel->addClient(client);
             } catch (const Channel::ChannelFullExcpetion &e) {
-                client->sendData(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
+                client->sendData(replies::ERR_CHANNELISFULL(client, channel->getName()));
                 continue ;
             } catch (const Channel::InviteOnlyExcpetion &e) {
-                client->sendData(replies::ERR_INVITEONLYCHAN(client->getNickname(), channel->getName()));
+                client->sendData(replies::ERR_INVITEONLYCHAN(client, channel->getName()));
                 continue ;
             } catch (const Channel::AllreadyInChannelExcpetion &e) {
-                client->sendData(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
+                client->sendData(replies::ERR_CHANNELISFULL(client, channel->getName()));
                 continue ;
             }
         }
-		channel->sendMessageToAll(replies::RPL_JOIN(client->getNickname(), client->getUsername(), channel->getName()));
-		client->sendData(replies::RPL_NAMREPLY(client->getNickname(), channel->getName(), channel->getClientList()));
-		client->sendData(replies::RPL_ENDOFNAMES(client->getNickname(), channel->getName()));
+		channel->sendMessageToAll(replies::RPL_JOIN(client, channel->getName()));
+		client->sendData(replies::RPL_NAMREPLY(client, channel->getName(), channel->getClientList()));
+		client->sendData(replies::RPL_ENDOFNAMES(client, channel->getName()));
     }
 }
