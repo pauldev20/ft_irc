@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 01:07:49 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 11:16:30 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 12:25:27 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	main(int argc, char **argv)
 			std::cerr << "Invalid password! The passowrd needs to be between 4 and 12 characters long and can only consist out of (a-z, A-Z, 0-9)" << std::endl;
 			return (1);
 		}
-		Server server(atoi(argv[1]), argv[2]);
+		Server server(port, argv[2]);
 		std::cout << "\033[33mServer starting...\033[0m" << std::endl;
 		server.start();
 		std::cout << "\033[0;97mServer listening on port: \033[32m" << server.getPort() << "\033[0m" << std::endl;
