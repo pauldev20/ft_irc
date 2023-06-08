@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Message.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/08 10:05:04 by pgeeser           #+#    #+#             */
+/*   Updated: 2023/06/08 10:05:29 by pgeeser          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef COMMAND_HPP
-#define COMMAND_HPP
+#pragma once
 
 #include "Server.hpp"
 #include "Client.hpp"
@@ -9,7 +19,6 @@
 #include <vector>
 
 class Command;
-// @todo circular dependency fuck shit
 
 class Message
 {
@@ -33,5 +42,3 @@ class Message
 		const std::string				getCmdName() const;
 		const std::vector<std::string>&	getParams() const;
 };
-
-#endif

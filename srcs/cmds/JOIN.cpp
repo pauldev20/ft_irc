@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 17:37:12 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 12:05:39 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static bool	checkChannelNameValidity(std::string const &name) {
 JOIN::JOIN(void) : Command(true, true) {
 }
 
-//@todo add password support
 void JOIN::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> channel_list = JOIN::splitString(message.getParams()[0], ',');
     for (size_t i = 0; i < channel_list.size(); i++) {
@@ -35,11 +34,17 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
 		}
         Channel *channel = server->getChannelByName(channel_list[i]);
         if (channel == NULL) {
-            channel = new Channel(client, channel_list[i]);
+            channel = new Channel(client, channel_list[i], message.getParams().size() > 1 ? message.getParams()[1] : "");
             server->addChannel(channel);
         } else {
             try {
-                channel->addClient(client);
+				if (channel->getPassword() != "") {
+					if (message.getParams().size() < 2 || message.getParams()[1] != channel->getPassword()) {
+						client->sendData(replies::ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
+						continue ;
+					}
+				}
+				channel->addClient(client);
             } catch (const Channel::ChannelFullExcpetion &e) {
                 client->sendData(replies::ERR_CHANNELISFULL(client->getNickname(), channel->getName()));
                 continue ;
