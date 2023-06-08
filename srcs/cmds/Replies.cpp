@@ -6,197 +6,219 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 15:39:10 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 01:25:05 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+#include "Client.hpp"
 
-#define SERVER "127.0.0.1"
+#define HOST "127.0.0.1"
+#define SERVERNAME "BTC"
+
+#define REPLY_MESSAGE(x) (std::string(":") + SERVERNAME + " " + x + "\r\n")
+#define ERR_REPLY(code, client, middle, message) (REPLY_MESSAGE(code + " " + (std::string(client->getNickname()) != "" ? (std::string(client->getNickname()) + " ") : "") + (std::string(middle) != "" ? (std::string(middle) + " ") : "") + ":" + message))
+#define BASIC_REPLY(cmd, middle, message) (REPLY_MESSAGE(cmd + " " + middle + " :" + message))
+#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + SERVERNAME + " " + cmd + " " + middle + " :" + message + "\r\n")
 
 namespace	replies {
 	/* ---------------------------------- BASIC --------------------------------- */
-	std::string RPL_WELCOME(const std::string& nick, const std::string user)
+	std::string RPL_WELCOME(Client *client)
 	{
-		return std::string(":") + SERVER + " 001 " + nick + " :Welcome to the BTC network, " + nick + "!" + user + "@" + SERVER + "\r\n";
+		return (ERR_REPLY("001", client, "", "There is no second best."));
 	}
 
 	/* --------------------------------- ERRORS --------------------------------- */
 	// Returned to indicate a failed attempt at registering a connection for which a password was required and was either not given or incorrect.
-	std::string ERR_PASSWDMISMATCH(void)
+	std::string ERR_PASSWDMISMATCH(Client *client)
 	{
-		return std::string(":") + SERVER + " 464 " + "PASS" + ":Password incorrect\r\n";
+		return (ERR_REPLY("464", client, "", "Password incorrect"));
 	}
 
 	// Returned by the server to indicate that the client must be registered before the server will allow it to be parsed in detail.
-	std::string ERR_NOTREGISTERED(void)
+	std::string ERR_NOTREGISTERED(Client *client)
 	{
-		return std::string(":") + SERVER + " 451 " + ":You have not registered\r\n";
+		return (ERR_REPLY("451", client, "", "You have not registered"));
 	}
 
 	// Returned by the server by numerous commands to indicate to the client that it didn't supply enough parameters.
-	std::string ERR_NEEDMOREPARAMS(const std::string& cmd)
+	std::string ERR_NEEDMOREPARAMS(Client *client, std::string const &cmd)
 	{
-		return std::string(":") + SERVER + " 461 " + cmd + ":Not enough parameters\r\n";
+		return (ERR_REPLY("461", client, cmd, "Not enough parameters"));
 	}
 
 	// Returned by the server to any link which tries to change part of the registered details (such as password or user details from second USER message).
-	std::string ERR_ALREADYREGISTRED(void)
+	std::string ERR_ALREADYREGISTRED(Client *client)
 	{
-		return std::string(":") + SERVER + " 462 " ":Already registered in\r\n";
+		return (ERR_REPLY("462", client, " ", "You may not reregister"));
 	}
 
-	std::string ERR_NOSUCHNICK(const std::string& nick, const std::string channel_name)
+	// Used to indicate the nickname parameter supplied to a command is currently unused.
+	std::string ERR_NOSUCHNICK(Client *client, std::string const &channel_name)
 	{
-		return std::string(":") + "Servername" + " 401 " + nick + " " + channel_name + " :No such nick/channel\r\n";
+		return (ERR_REPLY("401", client, channel_name, "No such nick/channel"));
 	}
 
-    std::string ERR_NOSUCHCHANNEL(const std::string& nick, const std::string channel_name)
+	// Used to indicate the given channel name is invalid.
+    std::string ERR_NOSUCHCHANNEL(Client *client, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 403 " + nick + " " + channel_name + " :No such channel\r\n";
+		return (ERR_REPLY("403", client, channel_name, "No such channel"));
     }
 
-    std::string ERR_NOTONCHANNEL(const std::string& nick, const std::string channel_name)
+	// Returned by the server whenever a client tries to perform a channel effecting command for which the client isn't a member.
+    std::string ERR_NOTONCHANNEL(Client *client, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 442 " + nick + " " + channel_name + " :You're not on that channel\r\n";
+		return (ERR_REPLY("442", client, channel_name, "You're not on that channel"));
     }
 
-    std::string ERR_USERNOTINCHANNEL(const std::string& nick, const std::string channel_name)
+	// Returned by the server to indicate that the target user of the command is not on the given channel.
+    std::string ERR_USERNOTINCHANNEL(Client *client, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 441 " + nick + " " + channel_name + " :They aren't on that channel\r\n";
+		return (ERR_REPLY("441", client, channel_name, "They aren't on that channel"));
     }
 
-    std::string ERR_CHANOPRIVSNEEDED(const std::string& nick, const std::string channel_name)
+	// Any command requiring 'chanop' privileges (such as MODE messages) must return this error if the client making the attempt is not a chanop on the specified channel.
+    std::string ERR_CHANOPRIVSNEEDED(Client *client, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 482 " + nick + " " + channel_name + " :You're not channel operator\r\n";
+		return (ERR_REPLY("482", client, channel_name, "You're not channel operator"));
     }
 
-    std::string ERR_USERONCHANNEL(const std::string& nick, const std::string channel_name)
+	// Returned when a client tries to invite a user to a channel they are already on.
+    std::string ERR_USERONCHANNEL(Client *client, Client *other, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 443 " + nick + " " + channel_name + " :is already on channel\r\n";
+		return (ERR_REPLY("443", client, other->getNickname() + " " + channel_name, "is already on channel"));
     }
 
-    std::string ERR_KEYSET(const std::string& nick, const std::string channel_name)
+    std::string ERR_KEYSET(Client *client, const std::string channel_name)
     {
-        return std::string(":") + "Servername" + " 467 " + nick + " " + channel_name + " :Channel key already set\r\n";
+		return (ERR_REPLY("467", client, channel_name, "Channel key already set"));
     }
 
 	/* ------------------------------- CAP_COMMAND ------------------------------ */
 	std::string RPL_CAP(void)
 	{
-		return (std::string(":") + SERVER + " CAP * LS :cap reply...\r\n");
+		return (BASIC_REPLY("CAP", "* LS", "cap reply..."));
 	}
 
 	/* ------------------------------ PING_COMMAND ------------------------------ */
-	std::string RPL_PING(const std::string& token)
+	std::string RPL_PING(std::string const &token)
 	{
-		return std::string(":") + SERVER + " PONG " + SERVER + " :" + token + "\r\n";
+		return (BASIC_REPLY("PONG", SERVERNAME, token));
 	}
 
 	/* ------------------------------ NICK_COMMAND ------------------------------ */
-	std::string ERR_NICKNAMEINUSE(const std::string& nick)
+	// Returned when a NICK message is processed that results in an attempt to change to a currently existing nickname.
+	std::string ERR_NICKNAMEINUSE(Client *client, std::string const &nick)
 	{
-		return std::string(":") + "Servername" + " 433 " + nick + " :Nickname is already in use\r\n";
+		return (ERR_REPLY("433", client, nick, "Nickname is already in use"));
 	}
-	std::string ERR_NONICKNAMEGIVEN(void)
+	// Returned when a nickname parameter expected for a command and isn't found.
+	std::string ERR_NONICKNAMEGIVEN(Client *client)
 	{
-		return std::string(":") + "Servername" + " 431 " + " :Nickname not given\r\n";
+		return (ERR_REPLY("431", client, "", "No nickname given"));
 	}
-    std::string ERR_ERRONEUSNICKNAME(const std::string& nick)
+	// Returned after receiving a NICK message which contains characters which do not fall in the defined set. See section x.x.x for details on valid nicknames.
+    std::string ERR_ERRONEUSNICKNAME(Client *client, std::string const &nick)
     {
-        return std::string(":") + "Servername" + " 432 " + nick + " :Erroneus nickname\r\n";
+		return (ERR_REPLY("432", client, nick, "Erroneus nickname"));
     }
-	std::string RPL_NICKCHANGE(const std::string& old_nick, const std::string& new_nick, const std::string& user)
-	{
-		return std::string(":") + old_nick + "!" + user + "@" + SERVER + " " + "NICK" + " :" + new_nick + "\r\n";
-	}
 
 	/* ------------------------------ QUIT_COMMAND ------------------------------ */
-	std::string RPL_QUIT(const std::string& nick, const std::string& user)
+	std::string RPL_QUIT(Client *client, std::string const &msg)
 	{
-		return std::string(":") + nick + "!" + user + "@" + SERVER + " " + "QUIT :" + "Tschö!" + "\r\n";
+		return (CMD_REPLY(client, "QUIT", "", msg));
 	}
 
 	/* ----------------------------- PRIVMSG_COMMAND ---------------------------- */
-	std::string	RPL_PRIVMSG(const std::string& nick, const std::string& user, const std::string& target, const std::string& msg)
+	std::string	RPL_PRIVMSG(Client *client, std::string const &target, std::string const &msg)
 	{
-		return std::string(":") + nick + "!" + user + "@" + SERVER + " PRIVMSG " + target + " :" + msg + "\r\n";
+		return (CMD_REPLY(client, "PRIVMSG", target, msg));
 	}
 
-	std::string ERR_CANNOTSENDTOCHAN(const std::string& nick, const std::string& channel_name)
+	std::string ERR_CANNOTSENDTOCHAN(Client *client, std::string const &channel_name)
 	{
-		return std::string(":") + "Servername" +  " 404 " + nick + " " + channel_name + " :Cannot send to channel\r\n";
+		return (ERR_REPLY("404", client, channel_name, "Cannot send to channel"));
 	}
 
 	/* ------------------------------ JOIN_COMMAND ------------------------------ */
-	std::string RPL_JOIN(const std::string& nick, const std::string& user, const std::string& channel_name)
+	std::string RPL_JOIN(Client *client, std::string const &channel_name)
 	{
-		return std::string(":") + nick + "!" + user + "@" + SERVER + " JOIN " + channel_name + " * :" + user + "\r\n";
+		return (CMD_REPLY(client, "JOIN", channel_name + " *", client->getUsername()));
 	}
 
-	std::string ERR_CHANNELISFULL(const std::string& nick, const std::string& channel_name)
+	std::string ERR_CHANNELISFULL(Client *client, std::string const &channel_name)
 	{
-		return std::string(":") + SERVER + " 471 " + nick + " " + channel_name + " :Cannot join channel (+l)\r\n";
+		return (ERR_REPLY("471", client, channel_name, "Cannot join channel (+l)"));
 	}
 
-	std::string ERR_INVITEONLYCHAN(const std::string& nick, const std::string& channel_name)
+	std::string ERR_INVITEONLYCHAN(Client *client, std::string const &channel_name)
 	{
-		return std::string(":") + SERVER + " 473 " + nick + " " + channel_name + " :Cannot join channel (+i)\r\n";
+		return (ERR_REPLY("473", client, channel_name, "Cannot join channel (+i)"));
 	}
 
-	std::string RPL_NAMREPLY(const std::string& nick, const std::string& channel_name, const std::string& names_list)
+	std::string RPL_NAMREPLY(Client *client, std::string const &channel_name, std::string const &names_list)
 	{
-		return std::string(":") + SERVER + " 353 " + nick + " = " + channel_name + " :" +  names_list + "\r\n";
+		return (ERR_REPLY("353", client, "= " + channel_name, names_list));
 	}
 
-	std::string RPL_ENDOFNAMES(const std::string& nick, const std::string& channel_name)
+	std::string RPL_ENDOFNAMES(Client *client, std::string const &channel_name)
 	{
-		return std::string(":")  + SERVER + " 366 " + nick + " " + channel_name + " :END of NAMES list\r\n";
+		return (ERR_REPLY("366", client, channel_name, "End of /NAMES list"));
 	}
 
 	/* ------------------------------ PART_COMMAND ------------------------------ */
-	std::string RPL_PART(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string reason)
+	std::string RPL_PART(Client *client, std::string const &channel_name, const std::string reason)
 	{
-		return std::string(":") + nick + "!" + user + "@" + SERVER + " PART " + channel_name + " " + reason + "\r\n";
+		return (CMD_REPLY(client, "PART", channel_name, reason));
 	}
 
     /* ------------------------------ TOPIC_COMMAND ----------------------------- */
-    // @note copilots suggestions. let's see if it works!
-    std::string RPL_TOPIC(const std::string& nick, const std::string& channel_name, const std::string& topic)
-    {
-        return std::string(":") + nick + "!" + "@" + SERVER + " TOPIC " + channel_name + " :" + topic + "\r\n";
-    }
+	std::string RPL_TOPIC(Client *client, const std::string& channel_name, const std::string& topic)
+	{
+		return (ERR_REPLY("332", client, channel_name, topic));
+	}
 
-    std::string RPL_NOTOPIC(const std::string& nick, const std::string& channel_name)
-    {
-        return std::string(":") + nick + "!" + "@" + SERVER + " TOPIC " + channel_name + " :No topic is set\r\n";
-    }
+	std::string RPL_TOPICCHANGE(Client *client, const std::string& channel_name, const std::string& topic)
+	{
+		return (CMD_REPLY(client, "TOPIC", channel_name, topic));
+	}
+
+	std::string RPL_NOTOPIC(Client *client, const std::string& channel_name)
+	{
+		return (ERR_REPLY("331", client, channel_name, "No topic is set"));
+	}
 
     /* ------------------------------ INVITE_COMMAND ----------------------------- */
-    std::string RPL_INVITE(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target)
+    std::string RPL_INVITE(Client *client, std::string const &channel_name, std::string const &target)
     {
-        return std::string(":") + nick + "!" + user + "@" + SERVER + " INVITE " + target + " " + channel_name + "\r\n";
+		return (CMD_REPLY(client, "INVITE", target, channel_name));
     }
 
 	/* ------------------------------ KICK_COMMAND ------------------------------ */
-	std::string RPL_KICK(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& target, const std::string reason)
+	std::string RPL_KICK(Client *client, std::string const &channel_name, std::string const &target, const std::string reason)
 	{
-		return std::string(":") +  nick + "!" + user + "@" + SERVER + " KICK " + channel_name + " " + target + " :" + reason + "\r\n";
+		return (CMD_REPLY(client, "KICK", channel_name + " " + target, reason));
 	}
 
     /* ------------------------------- MODE_COMMAND ------------------------------ */
-    std::string RPL_CHANNELMODEIS(const std::string& nick, const std::string& user, const std::string& channel_name, const std::string& mode)
+    std::string RPL_CHANNELMODEIS(Client *client, std::string const &channel_name, std::string const &modes)
+	{
+		return (ERR_REPLY("324", client, channel_name, modes));
+	}
+
+	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode)
+	{
+		return (ERR_REPLY("324", client, channel_name, mode));
+	}
+
+    std::string ERR_UMODEUNKNOWNFLAG(Client *client)
     {
-        return std::string(":") + nick + "!" + user + "@" + SERVER + " MODE " + channel_name + " " + mode + "\r\n";
+		return (ERR_REPLY("501", client, "", "Unknown MODE flag"));
     }
 
-    std::string ERR_UNKNOWNMODE(const std::string& nick, const char mode)
+	// @todo really the correct thing??
+    std::string ERR_TOOMANYARGS(Client *client, const char mode)
     {
-        return std::string(":") + SERVER + " 420 " + nick + " " + mode + " :wtf is this flag bro\r\n";
-    }
-
-    std::string ERR_TOOMANYARGS(const std::string& nick, const char mode)
-    {
-        return std::string(":") + SERVER + " 420 " + nick + " " + mode + " :too many arguments\r\n";
+		return (ERR_REPLY("420", client, std::string(1, mode), "Too many arguments"));
     }
 };

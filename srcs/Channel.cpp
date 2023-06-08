@@ -6,17 +6,18 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 11:54:12 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 01:10:33 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+#include <algorithm>	// std::find
 
 /* -------------------------------------------------------------------------- */
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Channel::Channel(Client *oper, std::string const &channelName, std::string const &password) : name(channelName), topic(""), password(password), userLimit(0), inviteOnly(false) {
+Channel::Channel(Client *oper, std::string const &channelName, std::string const &password) : name(channelName), topic(""), topicRestriction(false), password(password), userLimit(0), inviteOnly(false) {
 	this->clients.push_back(oper);
     this->operators.push_back(oper);
 }
@@ -121,6 +122,11 @@ size_t  Channel::getUserLimit(void) const {
 /* -------------------------------------------------------------------------- */
 
 void	Channel::addInvited(Client *client) {
+	for (std::vector<Client*>::iterator it = this->invited.begin(); it != this->invited.end(); it++) {
+		if (*it == client) {
+			return ;
+		}
+	}
 	this->invited.push_back(client);
 }
 
@@ -134,7 +140,7 @@ void	Channel::addClient(Client *client) {
 	if (this->userLimit > 0 && this->clients.size() >= this->userLimit) {
 		throw Channel::ChannelFullExcpetion();
 	}
-	if (this->inviteOnly && std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
+	if (this->inviteOnly && std::find(this->invited.begin(), this->invited.end(), client) == this->invited.end()) {
 		throw Channel::InviteOnlyExcpetion();
 	}
 	for (std::vector<Client*>::iterator it = this->invited.begin(); it != this->invited.end(); it++) {

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:41:03 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/07 11:34:36 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/08 20:13:09 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Command::Command(bool needsPass, bool needsRegistration) : checkRegister(needsRegistration), checkPass(needsPass) {
+Command::Command(bool needsPass, bool needsRegistration, bool needsParamsCount) : checkRegister(needsRegistration), checkPass(needsPass), checkParamsCount(needsParamsCount) {
 }
 
 Command::~Command() {
@@ -45,15 +45,15 @@ Command::~Command() {
  */
 void	Command::execute(Message& message, Server* server, Client* client) {
 	if (this->checkPass && !client->isAuthenticated()) {
-		client->sendData(replies::ERR_PASSWDMISMATCH());
+		client->sendData(replies::ERR_PASSWDMISMATCH(client));
 		return ;
 	}
 	if (this->checkRegister && !client->isRegistered()) {
-		client->sendData(replies::ERR_NOTREGISTERED());
+		client->sendData(replies::ERR_NOTREGISTERED(client));
 		return ;
 	}
-	if (message.getParams().size() < 1) {
-		client->sendData(replies::ERR_NEEDMOREPARAMS(message.getCmdName()));
+	if (this->checkParamsCount && message.getParams().size() < 1) {
+		client->sendData(replies::ERR_NEEDMOREPARAMS(client, message.getCmdName()));
 		return ;
 	}
 	this->exec(message, server, client);
@@ -86,5 +86,5 @@ void	Command::checkRegistered(Client *client) const {
 	if (client->getNickname().empty() || client->getUsername().empty() || client->getFullName().empty() || client->isRegistered())
 		return ;
 	client->setRegistered(true);
-	client->sendData(replies::RPL_WELCOME(client->getNickname(), ""));
+	client->sendData(replies::RPL_WELCOME(client));
 }

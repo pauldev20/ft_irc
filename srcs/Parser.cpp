@@ -161,6 +161,11 @@ static int	handleCommand(Message& command, std::string& message)
 		static TOPIC topic;
 		command.setCmdAll(&topic, CMD_TOPIC);
 	}
+	else if (token == CMD_INVITE)
+	{
+		static INVITE invite;
+		command.setCmdAll(&invite, CMD_INVITE);
+	}
 	else
 		return (ERROR);
 	return (SUCCESS);
