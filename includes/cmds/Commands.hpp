@@ -119,11 +119,11 @@ class MODE : public Command {
 
     private:
         void        exec(Message& message, Server* server, Client* client);
-        void        setInviteOnly(Channel* channel, bool set);
-        void        setTopicRestriction(Channel* channel, bool set);
-        void        setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set);
-        void        setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove);
-        void        setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove);
+        bool        setInviteOnly(Channel* channel, bool set);
+        bool        setTopicRestriction(Channel* channel, bool set);
+        bool        setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set);
+        bool        setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove);
+        bool        setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove);
         std::string getCurrentModes(Channel* channel);
         bool        isValidCall(std::vector<std::string> params, Channel* channel, Client* client, std::string flags);
 };
