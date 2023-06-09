@@ -33,10 +33,7 @@ Channels (user limits, passwords, invite-only):
 
 ## TODO
 
-- check whats up with `:/\0` in passwords and usernames??
 - what happens if too many paramters are passed to an command -> currently they are just ignored
 - differentiate between trailing parameter and normal parameters -> after that the handling of the parameters count in the commands needs to be updated
 - servername or host in replies??
 - can receive privmsg before finished register!!
-- invite message only to invited client or also to inviter
-- if client is kicked, does he need new invite??
