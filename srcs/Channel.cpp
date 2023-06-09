@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 01:10:33 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 21:54:01 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,10 @@ void	Channel::removeOperator(Client *oper) {
 
 bool	Channel::isOperator(Client *client) const {
 	return (std::find(this->operators.begin(), this->operators.end(), client) != this->operators.end());
+}
+
+std::vector<Client*> &Channel::getOperators(void) {
+	return (this->operators);
 }
 
 std::string const &Channel::getPassword(void) const {
@@ -196,22 +200,8 @@ void	Channel::removeClientFromAll(Client *client) {
 	}
 }
 
-std::string Channel::getClientList(void) {
-	std::string clientList;
-	for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-		if (it == this->clients.begin()) {
-			if (std::find(this->operators.begin(), this->operators.end(), *it) != this->operators.end())
-				clientList = "@" + (*it)->getNickname();
-			else
-				clientList = (*it)->getNickname();
-		} else {
-			if (std::find(this->operators.begin(), this->operators.end(), *it) != this->operators.end())
-				clientList += " @" + (*it)->getNickname();
-			else
-				clientList += " " + (*it)->getNickname();
-		}
-	}
-	return (clientList);
+std::vector<Client*> &Channel::getClients(void) {
+	return (this->clients);
 }
 
 /**

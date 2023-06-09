@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:02:45 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 12:42:37 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 21:53:32 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Channel {
 		void	addOperator(Client *oper);
 		void	removeOperator(Client *oper);
 		bool	isOperator(Client *client) const;
+		std::vector<Client*> &getOperators(void);
 
 		std::string const &getPassword(void) const;
 		void	setPassword(std::string const &password);
@@ -52,7 +53,7 @@ class Channel {
 		void	addClient(Client *client);
 		void	removeClient(Client *client);
 		void	removeClientFromAll(Client *client);
-		std::string	getClientList(void);
+		std::vector<Client*> &getClients(void);
 
 		bool	isClientInChannel(Client *client);
 

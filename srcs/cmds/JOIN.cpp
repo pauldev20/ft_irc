@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 00:41:42 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:01:52 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,21 @@ void JOIN::exec(Message& message, Server* server, Client* client) {
             }
         }
 		channel->sendMessageToAll(replies::RPL_JOIN(client, channel->getName()));
-		client->sendData(replies::RPL_NAMREPLY(client, channel->getName(), channel->getClientList()));
+        std::vector<Client*> clients = channel->getClients();
+        std::vector<Client*> operators = channel->getOperators();
+        std::string clientList = "";
+        for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+            std::cout << (*it)->getNickname() << std::endl;
+            if (std::find(operators.begin(), operators.end(), *it) != operators.end())
+                clientList += "@" + (*it)->getNickname() + " ";
+            else
+                clientList += (*it)->getNickname() + " ";
+            if (clientList.size() > 400) {
+                client->sendData(replies::RPL_NAMREPLY(client, channel->getName(), clientList));
+                clientList = "";
+            }
+        }
+		client->sendData(replies::RPL_NAMREPLY(client, channel->getName(), clientList));
 		client->sendData(replies::RPL_ENDOFNAMES(client, channel->getName()));
     }
 }
