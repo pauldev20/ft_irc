@@ -186,7 +186,7 @@ static int	handle_params(Message& command, std::string& message)
 	return (SUCCESS);
 }
 
-int	irc::parseMessage(Message& command, std::string& message)
+int	irc::parse_message(Message& command, std::string& message)
 {
 	if (message.find(CRLF) == std::string::npos)
 		return (ERROR);

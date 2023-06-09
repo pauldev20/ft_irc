@@ -265,12 +265,12 @@ void	Server::receiveData(int fd) {
 			if (msg.empty())
 				break ;
 			Message message;
-			if (irc::parseMessage(message, msg) == ERROR) {
-				printError("parseMessage");
+			if (irc::parse_message(message, msg) == ERROR) {
+				printError("parse_message");
 				continue ;
 			}
-			// debug::printMessage(message);
-			if (irc::executeMessage(message, this, client) == ERROR) {
+			// debug::print_message(message);
+			if (irc::execute_message(message, this, client) == ERROR) {
 				printError("executeMessage");
 				continue ;
 			}
