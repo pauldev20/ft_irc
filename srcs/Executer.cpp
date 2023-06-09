@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-int	irc::executeMessage(Message& message, Server* server, Client* client)
+int	irc::execute_message(Message& message, Server* server, Client* client)
 {
 	message.getCmd()->execute(message, server, client);
 

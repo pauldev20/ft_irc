@@ -10,13 +10,13 @@
 
 namespace debug
 {
-	void	printMessage(const Message& message);
+	void	print_message(const Message& message);
 }
 
 namespace irc
 {
-	int	parseMessage(Message& message, std::string& msg);
-	int	executeMessage(Message& message, Server* server, Client* client);
+	int	parse_message(Message& message, std::string& msg);
+	int	execute_message(Message& message, Server* server, Client* client);
 }
 
 namespace replies

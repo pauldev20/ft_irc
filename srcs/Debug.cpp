@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-void	debug::printMessage(const Message& command)
+void	debug::print_message(const Message& command)
 {
 	std::cout << "prefix: " << command.getPrefix() << std::endl;
 	std::cout << "params:" << std::endl;
