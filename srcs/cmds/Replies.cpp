@@ -221,4 +221,18 @@ namespace	replies {
     {
 		return (ERR_REPLY("420", client, std::string(1, mode), "Too many arguments"));
     }
+
+    std::string RPL_YOUREOPER(Client *client)
+    {
+        (void)client;
+        return std::string(":") + "Servername" + " 381 " + "PASS :You are now an IRC operator\r\n";
+    }
+
+    std::string RPL_SETMODECLIENT(Client* client, std::string const &channel_name, std::string const &mode, std::string const &target)
+    {
+        if (!target.empty())
+            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + target + "\r\n";
+        else
+            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + "\r\n";
+    }
 };

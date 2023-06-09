@@ -70,6 +70,8 @@ namespace replies
 	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode);
 	std::string ERR_UMODEUNKNOWNFLAG(Client *client);
 	std::string ERR_TOOMANYARGS(Client *client, const char mode);
+    std::string RPL_YOUREOPER(Client *client);
+    std::string RPL_SETMODECLIENT(Client* client, std::string const &channel_name, std::string const &mode, std::string const &target);
 };
 
 #endif

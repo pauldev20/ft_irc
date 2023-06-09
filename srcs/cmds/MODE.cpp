@@ -2,10 +2,21 @@
 #include "cmds/Commands.hpp"
 #include <sstream>
 
-MODE::MODE(void) : Command () {
+#define MODE_FLAGS "itokl"
+
+MODE::MODE(void) : Command()
+{
 }
 
-std::string MODE::getCurrentModes(Channel* channel) {
+
+bool isNumber(const std::string& str) {
+    std::istringstream iss(str);
+    int number;
+    return (iss >> number >> std::ws) && iss.eof();
+}
+
+std::string MODE::getCurrentModes(Channel *channel)
+{
     std::string modeString;
 
     if (channel->isInviteOnly())
@@ -14,7 +25,8 @@ std::string MODE::getCurrentModes(Channel* channel) {
         modeString.append("t ");
     if (channel->getPassword() != "")
         modeString.append("k ");
-    if (channel->getUserLimit() != 0) {
+    if (channel->getUserLimit() != 0)
+    {
         modeString.append("l=");
         std::ostringstream tmp;
         tmp << channel->getUserLimit();
@@ -23,155 +35,136 @@ std::string MODE::getCurrentModes(Channel* channel) {
     return (modeString);
 }
 
-// @todo if the MODE cmd is called w/o arguments, the server should return the
-// modes of the channel
-// @note if one instruction should fail bc of false parameters or similar stuff,
-// the whole command should fail, providing the client with the error that caused
-// the termiation. This should be handled by the exec command
-void MODE::exec(Message& message, Server* server, Client* client) {
-    // @note after every mode change, it is appended to the modeString
-    // alternatively, the modeString can be passed to the funtions, and the
-    // correct change can be appended there
-    std::string modeString;
-    std::string flags = "itkol";
-    std::vector<std::string> params = message.getParams();
-    // flags can be called like '+i-t' or '+i,-t'
-    // need to check if there are at least 2 params (channel name and flags as one string)
-    Channel *channel = server->getChannelByName(params[0]);
-    // check if valid channel name was provided
-    if (channel == NULL) {
+bool    MODE::isValidCall(std::vector<std::string> params, Channel* channel, Client* client, std::string flags)
+{
+    if (channel == NULL)
+    {
         client->sendData(replies::ERR_NOSUCHCHANNEL(client, params[0]));
-        return ;
+        return (false);
     }
-    if (params.size() < 2) {
+    if (params.size() < 2)
+    {
         client->sendData(replies::RPL_CHANNELMODEIS(client, channel->getName(), getCurrentModes(channel)));
-        return ;
+        return (false);
     }
-    // check if client is channel operator
-    if (!channel->isOperator(client)) {
+    if (!channel->isOperator(client))
+    {
         client->sendData(replies::ERR_CHANOPRIVSNEEDED(client, channel->getName()));
-        return ;
+        return (false);
     }
-    // also check if the provided flags can be executed
-    // @note getParams[1], am I accessing the middle param this way?
-    for (size_t i = 0; i < params[1].size(); i++) {
-        if (flags.find(params[1].c_str(), i, 1) == std::string::npos
-            && params[1].find("+") == std::string::npos
-            && params[1].find("-") == std::string::npos) {
+    for (size_t i = 0; i < params[1].size(); i++)
+    {
+        if (flags.find_first_of(params[1].c_str()) == std::string::npos && params[1][i] != '+' && params[1][i] != '-')
+        {
             client->sendData(replies::ERR_UMODEUNKNOWNFLAG(client));
-            return ;
-        } else {
-            // if the flag is valid, exec the right function
-            if (params[1][i] == 'i') {
-                if (params[1][i - 1] == '+')
-                    setInviteOnly(channel, true);
-                else
-                    setInviteOnly(channel, false);
-            }
-            if (params[1][i] == 't') {
-                if (params[1][i - 1] == '+')
-                    setTopicRestriction(channel, true);
-                else
-                    setTopicRestriction(channel, false);
-            }
-            if (params[1][i] == 'k') {
-                if (params[1][i - 1] == '+') {
-                    if (params.size() > 2)
-                        setPassword(channel, params[2]);
-                    else {
-                        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
-                        return ;
-                    }
-                }
-                else {
-                    if (params.size() > 2) {
-                        client->sendData(replies::ERR_TOOMANYARGS(client->getNickname(), params[1][i]));
-                        return ;
-                    } else {
-                        setPassword(channel, "");
-                    }
-                }
-            }
-            if (params[1][i] == 'o') {
-                if (params.size() < 3) {
-                    client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
-                    return ;
-                }
-                Client* target = server->getClientByNickname(params[2]);
-                // @todo new operator dont get published into channel!!!!!!!!!
-                if (target != NULL) {
-                    if (params[1][i - 1] == '+')
-                        setOperator(channel, target, true);
-                    else
-                        setOperator(channel, target, false);
-                } else {
-                    client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
-                    return ;
-                }
-            }
-            if (params[1][i] == 'l') {
-                if (params[1][i - 1] == '+') {
-                    if (params.size() > 2) {
-                        std::stringstream sstream(params[2]);
-                        size_t limit;
-                        sstream >> limit;
-                        setUserLimit(channel, limit);
-                    }
-                    else {
-                        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
-                        return ;
-                    }
-                }
-                else {
-                    if (params.size() > 2) {
-                        client->sendData(replies::ERR_TOOMANYARGS(client->getNickname(), params[1][i]));
-                        return ;
-                    } else {
-                        setUserLimit(channel, 0);
-                    }
-                }
-            }
-            if (params[1][i] != '+' && params[1][i] != '-') {
-                modeString.push_back(params[1].c_str()[i - 1]);
-                modeString.push_back(params[1].c_str()[i]);
-            }
+            return (false);
         }
     }
-    // this is send at the very end
-    // @note check if the user changing the mode is receiving some kind of msg
-    channel->sendMessageToAll(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString));
+    return (true);
 }
 
-// i - set/remove invite-only; operator only
-// will be called if the i flag is encountered
-// if the set bool is false, the flag is removed
-void MODE::setInviteOnly(Channel* channel, bool set) {
+
+// @todo need to throw error when the pwd has incorrect format?
+void MODE::exec(Message &message, Server *server, Client *client)
+{
+    bool addOrRemove = true;
+    std::string modeString = "";
+    std::string flags = MODE_FLAGS;
+    std::vector<std::string> params = message.getParams();
+    Channel* channel = server->getChannelByName(params[0]);
+    if (!isValidCall(params, channel, client, flags))
+        return;
+    for (size_t i = 0; i < params[1].size(); i++)
+    {
+        if (params[1][i] == '+' || params[1][i] == '-')
+        {
+            if (params[1][i] == '-')
+                addOrRemove = false;
+            else
+                addOrRemove = true;
+            modeString.push_back(params[1][i]);
+            i++;
+            while (isalpha(params[1][i]))
+            {
+                if (params[1][i] == 'i')
+                    setInviteOnly(channel, addOrRemove);
+                else if (params[1][i] == 't')
+                    setTopicRestriction(channel, addOrRemove);
+                else if (params[1][i] == 'k')
+                    setPassword(channel, params, client, addOrRemove);
+                else if (params[1][i] == 'o')
+                    setOperator(channel, client, server, params, addOrRemove);
+                else if (params[1][i] == 'l')
+                    setUserLimit(channel, client, params, addOrRemove);
+                modeString.push_back(params[1][i]);
+                if (params[1][i + 1] != '+' && params[1][i + 1] != '-')
+                    i++;
+                else
+                    break;
+            }
+        }
+        if (i == 0 && params[1][i] != '+' && params[1][i] != '-')
+        {
+            client->sendData(replies::ERR_UMODEUNKNOWNFLAG(client));
+            return;
+        }
+    }
+    channel->sendMessageToAllExcept(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString), client);
+    channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, params[2]));
+}
+
+void MODE::setInviteOnly(Channel *channel, bool set)
+{
     channel->setInviteOnly(set);
 }
 
-void MODE::setTopicRestriction(Channel* channel, bool set) {
+void MODE::setTopicRestriction(Channel *channel, bool set)
+{
     channel->setTopicRestriction(set);
 }
 
-// @note in order to be able to call it, a third parameter needs to be defined
-// the user whose priviliges needs to be changed
-void MODE::setOperator(Channel* channel, Client* target, bool set) {
-    if (set)
-        channel->addOperator(target);
+void MODE::setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set)
+{
+    Client* target = server->getClientByNickname(params[2]);
+    if (target != NULL)
+    {
+        if (set)
+            channel->addOperator(target);
+        else
+            channel->removeOperator(target);
+    }
     else
-        channel->removeOperator(target);
+        client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
 }
 
-// @note inside exec, we need to check whether a password is provided
-// if not, then password is an empty string
-// if the user calls +k without a password, an error should be returned
-void MODE::setPassword(Channel* channel, std::string password) {
-    channel->setPassword(password);
+void MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
+{
+    if (addOrRemove && params.size() > 2)
+        channel->setPassword(params[2]);
+    else if (!addOrRemove)
+        channel->setPassword("");
+    else
+        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
 }
 
-// @note inside exec, we need to check whether a limit is provided
-// if not, then limit is 0
-// if the user calls +l without a limit, an error should be returned
-void MODE::setUserLimit(Channel *channel, size_t limit) {
-    channel->setUserLimit(limit);
+void MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove)
+{
+    if (addOrRemove && params.size() > 2)
+    {
+        if (isNumber(params[2]))
+        {
+            std::stringstream sstream(params[2]);
+            size_t limit;
+            sstream >> limit;
+            channel->setUserLimit(limit);
+        }
+        else
+        {
+            // send msg regarding wrong argument
+        }
+    }
+    else if (!addOrRemove)
+        channel->setUserLimit(0);
+    else
+        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
 }
