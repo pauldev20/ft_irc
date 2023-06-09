@@ -63,7 +63,7 @@ static bool	is_all_alpha(const std::string& str)
 	return true;
 }
 
-static	std::string getNextToken(std::string& message, bool isTrailing)
+static	std::string get_next_token(std::string& message, bool isTrailing)
 {
 	std::string token;
 
@@ -84,18 +84,18 @@ static	std::string getNextToken(std::string& message, bool isTrailing)
 	return (token);
 }
 
-static void	handlePrefix(Message& command, std::string& message)
+static void	handle_prefix(Message& command, std::string& message)
 {
 	if (message[0] == COLON)
 	{
 		message.erase(0, 1);
-		command.setPrefix(getNextToken(message, false));
+		command.setPrefix(get_next_token(message, false));
 	}
 }
 
-static int	handleCommand(Message& command, std::string& message)
+static int	handle_command(Message& command, std::string& message)
 {
-	std::string token = getNextToken(message, false);
+	std::string token = get_next_token(message, false);
 
 	if (token.empty())
 		return (ERROR);
@@ -166,7 +166,7 @@ static int	handleCommand(Message& command, std::string& message)
 	return (SUCCESS);
 }
 
-static int	handleParams(Message& command, std::string& message)
+static int	handle_params(Message& command, std::string& message)
 {
 	std::string	token;
 
@@ -174,17 +174,13 @@ static int	handleParams(Message& command, std::string& message)
 	{
 		if (message[0] == COLON)
 		{
-			if (message.length() == 1 + strlen(CRLF))
-				command.setTrailingEmpty(true);
-			else
-			{
-				token = getNextToken(message, true);
-				command.setTrailing(token);
-			}
+			command.setHasTrailing(true);
+			token = get_next_token(message, true);
+			command.setTrailing(token);
 			return (SUCCESS);
 		}
 		else
-			token = getNextToken(message, false);
+			token = get_next_token(message, false);
 		command.addParam(token);
 	}
 	return (SUCCESS);
@@ -195,10 +191,10 @@ int	irc::parseMessage(Message& command, std::string& message)
 	if (message.find(CRLF) == std::string::npos)
 		return (ERROR);
 
-	handlePrefix(command, message);
-	if (handleCommand(command, message) == ERROR)
+	handle_prefix(command, message);
+	if (handle_command(command, message) == ERROR)
 		return (ERROR);
-	if (handleParams(command, message) == ERROR)
+	if (handle_params(command, message) == ERROR)
 		return (ERROR);
 	if (message.substr(0, strlen(CRLF)) != CRLF)
 		return (ERROR);
