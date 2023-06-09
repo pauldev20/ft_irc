@@ -6,14 +6,15 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:34:49 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:38:23 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmds/Commands.hpp"
 #include "Channel.hpp"
-#include <sstream>	// std::stringstream
-#include <vector>	// std::vector
+#include <sstream>	    // std::stringstream
+#include <vector>       // std::vector
+#include <algorithm>	// std::find
 
 static bool	checkChannelNameValidity(std::string const &name) {
 	if (name.size() > 0 && name[0] != '#') {
