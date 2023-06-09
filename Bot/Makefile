@@ -4,7 +4,7 @@
 
 NAME		:= ircbot
 CC			:= c++
-CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
+CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g
 
 # ----------------------------------- MAIN ----------------------------------- #
 SRCFILES	:= main.cpp Bot.cpp
