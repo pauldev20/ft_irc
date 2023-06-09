@@ -25,12 +25,12 @@ class Command;
 class Message
 {
 	private:
-		std::string						_prefix; // @note potentially separate object / more complex, also the prefix doesn't belong to the command
+		std::string						_prefix;
 		Command*						_cmd;
 		std::string						_cmd_name;
 		std::vector<std::string>		_params;
 		std::string						_trailing;
-		bool							_is_trailing_empty;
+		bool							_has_trailing;
 	public:
 										Message();
 										~Message();
@@ -41,11 +41,11 @@ class Message
 		void							addParam(std::string param);
 		void							setParams(std::vector<std::string> params);
 		void							setTrailing(std::string trailing);
-		void							setTrailingEmpty(bool is_trailing_empty);
+		void							setHasTrailing(bool is_trailing_empty);
 		std::string						getPrefix() const;
 		Command*						getCmd() const;
 		std::string						getCmdName() const;
 		const std::vector<std::string>&	getParams() const;
 		std::string						getTrailing() const;
-		bool							isTrailingEmpty() const;
+		bool							getHasTrailing() const;
 };

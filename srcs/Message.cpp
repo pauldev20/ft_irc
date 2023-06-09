@@ -4,7 +4,7 @@
 
 #include <string>
 
-Message::Message() : _prefix(""), _cmd(NULL), _cmd_name(""), _params(0), _trailing(""), _is_trailing_empty(false)
+Message::Message() : _prefix(""), _cmd(NULL), _cmd_name(""), _params(0), _trailing(""), _has_trailing(false)
 {
 }
 
@@ -49,9 +49,9 @@ void	Message::setTrailing(std::string trailing)
 	this->_trailing = trailing;
 }
 
-void	Message::setTrailingEmpty(bool is_trailing_empty)
+void	Message::setHasTrailing(bool has_trailing)
 {
-	this->_is_trailing_empty = is_trailing_empty;
+	this->_has_trailing = has_trailing;
 }
 
 std::string	Message::getPrefix() const
@@ -79,7 +79,7 @@ std::string	Message::getTrailing() const
 	return (this->_trailing);
 }
 
-bool	Message::isTrailingEmpty() const
+bool	Message::getHasTrailing() const
 {
-	return (this->_is_trailing_empty);
+	return (this->_has_trailing);
 }
