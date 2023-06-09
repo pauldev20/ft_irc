@@ -6,10 +6,10 @@ Authentication:
 - `CAP` -> no real implementation
 - `PASS <password>`
 - `NICK <nickname>`
-- `USER <username> <??> <??> :<fullname>` check only if its there -> can be empty
+- `USER <username> <??> <??> :<fullname>` check also if its not empty -> shouldnt be empty
 
 Basics:
-- `PRIVMSG <reciever1, reciever2> :<message>` check also if its not empty -> cant be empty
+- `PRIVMSG <reciever1, reciever2> :<message>` check also if its not empty -> shouldnt be empty
 - `PING`
 - `QUIT :<~msg~>` if trailing is empty return standard
 
@@ -33,6 +33,4 @@ Channels (user limits, passwords, invite-only):
 
 ## TODO
 
-- change trailing handling
 - what happens if too many paramters are passed to an command -> currently they are just ignored
-- repair client list too long 512 characters

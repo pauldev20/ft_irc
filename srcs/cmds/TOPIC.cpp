@@ -16,12 +16,11 @@ void TOPIC::exec(Message& message, Server* server, Client* client) {
         client->sendData(replies::ERR_NOTONCHANNEL(client, params[0]));
         return ;
     }
-    if (params.size() < 1 || message.getTrailing().empty()) {
+    if (params.size() < 1 || !message.getHasTrailing()) {
         if (topic.empty()) {
             client->sendData(replies::RPL_NOTOPIC(client, params[0]));
             return ;
         } else {
-            // @todo implement removal of topic
             client->sendData(replies::RPL_TOPIC(client, params[0], topic));
             return ;
         }
