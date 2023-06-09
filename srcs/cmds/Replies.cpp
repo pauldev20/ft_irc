@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 19:08:00 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 20:04:10 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #define REPLY_MESSAGE(x) (std::string(":") + SERVERNAME + " " + x + "\r\n")
 #define ERR_REPLY(code, client, middle, message) (REPLY_MESSAGE(code + " " + (std::string(client->getNickname()) != "" ? (std::string(client->getNickname()) + " ") : "") + (std::string(middle) != "" ? (std::string(middle) + " ") : "") + ":" + message))
 #define BASIC_REPLY(cmd, middle, message) (REPLY_MESSAGE(cmd + " " + middle + " :" + message))
-#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + SERVERNAME + " " + cmd + " " + middle + " :" + message + "\r\n")
+#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " " + cmd + " " + middle + " :" + message + "\r\n")
 
 namespace	replies {
 	/* ---------------------------------- BASIC --------------------------------- */
@@ -206,6 +206,7 @@ namespace	replies {
 		return (ERR_REPLY("324", client, channel_name, modes));
 	}
 
+	// @todo needed??
 	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode)
 	{
 		return (ERR_REPLY("324", client, channel_name, mode));
@@ -229,9 +230,6 @@ namespace	replies {
 
     std::string RPL_SETMODECLIENT(Client* client, std::string const &channel_name, std::string const &mode, std::string const &target)
     {
-        if (!target.empty())
-			return (CMD_REPLY(client, "MODE", channel_name + " " + mode, target));
-        else
-			return (CMD_REPLY(client, "MODE", channel_name + " " + mode, ""));
+		return (CMD_REPLY(client, "MODE", channel_name + " " + mode, target));
     }
 };

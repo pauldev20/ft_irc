@@ -35,6 +35,4 @@ Channels (user limits, passwords, invite-only):
 
 - change trailing handling
 - what happens if too many paramters are passed to an command -> currently they are just ignored
-- servername or host in replies??
-
 - repair client list too long 512 characters
