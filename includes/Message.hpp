@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 
+#define PARAM_MAX 15
+
 class Command;
 
 class Message
@@ -27,9 +29,9 @@ class Message
 		Command*						_cmd;
 		std::string						_cmd_name;
 		std::vector<std::string>		_params;
-	public:		
+		std::string						_trailing;
+	public:
 										Message();
-										Message(std::string prefix, Command* cmd, std::string cmd_name, std::vector<std::string> params);
 										~Message();
 		void							setPrefix(std::string prefix);
 		void							setCmd(Command* cmd);
@@ -37,8 +39,10 @@ class Message
 		void							setCmdAll(Command* cmd, std::string cmd_name);
 		void							addParam(std::string param);
 		void							setParams(std::vector<std::string> params);
+		void							setTrailing(std::string trailing);
 		const std::string&				getPrefix() const;
 		Command*						getCmd() const;
 		const std::string				getCmdName() const;
 		const std::vector<std::string>&	getParams() const;
+		const std::string&				getTrailing() const;
 };

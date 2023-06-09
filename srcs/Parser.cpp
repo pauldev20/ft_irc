@@ -179,8 +179,9 @@ static int	handleParams(Message& command, std::string& message)
 	{
 		if (message[0] == COLON)
 		{
-			i = PARAM_MAX;
 			token = getNextToken(message, true);
+			command.setTrailing(token);
+			return (SUCCESS);
 		}
 		else
 			token = getNextToken(message, false);
