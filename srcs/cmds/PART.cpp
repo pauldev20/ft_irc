@@ -24,7 +24,7 @@ void PART::exec(Message& message, Server* server, Client* client) {
             client->sendData(replies::ERR_NOSUCHCHANNEL(client, params[0]));
             continue ;
         }
-        channel->sendMessageToAll(replies::RPL_PART(client, channel->getName(), params.size() > 1 ? params[1] : ""));
+        channel->sendMessageToAll(replies::RPL_PART(client, channel->getName(), message.getTrailing()));
         channel->removeClient(client);
         if (channel->getClientCount() == 0) {
             server->removeChannel(channel);
