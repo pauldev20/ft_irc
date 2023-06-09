@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 00:10:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:17:16 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 18:18:44 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ void USER::exec(Message& message, Server* server, Client* client) {
 	}
 	std::vector<std::string> params = message.getParams();
 	client->setUsername(params[0]);
-	client->setFullName(params[3]);
+	client->setFullName(message.getTrailing());
 	this->checkRegistered(client);
 }

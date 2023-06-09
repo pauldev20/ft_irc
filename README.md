@@ -6,19 +6,19 @@ Authentication:
 - `CAP` -> no real implementation
 - `PASS <password>`
 - `NICK <nickname>`
-- `USER <??>`
+- `USER <username> <??> <??> :<fullname>`
 
 Basics:
-- `PRIVMSG <reciever1, reciever2> <message>`
+- `PRIVMSG <reciever1, reciever2> :<message>`
 - `PING`
-- `QUIT <~msg~>`
+- `QUIT :<~msg~>`
 
 Channels (user limits, passwords, invite-only):
 - `JOIN <channel> <~password~>`
-- `PART <channel1, channel2> <reason>`
-- `KICK <channel1, channel2> <user1, user2> <reason>`
+- `PART <channel1, channel2> :<reason>`
+- `KICK <channel1, channel2> <user1, user2> :<reason>`
 - `INVITE <nickname> <channel>`
-- `TOPIC <channel> <newtopic>` ?? can also read?
+- `TOPIC <channel> :<newtopic>`
 - `MODE <channel> <i, t, k, o, l>`
 <!-- - `OPER <nickname> <password???>` -->
 
