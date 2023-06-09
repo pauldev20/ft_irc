@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 00:45:40 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 18:13:01 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,7 +269,7 @@ void	Server::receiveData(int fd) {
 				printError("parseMessage");
 				continue ;
 			}
-			// debug::debugMessage(message);
+			// debug::printMessage(message);
 			if (irc::executeMessage(message, this, client) == ERROR) {
 				printError("executeMessage");
 				continue ;
