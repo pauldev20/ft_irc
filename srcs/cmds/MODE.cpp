@@ -139,6 +139,10 @@ void MODE::setOperator(Channel *channel, Client *client, Server* server, std::ve
 
 void MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
 {
+    if (params[2].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890") != std::string::npos) {
+        client->sendData(replies::ERR_BADCHANNELKEY(client, channel->getName()));
+        return;
+    }
     if (addOrRemove && params.size() > 2)
         channel->setPassword(params[2]);
     else if (!addOrRemove)
