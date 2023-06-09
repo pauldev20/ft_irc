@@ -12,6 +12,24 @@
 #define SUCCESS 0
 #define PRIVMSG "PRIVMSG"
 
+#define SYSERR "System error: "
+#define ERR_FAILEDSEND "Failed to send message to server"
+#define ERR_FAILEDCONNECT "Failed to connect to server"
+#define ERR_FAILEDSOCKET "Failed to create socket"
+#define ERR_FAILEDRECV "Failed to receive message from server"
+
+static const std::string answer[8] =
+{
+	"I just wanna tell you how I'm feeling\n",
+	"Gotta make you understand\n",
+	"Never gonna give you up\n",
+	"Never gonna let you down\n",
+	"Never gonna run around and desert you\n",
+	"Never gonna make you cry\n",
+	"Never gonna say goodbye\n",
+	"Never gonna tell a lie and hurt you\n",
+};
+
 Bot::Bot() : _fd(0)
 {
 }
@@ -27,18 +45,12 @@ static int	connect_to_server(std::string server, int port)
 	
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd < 0)
-	{
-		std::cerr << "\nSocket creation error \n";
-		return (ERROR);
-	}
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDSOCKET);
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	if (connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-	{
-		std::cerr << "\nConnection Failed \n";
-		return (ERROR);
-	}
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDCONNECT);
 	return (fd);
 }
 
@@ -47,11 +59,14 @@ static void	send_auth(int fd, std::string pass, std::string nick)
 	std::string	command;
 
 	command = "PASS " + pass + "\r\n";
-	send(fd, command.c_str(), command.length(), 0);
+	if (send(fd, command.c_str(), command.length(), 0) < 0)
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
 	command = "NICK " + nick + "\r\n";
-	send(fd, command.c_str(), command.length(), 0);
+	if (send(fd, command.c_str(), command.length(), 0) < 0)
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
 	command = "USER " + nick + " 0 * :" + nick + "\r\n";
-	send(fd, command.c_str(), command.length(), 0);
+	if (send(fd, command.c_str(), command.length(), 0) < 0)
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
 }
 
 static bool	got_contacted(int fd)
@@ -61,24 +76,25 @@ static bool	got_contacted(int fd)
 	std::string	command;
 
 	std::memset(buffer, 0, sizeof(buffer));
-	if (recv(fd, buffer, sizeof(buffer), 0) > 0)
+	if (recv(fd, buffer, sizeof(buffer), 0) >= 0)
 	{
 		message = buffer;
 		std::size_t pos = message.find("PRIVMSG");
 		if(pos != std::string::npos)
 			return (true);
 	}
-	// @todo exception when recv returns -1
+	else
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDRECV);
 	return (false);
 }
 
-// @todo add error handling
 static int	send_message(int fd, std::string message, std::string nick)
 {
 	std::string	command;
 
 	command = "PRIVMSG " + nick + " :" + message + "\r\n";
-	send(fd, command.c_str(), command.length(), 0);
+	if (send(fd, command.c_str(), command.length(), 0) < 0)
+		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
 	return (SUCCESS);
 }
 
@@ -90,46 +106,49 @@ static std::string	get_nick_from_privmsg(std::string message)
 	return (nick);
 }
 
-static const std::string answer[8] =
-{
-	"I just wanna tell you how I'm feeling\n",
-	"Gotta make you understand\n",
-	"Never gonna give you up\n",
-	"Never gonna let you down\n",
-	"Never gonna run around and desert you\n",
-	"Never gonna make you cry\n",
-	"Never gonna say goodbye\n",
-	"Never gonna tell a lie and hurt you\n",
-};
-
 void	Bot::run(std::string server, int port, std::string pass, std::string nick)
 {
-	this->_fd = connect_to_server(server, port);
-	if (this->_fd == ERROR)
-		std::exit(EXIT_FAILURE);
-	send_auth(this->_fd, pass, nick);
+	try
+	{
+		this->_fd = connect_to_server(server, port);
+		send_auth(this->_fd, pass, nick);
+	}
+	catch (const std::system_error& e)
+	{
+		std::cerr << SYSERR << e.what() << '\n';
+		return ;
+	}
 	while (true)
 	{
-		char		buffer[2048];
-		std::string	message;
-		std::string	command;
-
-		std::memset(buffer, 0, sizeof(buffer));
-		if (recv(this->_fd, buffer, sizeof(buffer), 0) > 0)
+		try
 		{
-			message = buffer;
-			std::size_t pos = message.find(PRIVMSG);
-			if(pos != std::string::npos)
+			char		buffer[2048];
+			std::string	message;
+			std::string	command;
+
+			std::memset(buffer, 0, sizeof(buffer));
+			if (recv(this->_fd, buffer, sizeof(buffer), 0) > 0)
 			{
-				std::string nick = get_nick_from_privmsg(message);
-				for (int i = 0; i < 8; i++)
+				message = buffer;
+				std::size_t pos = message.find(PRIVMSG);
+				if(pos != std::string::npos)
 				{
-					sleep(2);
-					send_message(this->_fd, answer[i], nick);
+					std::string nick = get_nick_from_privmsg(message);
+					for (int i = 0; i < 8; i++)
+					{
+						sleep(2);
+						send_message(this->_fd, answer[i], nick);
+					}
 				}
 			}
+			else
+				throw std::system_error(errno, std::system_category(), ERR_FAILEDRECV);
 		}
-		// @todo exception when recv returns -1
+		catch(const std::exception& e)
+		{
+			std::cerr << SYSERR << e.what() << '\n';
+			return ;
+		}
 	}
 }
 

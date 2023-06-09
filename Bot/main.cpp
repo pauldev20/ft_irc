@@ -1,6 +1,7 @@
 
 #include "Bot.hpp"
 #include <iostream>
+#include <cstdlib>
 
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
@@ -22,9 +23,13 @@ int	parse(s_data *data, int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	// @todo proper error handling
 	data->server = argv[1];
-	data->port = std::atoi(argv[2]); // @todo not c++98
+	// std::string port = argv[2];
+	// if (port.find_first_not_of("0123456789+") != std::string::npos()
+	// 	return (EXIT_FAILURE);
+	// if (.str() != (port.c_str() + (port.find('+') != std::string::npos ? 1 : 0)))
+	// 	return (EXIT_FAILURE);
+	data->port = atoi(argv[2]);
 	data->password = argv[3];
 	data->nick = argv[4];
 	return (EXIT_SUCCESS);
@@ -38,6 +43,5 @@ int	main(int argc, char **argv)
 	if (parse(&data, argc, argv) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	bot.run(data.server, data.port, data.password, data.nick);
-
 	return (EXIT_SUCCESS);
 }
