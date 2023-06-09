@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 00:10:41 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:18:44 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 18:39:45 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ USER::USER(void) : Command(true, false) {
 
 void USER::exec(Message& message, Server* server, Client* client) {
 	(void)server;
-	if (message.getParams().size() < 3 || message.getTrailing().empty()) {
+	std::vector<std::string> params = message.getParams();
+	if (params.size() < 3 || message.getTrailing().empty()) {
 		client->sendData(replies::ERR_NEEDMOREPARAMS(client, "USER"));
 		return ;
 	}
@@ -25,7 +26,6 @@ void USER::exec(Message& message, Server* server, Client* client) {
 		client->sendData(replies::ERR_ALREADYREGISTRED(client));
 		return ;
 	}
-	std::vector<std::string> params = message.getParams();
 	client->setUsername(params[0]);
 	client->setFullName(message.getTrailing());
 	this->checkRegistered(client);
