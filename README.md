@@ -37,5 +37,3 @@ Channels (user limits, passwords, invite-only):
 - differentiate between trailing parameter and normal parameters -> after that the handling of the parameters count in the commands needs to be updated
 - servername or host in replies??
 - can receive privmsg before finished register!!
-- invite message only to invited client or also to inviter
-- if client is kicked, does he need new invite??
