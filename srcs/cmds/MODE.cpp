@@ -135,10 +135,12 @@ bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::ve
     Client* target = server->getClientByNickname(params[2]);
     if (target != NULL)
     {
-        if (set)
+        if (set && channel->isClientInChannel(target))
             channel->addOperator(target);
-        else
+        else if (!set && channel->isClientInChannel(target))
             channel->removeOperator(target);
+        client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
+        return (false);
     }
     else
     {
