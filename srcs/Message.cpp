@@ -4,7 +4,7 @@
 
 #include <string>
 
-Message::Message() : _prefix(""), _cmd(NULL), _cmd_name(""), _params(0), _trailing("")
+Message::Message() : _prefix(""), _cmd(NULL), _cmd_name(""), _params(0), _trailing(""), _is_trailing_empty(false)
 {
 }
 
@@ -49,7 +49,12 @@ void	Message::setTrailing(std::string trailing)
 	this->_trailing = trailing;
 }
 
-const std::string&	Message::getPrefix() const
+void	Message::setTrailingEmpty(bool is_trailing_empty)
+{
+	this->_is_trailing_empty = is_trailing_empty;
+}
+
+std::string	Message::getPrefix() const
 {
 	return (this->_prefix);
 }
@@ -59,7 +64,7 @@ Command*	Message::getCmd() const
 	return (this->_cmd);
 }
 
-const std::string	Message::getCmdName() const
+std::string	Message::getCmdName() const
 {
 	return (this->_cmd_name);
 }
@@ -69,7 +74,12 @@ const std::vector<std::string>&	Message::getParams() const
 	return (this->_params);
 }
 
-const std::string&	Message::getTrailing() const
+std::string	Message::getTrailing() const
 {
 	return (this->_trailing);
+}
+
+bool	Message::isTrailingEmpty() const
+{
+	return (this->_is_trailing_empty);
 }
