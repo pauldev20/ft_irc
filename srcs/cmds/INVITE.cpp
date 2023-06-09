@@ -20,6 +20,11 @@ void INVITE::exec(Message& message, Server* server, Client* client) {
         client->sendData(replies::ERR_NOSUCHNICK(client, params[1]));
         return ;
     }
+    if (target->isRegistered() == false)
+    {
+        client->sendData(replies::ERR_NOSUCHNICK(client, params[1]));
+        return ;
+    }
     if (channel->isClientInChannel(target))
     {
         client->sendData(replies::ERR_USERONCHANNEL(client, target, params[1]));
