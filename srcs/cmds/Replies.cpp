@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:05:35 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:41:44 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,6 @@ namespace	replies {
 		return (ERR_REPLY("475", client, channel_name, "Invalid channel key"));
 	}
 
-	// @todo really the correct thing??
     std::string ERR_TOOMANYARGS(Client *client, const char mode)
     {
 		return (ERR_REPLY("420", client, std::string(1, mode), "Too many arguments"));
