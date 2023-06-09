@@ -36,6 +36,5 @@ Channels (user limits, passwords, invite-only):
 - what happens if too many paramters are passed to an command -> currently they are just ignored
 - differentiate between trailing parameter and normal parameters -> after that the handling of the parameters count in the commands needs to be updated
 - servername or host in replies??
-- can receive privmsg before finished register!!
-- invite message only to invited client or also to inviter
-- if client is kicked, does he need new invite??
+
+- repair client list too long 512 characters
