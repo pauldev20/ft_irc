@@ -68,6 +68,7 @@ bool    MODE::isValidCall(std::vector<std::string> params, Channel* channel, Cli
 void MODE::exec(Message &message, Server *server, Client *client)
 {
     bool addOrRemove = true;
+    bool success = false;
     std::string modeString = "";
     std::string flags = MODE_FLAGS;
     std::vector<std::string> params = message.getParams();
@@ -87,16 +88,20 @@ void MODE::exec(Message &message, Server *server, Client *client)
             while (isalpha(params[1][i]))
             {
                 if (params[1][i] == 'i')
-                    setInviteOnly(channel, addOrRemove);
+                    success = setInviteOnly(channel, addOrRemove);
                 else if (params[1][i] == 't')
-                    setTopicRestriction(channel, addOrRemove);
+                    success = setTopicRestriction(channel, addOrRemove);
                 else if (params[1][i] == 'k')
-                    setPassword(channel, params, client, addOrRemove);
+                    success = setPassword(channel, params, client, addOrRemove);
                 else if (params[1][i] == 'o')
-                    setOperator(channel, client, server, params, addOrRemove);
+                    success = setOperator(channel, client, server, params, addOrRemove);
                 else if (params[1][i] == 'l')
-                    setUserLimit(channel, client, params, addOrRemove);
-                modeString.push_back(params[1][i]);
+                    success = setUserLimit(channel, client, params, addOrRemove);
+                if (success)
+                {
+                    modeString.push_back(params[1][i]);
+                    success = false;
+                }
                 if (params[1][i + 1] != '+' && params[1][i + 1] != '-')
                     i++;
                 else
@@ -113,17 +118,19 @@ void MODE::exec(Message &message, Server *server, Client *client)
     channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, params[2]));
 }
 
-void MODE::setInviteOnly(Channel *channel, bool set)
+bool MODE::setInviteOnly(Channel *channel, bool set)
 {
     channel->setInviteOnly(set);
+    return (true);
 }
 
-void MODE::setTopicRestriction(Channel *channel, bool set)
+bool MODE::setTopicRestriction(Channel *channel, bool set)
 {
     channel->setTopicRestriction(set);
+    return (true);
 }
 
-void MODE::setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set)
+bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set)
 {
     Client* target = server->getClientByNickname(params[2]);
     if (target != NULL)
@@ -134,20 +141,28 @@ void MODE::setOperator(Channel *channel, Client *client, Server* server, std::ve
             channel->removeOperator(target);
     }
     else
+    {
         client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
+        return (false);
+    }
+    return (true);
 }
 
-void MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
+bool MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
 {
     if (addOrRemove && params.size() > 2)
         channel->setPassword(params[2]);
     else if (!addOrRemove)
         channel->setPassword("");
     else
+    {
         client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
+        return (false);
+    }
+    return (true);
 }
 
-void MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove)
+bool MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove)
 {
     if (addOrRemove && params.size() > 2)
     {
@@ -161,10 +176,15 @@ void MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::strin
         else
         {
             // send msg regarding wrong argument
+            return (false);
         }
     }
     else if (!addOrRemove)
         channel->setUserLimit(0);
     else
+    {
         client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
+        return (false);
+    }
+    return (true);
 }
