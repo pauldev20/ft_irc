@@ -154,7 +154,7 @@ bool MODE::setPassword(Channel *channel, std::vector<std::string> params, Client
 {
     if (params.size() > 2 && params[2].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890") != std::string::npos) {
         client->sendData(replies::ERR_BADCHANNELKEY(client, channel->getName()));
-        return;
+        return (false);
     }
     if (addOrRemove && params.size() > 2)
         channel->setPassword(params[2]);
