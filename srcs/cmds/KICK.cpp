@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 17:08:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:40:18 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 19:16:29 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ KICK::KICK(void) : Command() {
 
 void KICK::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
-    if (params.size() < 1 || message.getTrailing().empty()) {
+    if (params.size() < 2) {
         client->sendData(replies::ERR_NEEDMOREPARAMS(client, "KICK"));
         return ;
     }

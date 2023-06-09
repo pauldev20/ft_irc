@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 17:30:59 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 19:08:00 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,17 +227,11 @@ namespace	replies {
 		return (ERR_REPLY("420", client, std::string(1, mode), "Too many arguments"));
     }
 
-    std::string RPL_YOUREOPER(Client *client)
-    {
-        (void)client;
-        return std::string(":") + "Servername" + " 381 " + "PASS :You are now an IRC operator\r\n";
-    }
-
     std::string RPL_SETMODECLIENT(Client* client, std::string const &channel_name, std::string const &mode, std::string const &target)
     {
         if (!target.empty())
-            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + target + "\r\n";
+			return (CMD_REPLY(client, "MODE", channel_name + " " + mode, target));
         else
-            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + "\r\n";
+			return (CMD_REPLY(client, "MODE", channel_name + " " + mode, ""));
     }
 };
