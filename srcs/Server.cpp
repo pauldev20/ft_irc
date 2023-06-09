@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:13:01 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 19:38:22 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,8 @@ void	Server::receiveData(int fd) {
 		Client *client = this->connectedClients.find(fd)->second;
 		for (std::vector<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); it++) {
 			if ((*it)->isClientInChannel(client)) {
-				(*it)->sendMessageToAllExcept(replies::RPL_QUIT(client, "Unexpected EOF"), client);
+				if (!client->isDisconnected())
+					(*it)->sendMessageToAllExcept(replies::RPL_QUIT(client, "Unexpected EOF"), client);
 				(*it)->removeClientFromAll(this->connectedClients.find(fd)->second);
 			}
 		}
