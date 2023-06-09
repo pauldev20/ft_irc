@@ -6,17 +6,17 @@ Authentication:
 - `CAP` -> no real implementation
 - `PASS <password>`
 - `NICK <nickname>`
-- `USER <username> <??> <??> :<fullname>`
+- `USER <username> <??> <??> :<fullname>` check
 
 Basics:
-- `PRIVMSG <reciever1, reciever2> :<message>`
+- `PRIVMSG <reciever1, reciever2> :<message>` check
 - `PING`
-- `QUIT :<~msg~>`
+- `QUIT :<~msg~>` check
 
 Channels (user limits, passwords, invite-only):
 - `JOIN <channel> <~password~>`
-- `PART <channel1, channel2> :<reason>`
-- `KICK <channel1, channel2> <user1, user2> :<reason>`
+- `PART <channel1, channel2> :<reason>` check
+- `KICK <channel1, channel2> <user1, user2> :<reason>` check
 - `INVITE <nickname> <channel>`
 - `TOPIC <channel> :<newtopic>`
 - `MODE <channel> <i, t, k, o, l>`
@@ -34,7 +34,6 @@ Channels (user limits, passwords, invite-only):
 ## TODO
 
 - what happens if too many paramters are passed to an command -> currently they are just ignored
-- differentiate between trailing parameter and normal parameters -> after that the handling of the parameters count in the commands needs to be updated
 - servername or host in replies??
 
 - repair client list too long 512 characters
