@@ -99,8 +99,11 @@ void MODE::exec(Message &message, Server *server, Client *client)
                     success = setUserLimit(channel, client, params, addOrRemove);
                 if (success)
                     modeString.push_back(params[1][i]);
+<<<<<<< HEAD
                 else
                     break;
+=======
+>>>>>>> 3ccde4e49aa28972cd7510b0ee67319b5b4f841d
                 if (params[1][i + 1] != '+' && params[1][i + 1] != '-')
                     i++;
                 else
@@ -134,13 +137,24 @@ bool MODE::setTopicRestriction(Channel *channel, bool set)
 
 bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set)
 {
+    if (params.size() < 3)
+    {
+        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
+        return (false);
+    }   
     Client* target = server->getClientByNickname(params[2]);
     if (target != NULL)
     {
         if (set && channel->isClientInChannel(target))
+        {
             channel->addOperator(target);
+            return (true);
+        }
         else if (!set && channel->isClientInChannel(target))
+        {
             channel->removeOperator(target);
+            return (true);
+        }
         client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
         return (false);
     }
@@ -149,7 +163,6 @@ bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::ve
         client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
         return (false);
     }
-    return (true);
 }
 
 bool MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
