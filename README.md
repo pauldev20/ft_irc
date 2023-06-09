@@ -6,19 +6,19 @@ Authentication:
 - `CAP` -> no real implementation
 - `PASS <password>`
 - `NICK <nickname>`
-- `USER <username> <??> <??> :<fullname>` check
+- `USER <username> <??> <??> :<fullname>` check only if its there -> can be empty
 
 Basics:
-- `PRIVMSG <reciever1, reciever2> :<message>` check
+- `PRIVMSG <reciever1, reciever2> :<message>` check also if its not empty -> cant be empty
 - `PING`
-- `QUIT :<~msg~>` check
+- `QUIT :<~msg~>` if trailing is empty return standard
 
 Channels (user limits, passwords, invite-only):
 - `JOIN <channel> <~password~>`
-- `PART <channel1, channel2> :<reason>` check
-- `KICK <channel1, channel2> <user1, user2> :<reason>` check
+- `PART <channel1, channel2> :<reason>` if trailing is empty return standrd
+- `KICK <channel1, channel2> <user1, user2> :<reason>` if trailing is empty return standrd
 - `INVITE <nickname> <channel>`
-- `TOPIC <channel> :<newtopic>`
+- `TOPIC <channel> :<newtopic>` if trailing is empty delete topic
 - `MODE <channel> <i, t, k, o, l>`
 <!-- - `OPER <nickname> <password???>` -->
 
@@ -33,8 +33,9 @@ Channels (user limits, passwords, invite-only):
 
 ## TODO
 
+- change trailing handling
 - what happens if too many paramters are passed to an command -> currently they are just ignored
 - servername or host in replies??
+- fix quit!
 
 - repair client list too long 512 characters
-- can receive privmsg before finished register!!

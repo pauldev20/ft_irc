@@ -16,11 +16,12 @@ void TOPIC::exec(Message& message, Server* server, Client* client) {
         client->sendData(replies::ERR_NOTONCHANNEL(client, params[0]));
         return ;
     }
-    if (params.size() == 1 || message.getTrailing().empty()) {
+    if (params.size() < 1 || message.getTrailing().empty()) {
         if (topic.empty()) {
             client->sendData(replies::RPL_NOTOPIC(client, params[0]));
             return ;
         } else {
+            // @todo implement removal of topic
             client->sendData(replies::RPL_TOPIC(client, params[0], topic));
             return ;
         }
@@ -29,7 +30,6 @@ void TOPIC::exec(Message& message, Server* server, Client* client) {
         client->sendData(replies::ERR_CHANOPRIVSNEEDED(client, params[0]));
         return ;
     }
-    // @note check out if it works properly
     channel->setTopic(message.getTrailing());
     channel->sendMessageToAll(replies::RPL_TOPICCHANGE(client, params[0], message.getTrailing()));
 }
