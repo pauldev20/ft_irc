@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 01:25:05 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 17:30:59 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,11 @@ namespace	replies {
     {
 		return (ERR_REPLY("501", client, "", "Unknown MODE flag"));
     }
+
+	std::string ERR_BADCHANNELKEY(Client *client, std::string const &channel_name)
+	{
+		return (ERR_REPLY("475", client, channel_name, "Invalid channel key"));
+	}
 
 	// @todo really the correct thing??
     std::string ERR_TOOMANYARGS(Client *client, const char mode)
