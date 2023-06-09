@@ -1,8 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   INVITE.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/09 22:51:26 by pgeeser           #+#    #+#             */
+/*   Updated: 2023/06/09 22:51:26 by pgeeser          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cmds/Commands.hpp"
 
 INVITE::INVITE(void) : Command() {
 }
 
+/**
+ * This function handles the INVITE command in an IRC server, inviting a client to a channel if they
+ * meet certain conditions.
+ * 
+ * @param message A reference to a Message object, which contains information about the incoming
+ * message from the client.
+ * @param server A pointer to the Server object that the INVITE command is being executed on.
+ * @param client The client who sent the INVITE command.
+ * 
+ * @return The function does not return anything, it uses the `return` keyword to exit the function
+ * early in case of certain conditions being met.
+ */
 void INVITE::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
     if (params.size() < 2) {

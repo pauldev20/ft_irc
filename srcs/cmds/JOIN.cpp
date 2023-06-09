@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 10:11:40 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:38:23 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:51:45 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,15 @@
 #include <vector>       // std::vector
 #include <algorithm>	// std::find
 
+/**
+ * The function checks if a given string is a valid channel name by verifying if it starts with a '#'
+ * character.
+ * 
+ * @param name The parameter "name" is a constant reference to a string, which is the name of a channel
+ * being checked for validity.
+ * 
+ * @return A boolean value is being returned.
+ */
 static bool	checkChannelNameValidity(std::string const &name) {
 	if (name.size() > 0 && name[0] != '#') {
 		return false;
@@ -26,6 +35,17 @@ static bool	checkChannelNameValidity(std::string const &name) {
 JOIN::JOIN(void) : Command() {
 }
 
+/**
+ * The JOIN function allows a client to join one or more channels on a server, creating a new channel
+ * if it does not exist, and sending appropriate error messages if necessary.
+ * 
+ * @param message The message object contains information about the JOIN command that was received,
+ * including the parameters passed with it (such as the name of the channel to join and any password
+ * provided).
+ * @param server The server object represents the IRC server and contains information about all the
+ * channels and clients connected to it.
+ * @param client The client who sent the JOIN command.
+ */
 void JOIN::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> channel_list = this->splitString(message.getParams()[0], ',');
     for (size_t i = 0; i < channel_list.size(); i++) {

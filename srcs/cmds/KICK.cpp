@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 17:08:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 19:16:29 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:52:04 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 KICK::KICK(void) : Command() {
 }
 
+/**
+ * This function executes the KICK command by removing a client from a channel and sending a message to
+ * all remaining clients in the channel.
+ * 
+ * @param message The message object that contains the details of the message received by the server.
+ * @param server A pointer to the IRC server object.
+ * @param client The client who sent the KICK command.
+ * 
+ * @return The function does not return anything, it is a void function.
+ */
 void KICK::exec(Message& message, Server* server, Client* client) {
     std::vector<std::string> params = message.getParams();
     if (params.size() < 2) {
