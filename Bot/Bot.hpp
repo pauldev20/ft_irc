@@ -11,7 +11,7 @@ class Bot
 	public:
 				Bot();
 				~Bot();
-		void	run(std::string server, int port, std::string pass, std::string nick);
+		void	run(int port, std::string pass, std::string nick);
 };
 
 #endif
