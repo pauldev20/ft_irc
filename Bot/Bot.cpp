@@ -7,6 +7,8 @@
 #include <sys/socket.h> // for socket
 #include <arpa/inet.h> // for inet_addr
 #include <unistd.h> // for close
+#include <sstream> // for std::ostringstream
+#include <cerrno> // for errno
 
 #define ERROR -1
 #define SUCCESS 0
@@ -17,6 +19,8 @@
 #define ERR_FAILEDCONNECT "Failed to connect to server"
 #define ERR_FAILEDSOCKET "Failed to create socket"
 #define ERR_FAILEDRECV "Failed to receive message from server"
+
+std::ostringstream	errors;
 
 static const std::string answer[8] =
 {
@@ -45,12 +49,18 @@ static int	connect_to_server(int port)
 	
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDSOCKET);
+	{
+		errors << errno << ERR_FAILEDSOCKET;
+		throw std::runtime_error(errors.str());
+	}
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	if (connect(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDCONNECT);
+	{
+		errors << errno << ERR_FAILEDCONNECT;
+		throw std::runtime_error(errors.str());
+	}
 	return (fd);
 }
 
@@ -60,13 +70,22 @@ static void	send_auth(int fd, std::string pass, std::string nick)
 
 	command = "PASS " + pass + "\r\n";
 	if (send(fd, command.c_str(), command.length(), 0) < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
+	{
+		errors << errno << ERR_FAILEDSEND;
+		throw std::runtime_error(errors.str());
+	}
 	command = "NICK " + nick + "\r\n";
 	if (send(fd, command.c_str(), command.length(), 0) < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
+	{
+		errors << errno << ERR_FAILEDSEND;
+		throw std::runtime_error(errors.str());
+	}
 	command = "USER " + nick + " 0 * :" + nick + "\r\n";
 	if (send(fd, command.c_str(), command.length(), 0) < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
+	{
+		errors << errno << ERR_FAILEDSEND;
+		throw std::runtime_error(errors.str());
+	}
 }
 
 static int	send_message(int fd, std::string message, std::string nick)
@@ -75,7 +94,10 @@ static int	send_message(int fd, std::string message, std::string nick)
 
 	command = "PRIVMSG " + nick + " :" + message + "\r\n";
 	if (send(fd, command.c_str(), command.length(), 0) < 0)
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
+	{
+		errors << errno << ERR_FAILEDSEND;
+		throw std::runtime_error(errors.str());
+	}
 	return (SUCCESS);
 }
 
@@ -94,7 +116,7 @@ void	Bot::run(int port, std::string pass, std::string nick)
 		this->_fd = connect_to_server(port);
 		send_auth(this->_fd, pass, nick);
 	}
-	catch (const std::system_error& e)
+	catch (const std::runtime_error& e)
 	{
 		std::cerr << SYSERR << e.what() << '\n';
 		return ;
@@ -123,7 +145,10 @@ void	Bot::run(int port, std::string pass, std::string nick)
 				}
 			}
 			else
-				throw std::system_error(errno, std::system_category(), ERR_FAILEDRECV);
+			{
+				errors << errno << ERR_FAILEDRECV;
+				throw std::runtime_error(errors.str());
+			}
 		}
 		catch(const std::exception& e)
 		{
