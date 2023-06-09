@@ -10,6 +10,7 @@
 
 #define ERROR -1
 #define SUCCESS 0
+#define PRIVMSG "PRIVMSG"
 
 Bot::Bot() : _fd(0)
 {
@@ -49,6 +50,8 @@ static void	send_auth(int fd, std::string pass, std::string nick)
 	send(fd, command.c_str(), command.length(), 0);
 	command = "NICK " + nick + "\r\n";
 	send(fd, command.c_str(), command.length(), 0);
+	command = "USER " + nick + " 0 * :" + nick + "\r\n";
+	send(fd, command.c_str(), command.length(), 0);
 }
 
 static bool	got_contacted(int fd)
@@ -70,13 +73,21 @@ static bool	got_contacted(int fd)
 }
 
 // @todo add error handling
-static int	send_message(int fd, std::string message)
+static int	send_message(int fd, std::string message, std::string nick)
 {
 	std::string	command;
 
-	command = "PRIVMSG lorbke :" + message + "\r\n";
+	command = "PRIVMSG " + nick + " :" + message + "\r\n";
 	send(fd, command.c_str(), command.length(), 0);
 	return (SUCCESS);
+}
+
+static std::string	get_nick_from_privmsg(std::string message)
+{
+	std::size_t	start = message.find(":") + 1;
+	std::size_t	end = message.find("!") - 1;
+	std::string	nick = message.substr(start, end);
+	return (nick);
 }
 
 static const std::string answer[8] =
@@ -107,13 +118,14 @@ void	Bot::run(std::string server, int port, std::string pass, std::string nick)
 		if (recv(this->_fd, buffer, sizeof(buffer), 0) > 0)
 		{
 			message = buffer;
-			std::size_t pos = message.find("PRIVMSG");
+			std::size_t pos = message.find(PRIVMSG);
 			if(pos != std::string::npos)
 			{
+				std::string nick = get_nick_from_privmsg(message);
 				for (int i = 0; i < 8; i++)
 				{
 					sleep(2);
-					send_message(this->_fd, answer[i]);
+					send_message(this->_fd, answer[i], nick);
 				}
 			}
 		}
