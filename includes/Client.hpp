@@ -29,6 +29,7 @@ class Client {
 
 		// send data
 		void		sendData(std::string str);
+        // @note func not defined
 		void		sendToAllChannelsOfClient(std::string const &str);
 
 		int getFd(void) const;
