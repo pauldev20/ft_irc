@@ -121,8 +121,9 @@ class MODE : public Command {
         void        exec(Message& message, Server* server, Client* client);
         void        setInviteOnly(Channel* channel, bool set);
         void        setTopicRestriction(Channel* channel, bool set);
-        void        setOperator(Channel* channel, Client* target, bool set);
-        void        setPassword(Channel* channel, std::string password);
-        void        setUserLimit(Channel *channel, size_t limit);
+        void        setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set);
+        void        setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove);
+        void        setUserLimit(Channel *channel, Client *client, std::vector<std::string> params, bool addOrRemove);
         std::string getCurrentModes(Channel* channel);
+        bool        isValidCall(std::vector<std::string> params, Channel* channel, Client* client, std::string flags);
 };
