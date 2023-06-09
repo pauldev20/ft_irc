@@ -38,3 +38,4 @@ Channels (user limits, passwords, invite-only):
 - servername or host in replies??
 
 - repair client list too long 512 characters
+- can receive privmsg before finished register!!
