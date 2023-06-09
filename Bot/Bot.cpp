@@ -121,6 +121,7 @@ void	Bot::run(int port, std::string pass, std::string nick)
 		std::cerr << SYSERR << e.what() << '\n';
 		return ;
 	}
+	std::cout << "Connected to server, bot is running!\n" << std::endl;
 	while (true)
 	{
 		try
