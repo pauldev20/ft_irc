@@ -98,10 +98,9 @@ void MODE::exec(Message &message, Server *server, Client *client)
                 else if (params[1][i] == 'l')
                     success = setUserLimit(channel, client, params, addOrRemove);
                 if (success)
-                {
                     modeString.push_back(params[1][i]);
-                    success = false;
-                }
+                else
+                    break;
                 if (params[1][i + 1] != '+' && params[1][i + 1] != '-')
                     i++;
                 else
@@ -114,8 +113,11 @@ void MODE::exec(Message &message, Server *server, Client *client)
             return;
         }
     }
-    channel->sendMessageToAllExcept(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString), client);
-    channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, params[2]));
+    if (success)
+    {
+        channel->sendMessageToAll(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString));
+        // channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, params[2]));
+    }
 }
 
 bool MODE::setInviteOnly(Channel *channel, bool set)
