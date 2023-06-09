@@ -33,16 +33,9 @@ Channels (user limits, passwords, invite-only):
 
 ## TODO
 
-- check whats up with `:/\0` in passwords and usernames??
 - what happens if too many paramters are passed to an command -> currently they are just ignored
 - differentiate between trailing parameter and normal parameters -> after that the handling of the parameters count in the commands needs to be updated
-- mode command ignores capital letters ??? -> /mode +I or /mode +T just works ??
-- /mode +ik gives strange behaiviour in return statement -> `Mode #test [+iik]`
-- /mode +tki gives strange behaiviour in return statement -> `Mode #test [+ttkki]`
-- /mode +l error message doesn't get print?
-- /mode +o not correctly sends message to all channel members
-- /mode +o, what happens if user is not in channel??
 - servername or host in replies??
-- can privmsg before finished register!!
-- invite message only to invited client or also to inviter
-- if client is kicked, does he need new invite??
+
+- repair client list too long 512 characters
+- can receive privmsg before finished register!!
