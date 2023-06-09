@@ -161,6 +161,11 @@ static int	handle_command(Message& command, std::string& message)
 		static INVITE invite;
 		command.setCmdAll(&invite, CMD_INVITE);
 	}
+	else if (token == CMD_MODE)
+	{
+		static MODE mode;
+		command.setCmdAll(&mode, CMD_MODE);
+	}
 	else
 		return (ERROR);
 	return (SUCCESS);
