@@ -38,7 +38,7 @@ Bot::~Bot()
 {
 }
 
-static int	connect_to_server(std::string server, int port)
+static int	connect_to_server(int port)
 {
 	int					fd;
 	struct sockaddr_in	serv_addr;
@@ -69,25 +69,6 @@ static void	send_auth(int fd, std::string pass, std::string nick)
 		throw std::system_error(errno, std::system_category(), ERR_FAILEDSEND);
 }
 
-static bool	got_contacted(int fd)
-{
-	char		buffer[2048];
-	std::string	message;
-	std::string	command;
-
-	std::memset(buffer, 0, sizeof(buffer));
-	if (recv(fd, buffer, sizeof(buffer), 0) >= 0)
-	{
-		message = buffer;
-		std::size_t pos = message.find("PRIVMSG");
-		if(pos != std::string::npos)
-			return (true);
-	}
-	else
-		throw std::system_error(errno, std::system_category(), ERR_FAILEDRECV);
-	return (false);
-}
-
 static int	send_message(int fd, std::string message, std::string nick)
 {
 	std::string	command;
@@ -106,11 +87,11 @@ static std::string	get_nick_from_privmsg(std::string message)
 	return (nick);
 }
 
-void	Bot::run(std::string server, int port, std::string pass, std::string nick)
+void	Bot::run(int port, std::string pass, std::string nick)
 {
 	try
 	{
-		this->_fd = connect_to_server(server, port);
+		this->_fd = connect_to_server(port);
 		send_auth(this->_fd, pass, nick);
 	}
 	catch (const std::system_error& e)
