@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 01:39:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:39:23 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:54:06 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 PRIVMSG::PRIVMSG(void) : Command() {
 }
 
+/**
+ * This function sends a message to one or multiple clients or channels on a server.
+ * 
+ * @param message A reference to a Message object, which contains information about the incoming
+ * message.
+ * @param server A pointer to the Server object that the PRIVMSG command is being executed on.
+ * @param client A pointer to the client who sent the PRIVMSG command.
+ * 
+ * @return The function does not return anything, it uses the "return;" statement to exit the function
+ * early in case of an error.
+ */
 void PRIVMSG::exec(Message& message, Server* server, Client* client) {
 	std::vector<std::string> params = message.getParams();
 	if (params.size() < 1 || message.getTrailing().empty()) {

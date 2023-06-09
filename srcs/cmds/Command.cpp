@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:41:03 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 18:09:32 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:50:53 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,17 @@ void	Command::execute(Message& message, Server* server, Client* client) {
 	this->exec(message, server, client);
 }
 
+/**
+ * This function splits a string into a vector of substrings based on a specified delimiter.
+ * 
+ * @param input The input string that needs to be split into tokens.
+ * @param delimiter The delimiter is a character that is used to split the input string into smaller
+ * substrings. In this function, the delimiter is passed as a parameter and is used to split the input
+ * string into smaller substrings.
+ * 
+ * @return The function `splitString` returns a vector of strings that contains the substrings of the
+ * input string that are separated by the specified delimiter character.
+ */
 std::vector<std::string> Command::splitString(const std::string& input, char delimiter) {
     std::stringstream ss(input);
     std::string item;
