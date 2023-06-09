@@ -30,6 +30,7 @@ class Message
 		std::string						_cmd_name;
 		std::vector<std::string>		_params;
 		std::string						_trailing;
+		bool							_is_trailing_empty;
 	public:
 										Message();
 										~Message();
@@ -40,9 +41,11 @@ class Message
 		void							addParam(std::string param);
 		void							setParams(std::vector<std::string> params);
 		void							setTrailing(std::string trailing);
-		const std::string&				getPrefix() const;
+		void							setTrailingEmpty(bool is_trailing_empty);
+		std::string						getPrefix() const;
 		Command*						getCmd() const;
-		const std::string				getCmdName() const;
+		std::string						getCmdName() const;
 		const std::vector<std::string>&	getParams() const;
-		const std::string&				getTrailing() const;
+		std::string						getTrailing() const;
+		bool							isTrailingEmpty() const;
 };

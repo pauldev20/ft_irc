@@ -146,11 +146,6 @@ static int	handleCommand(Message& command, std::string& message)
 		static QUIT quit;
 		command.setCmdAll(&quit, CMD_QUIT);
 	}
-    else if (token == CMD_MODE)
-	{
-		static MODE mode;
-		command.setCmdAll(&mode, CMD_MODE);
-    }
 	else if (token == CMD_KICK)
 	{
 		static KICK kick;
@@ -179,8 +174,13 @@ static int	handleParams(Message& command, std::string& message)
 	{
 		if (message[0] == COLON)
 		{
-			token = getNextToken(message, true);
-			command.setTrailing(token);
+			if (message.length() == 1 + strlen(CRLF))
+				command.setTrailingEmpty(true);
+			else
+			{
+				token = getNextToken(message, true);
+				command.setTrailing(token);
+			}
 			return (SUCCESS);
 		}
 		else
