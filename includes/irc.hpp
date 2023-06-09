@@ -66,7 +66,6 @@ namespace replies
 	std::string RPL_KICK(Client *client, std::string const &channel_name, std::string const &target, const std::string reason);
 	/* ------------------------------- MODE_COMMAND ------------------------------ */
     std::string RPL_CHANNELMODEIS(Client *client, std::string const &channel_name, std::string const &modes);
-	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode);
 	std::string ERR_UMODEUNKNOWNFLAG(Client *client);
 	std::string ERR_BADCHANNELKEY(Client *client, std::string const &channel_name);
 	std::string ERR_TOOMANYARGS(Client *client, const char mode);

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 20:04:10 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 22:05:35 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,12 +204,6 @@ namespace	replies {
     std::string RPL_CHANNELMODEIS(Client *client, std::string const &channel_name, std::string const &modes)
 	{
 		return (ERR_REPLY("324", client, channel_name, modes));
-	}
-
-	// @todo needed??
-	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode)
-	{
-		return (ERR_REPLY("324", client, channel_name, mode));
 	}
 
     std::string ERR_UMODEUNKNOWNFLAG(Client *client)
