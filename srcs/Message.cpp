@@ -4,15 +4,7 @@
 
 #include <string>
 
-Message::Message(std::string prefix, Command* cmd, std::string cmd_name, std::vector<std::string> params)
-{
-	this->_prefix = prefix;
-	this->_cmd = cmd;
-	this->_cmd_name = cmd_name;
-	this->_params = params;
-}
-
-Message::Message()
+Message::Message() : _prefix(""), _cmd(NULL), _cmd_name(""), _params(0), _trailing("")
 {
 }
 
@@ -52,6 +44,11 @@ void	Message::setParams(std::vector<std::string> params)
 	this->_params = params;
 }
 
+void	Message::setTrailing(std::string trailing)
+{
+	this->_trailing = trailing;
+}
+
 const std::string&	Message::getPrefix() const
 {
 	return (this->_prefix);
@@ -70,4 +67,9 @@ const std::string	Message::getCmdName() const
 const std::vector<std::string>&	Message::getParams() const
 {
 	return (this->_params);
+}
+
+const std::string&	Message::getTrailing() const
+{
+	return (this->_trailing);
 }

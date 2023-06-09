@@ -7,7 +7,6 @@
 
 #define ERROR -1
 #define SUCCESS 0
-#define PARAM_MAX 15
 
 namespace debug
 {
