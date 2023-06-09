@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 17:30:59 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 20:04:10 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #define REPLY_MESSAGE(x) (std::string(":") + SERVERNAME + " " + x + "\r\n")
 #define ERR_REPLY(code, client, middle, message) (REPLY_MESSAGE(code + " " + (std::string(client->getNickname()) != "" ? (std::string(client->getNickname()) + " ") : "") + (std::string(middle) != "" ? (std::string(middle) + " ") : "") + ":" + message))
 #define BASIC_REPLY(cmd, middle, message) (REPLY_MESSAGE(cmd + " " + middle + " :" + message))
-#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + SERVERNAME + " " + cmd + " " + middle + " :" + message + "\r\n")
+#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " " + cmd + " " + middle + " :" + message + "\r\n")
 
 namespace	replies {
 	/* ---------------------------------- BASIC --------------------------------- */
@@ -206,6 +206,7 @@ namespace	replies {
 		return (ERR_REPLY("324", client, channel_name, modes));
 	}
 
+	// @todo needed??
 	std::string RPL_SETMODECHANNEL(Client *client, std::string const &channel_name, std::string const &mode)
 	{
 		return (ERR_REPLY("324", client, channel_name, mode));
@@ -227,17 +228,8 @@ namespace	replies {
 		return (ERR_REPLY("420", client, std::string(1, mode), "Too many arguments"));
     }
 
-    std::string RPL_YOUREOPER(Client *client)
-    {
-        (void)client;
-        return std::string(":") + "Servername" + " 381 " + "PASS :You are now an IRC operator\r\n";
-    }
-
     std::string RPL_SETMODECLIENT(Client* client, std::string const &channel_name, std::string const &mode, std::string const &target)
     {
-        if (!target.empty())
-            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + target + "\r\n";
-        else
-            return std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " MODE " + channel_name + " " + mode + " " + "\r\n";
+		return (CMD_REPLY(client, "MODE", channel_name + " " + mode, target));
     }
 };

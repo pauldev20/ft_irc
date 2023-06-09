@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 17:08:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 01:13:31 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/09 19:16:29 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void KICK::exec(Message& message, Server* server, Client* client) {
                 client->sendData(replies::ERR_USERNOTINCHANNEL(target, channel_list[i]));
                 continue ;
             }
-            channel->sendMessageToAll(replies::RPL_KICK(client, channel_list[i], target_list[j], params.size() > 2 ? params[2] : ""));
+            channel->sendMessageToAll(replies::RPL_KICK(client, channel_list[i], target_list[j], message.getTrailing()));
             channel->removeClient(target);
         }
     }

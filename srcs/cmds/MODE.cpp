@@ -8,13 +8,6 @@ MODE::MODE(void) : Command()
 {
 }
 
-
-bool isNumber(const std::string& str) {
-    std::istringstream iss(str);
-    int number;
-    return (iss >> number >> std::ws) && iss.eof();
-}
-
 std::string MODE::getCurrentModes(Channel *channel)
 {
     std::string modeString;
@@ -63,13 +56,12 @@ bool    MODE::isValidCall(std::vector<std::string> params, Channel* channel, Cli
     return (true);
 }
 
-
-// @todo need to throw error when the pwd has incorrect format?
 void MODE::exec(Message &message, Server *server, Client *client)
 {
     bool addOrRemove = true;
     bool success = false;
     std::string modeString = "";
+    std::string targetString = "";
     std::string flags = MODE_FLAGS;
     std::vector<std::string> params = message.getParams();
     Channel* channel = server->getChannelByName(params[0]);
@@ -85,23 +77,26 @@ void MODE::exec(Message &message, Server *server, Client *client)
                 addOrRemove = true;
             modeString.push_back(params[1][i]);
             i++;
+            targetString = params.size() > 2 ? params[2] : "";
             while (isalpha(params[1][i]))
             {
                 if (params[1][i] == 'i')
                     success = setInviteOnly(channel, addOrRemove);
                 else if (params[1][i] == 't')
                     success = setTopicRestriction(channel, addOrRemove);
-                else if (params[1][i] == 'k')
+                else if (params[1][i] == 'k') {
                     success = setPassword(channel, params, client, addOrRemove);
+                    if (success)
+                        targetString = "";
+                }
                 else if (params[1][i] == 'o')
                     success = setOperator(channel, client, server, params, addOrRemove);
                 else if (params[1][i] == 'l')
                     success = setUserLimit(channel, client, params, addOrRemove);
                 if (success)
-                {
                     modeString.push_back(params[1][i]);
-                    success = false;
-                }
+                else
+                    break;
                 if (params[1][i + 1] != '+' && params[1][i + 1] != '-')
                     i++;
                 else
@@ -114,8 +109,8 @@ void MODE::exec(Message &message, Server *server, Client *client)
             return;
         }
     }
-    channel->sendMessageToAllExcept(replies::RPL_SETMODECHANNEL(client, channel->getName(), modeString), client);
-    channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, params[2]));
+    if (success)
+        channel->sendMessageToAll(replies::RPL_SETMODECLIENT(client, channel->getName(), modeString, targetString));
 }
 
 bool MODE::setInviteOnly(Channel *channel, bool set)
@@ -132,13 +127,24 @@ bool MODE::setTopicRestriction(Channel *channel, bool set)
 
 bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::vector<std::string> params, bool set)
 {
+    if (params.size() < 3)
+    {
+        client->sendData(replies::ERR_NEEDMOREPARAMS(client, "MODE"));
+        return (false);
+    }   
     Client* target = server->getClientByNickname(params[2]);
     if (target != NULL)
     {
         if (set && channel->isClientInChannel(target))
+        {
             channel->addOperator(target);
+            return (true);
+        }
         else if (!set && channel->isClientInChannel(target))
+        {
             channel->removeOperator(target);
+            return (true);
+        }
         client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
         return (false);
     }
@@ -147,7 +153,6 @@ bool MODE::setOperator(Channel *channel, Client *client, Server* server, std::ve
         client->sendData(replies::ERR_NOSUCHNICK(client, params[2]));
         return (false);
     }
-    return (true);
 }
 
 bool MODE::setPassword(Channel *channel, std::vector<std::string> params, Client *client, bool addOrRemove)
@@ -172,7 +177,7 @@ bool MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::strin
 {
     if (addOrRemove && params.size() > 2)
     {
-        if (isNumber(params[2]))
+        if (params[2].find_first_not_of("0123456789") == std::string::npos)
         {
             std::stringstream sstream(params[2]);
             size_t limit;
@@ -180,10 +185,7 @@ bool MODE::setUserLimit(Channel *channel, Client *client, std::vector<std::strin
             channel->setUserLimit(limit);
         }
         else
-        {
-            // send msg regarding wrong argument
             return (false);
-        }
     }
     else if (!addOrRemove)
         channel->setUserLimit(0);
