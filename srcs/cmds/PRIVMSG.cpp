@@ -25,6 +25,10 @@ void PRIVMSG::exec(Message& message, Server* server, Client* client) {
 	for (size_t i = 0; i < target_list.size(); i++) {
 		Client	*clientTo = server->getClientByNickname(target_list[i]);
 		if (clientTo) {
+            if (!clientTo->isRegistered()) {
+                client->sendData(replies::ERR_NOSUCHNICK(client, target_list[i]));
+                continue ;
+            }
 			clientTo->sendData(replies::RPL_PRIVMSG(client, clientTo->getNickname(), params[1]));
 			continue ;
 		}
