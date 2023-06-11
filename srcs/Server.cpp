@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:12:48 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:44:05 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/11 07:34:42 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,15 @@ static void				removePollfdFromVector(std::vector<struct pollfd> &vector, int fd
 	}
 }
 
+/**
+ * The function "printError" prints an error message in red and can optionally throw an exception if
+ * the error is fatal.
+ * 
+ * @param message A string containing the error message to be printed.
+ * @param fatal The "fatal" parameter is a boolean flag that indicates whether the error is fatal or
+ * not. If it is set to true, the function will throw an exception with the EXIT_FAILURE code, which
+ * will terminate the program. If it is set to false (or not provided), the function will simply print
+ */
 static void				printError(std::string message, bool fatal = false) {
 	std::cerr << "\033[31mError\033[0m: " << message << std::endl;
 	if (fatal)
@@ -131,6 +140,16 @@ void	Server::removeChannel(Channel *channel) {
 	}
 }
 
+/**
+ * This function searches for a channel in a vector of channels by name and returns a pointer to the
+ * channel if found, otherwise it returns NULL.
+ * 
+ * @param name A string representing the name of the channel that we want to retrieve.
+ * 
+ * @return a pointer to a Channel object. If the channel with the given name is found in the vector of
+ * channels, a pointer to that channel is returned. If the channel is not found, the function returns a
+ * null pointer.
+ */
 Channel	*Server::getChannelByName(std::string const &name) {
 	std::vector<Channel*>::iterator it;
 	for (it = this->channels.begin(); it != this->channels.end(); it++) {
@@ -140,6 +159,12 @@ Channel	*Server::getChannelByName(std::string const &name) {
 	return (NULL);
 }
 
+/**
+ * The function returns a reference to a vector of Channel pointers in a Server object.
+ * 
+ * @return A reference to a `std::vector` of pointers to `Channel` objects, which is a member variable
+ * of the `Server` class.
+ */
 std::vector<Channel*>	&Server::getChannels(void) {
 	return (this->channels);
 }
@@ -208,6 +233,15 @@ void Server::run(void) {
 	}
 }
 
+/**
+ * The function checks if a given nickname is already taken by a connected client in the server.
+ * 
+ * @param nickname The parameter "nickname" is a constant reference to a string, which is the nickname
+ * being checked for uniqueness in the connectedClients map.
+ * 
+ * @return The function `checkNickname` returns a boolean value. It returns `true` if the given
+ * nickname is not already in use by any of the connected clients, and `false` otherwise.
+ */
 bool	Server::checkNickname(std::string const &nickname) {
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) {
@@ -217,6 +251,17 @@ bool	Server::checkNickname(std::string const &nickname) {
 	return (true);
 }
 
+/**
+ * This function searches for a connected client by their nickname and returns a pointer to the client
+ * object if found, otherwise it returns NULL.
+ * 
+ * @param nickname The nickname parameter is a string that represents the nickname of a client. The
+ * function searches for a connected client with the given nickname and returns a pointer to the client
+ * object if found, otherwise it returns NULL.
+ * 
+ * @return The function `getClientByNickname` returns a pointer to a `Client` object that matches the
+ * given nickname. If no such client is found, it returns a null pointer.
+ */
 Client	*Server::getClientByNickname(std::string const &nickname) {
 	std::map<int, Client*>::iterator it;
 	for (it = this->connectedClients.begin(); it != this->connectedClients.end(); it++) {
