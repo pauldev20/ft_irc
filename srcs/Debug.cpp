@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Debug.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/11 07:35:43 by pgeeser           #+#    #+#             */
+/*   Updated: 2023/06/11 07:35:44 by pgeeser          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "Message.hpp"
@@ -6,6 +17,11 @@
 #include <string>
 #include <vector>
 
+/**
+ * The function prints out information about a given Message object.
+ * 
+ * @param command The parameter "command" is a constant reference to an object of the class "Message".
+ */
 void	debug::print_message(const Message& command)
 {
 	std::cout << "prefix: " << command.getPrefix() << std::endl;

@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/08 19:45:17 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/11 07:32:02 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,54 +86,136 @@ void		Client::sendData(std::string str) {
 /*                             Getters And Setters                            */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The function returns the file descriptor of the client.
+ * 
+ * @return The `getFd` function is returning the value of the `fd` member variable of the `Client`
+ * class.
+ */
 int			Client::getFd(void) const {
 	return (fd);
 }
 
+/**
+ * This function sets the disconnected status of a client.
+ * 
+ * @param disconnected A boolean variable that indicates whether the client is disconnected or not. If
+ * the value is true, it means the client is disconnected, and if the value is false, it means the
+ * client is still connected. The function sets the value of this variable based on the input
+ * parameter.
+ */
 void		Client::setDisconnected(bool disconnected) {
 	this->disconnected = disconnected;
 }
 
+/**
+ * The function returns a boolean value indicating whether the client is disconnected or not.
+ * 
+ * @return A boolean value indicating whether the client is disconnected or not.
+ */
 bool		Client::isDisconnected(void) const {
 	return (disconnected);
 }
 
+/**
+ * The function returns a boolean value indicating whether the client is registered or not.
+ * 
+ * @return The function `isRegistered` is returning a boolean value, which indicates whether the client
+ * is registered or not. The value of `registered` is returned.
+ */
 bool		Client::isRegistered(void) const {
 	return (registered);
 }
 
+/**
+ * This function sets the "registered" boolean variable of a Client object.
+ * 
+ * @param registered "registered" is a boolean variable that represents whether a client is registered
+ * or not. If "registered" is true, it means the client has completed the registration process, and if
+ * it's false, it means the client has not yet registered. The function "setRegistered" sets the value
+ * of this
+ */
 void		Client::setRegistered(bool registered) {
 	this->registered = registered;
 }
 
+/**
+ * The function returns a boolean value indicating whether the client is authenticated or not.
+ * 
+ * @return A boolean value indicating whether the client is authenticated or not.
+ */
 bool		Client::isAuthenticated(void) const {
 	return (authenticated);
 }
 
+/**
+ * This function sets the authentication status of a client.
+ * 
+ * @param authenticated "authenticated" is a boolean variable that represents whether the client has
+ * been authenticated or not. If it is set to true, it means that the client has been successfully
+ * authenticated, and if it is set to false, it means that the client has not been authenticated or has
+ * been logged out. The function
+ */
 void		Client::setAuthenticated(bool authenticated) {
 	this->authenticated = authenticated;
 }
 
+/**
+ * This function sets the username for a client object in C++.
+ * 
+ * @param username The parameter "username" is a string variable that represents the username that we
+ * want to set for a client object. The function "setUsername" takes this parameter and sets the
+ * username of the client object to the value of the parameter.
+ */
 void		Client::setUsername(std::string username) {
 	this->username = username;
 }
 
+/**
+ * The function returns a constant reference to the username of a client object.
+ * 
+ * @return A constant reference to a string object representing the username of a client.
+ */
 std::string	const &Client::getUsername(void) const {
 	return (username);
 }
 
+/**
+ * This function sets the full name of a client object in C++.
+ * 
+ * @param fullName fullName is a parameter of type std::string that represents the full name of a
+ * client. The function sets the value of the fullName member variable of the Client class to the value
+ * passed as the parameter.
+ */
 void		Client::setFullName(std::string fullName) {
 	this->fullName = fullName;
 }
 
+/**
+ * The function returns a constant reference to the full name of a client.
+ * 
+ * @return A constant reference to a `std::string` object representing the full name of a `Client`
+ * object.
+ */
 std::string	const &Client::getFullName(void) const {
 	return (fullName);
 }
 
+/**
+ * This function sets the nickname of a client object in C++.
+ * 
+ * @param nickname The parameter "nickname" is a string that represents the new nickname that the
+ * client wants to set. The function sets the client's nickname to this new value.
+ */
 void		Client::setNickname(std::string nickname) {
 	this->nickname = nickname;
 }
 
+/**
+ * The function returns a constant reference to the nickname of a client object.
+ * 
+ * @return A constant reference to a string object representing the nickname of a client.
+ */
 std::string	const &Client::getNickname(void) const {
 	return (nickname);
 }
