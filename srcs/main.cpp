@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 01:07:49 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/11 07:32:44 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 17:01:41 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	main(int argc, char **argv)
 	if (argc != 3)
 	{
 		std::cerr << "./ircserv <port> <password>" << std::endl;
-		return (1);
+		return (EXIT_FAILURE);
 	}
 
 	std::cout << std::endl;
@@ -84,21 +84,21 @@ int	main(int argc, char **argv)
 		int port = validPort(argv[1]);
 		if (port < 0) {
 			std::cerr << "Invalid port! The port needs to be in the range of 1 - 65535" << std::endl;
-			return (1);
+			return (EXIT_FAILURE);
 		}
 		if (!validPassword(argv[2])) {
 			std::cerr << "Invalid password! The passowrd needs to be between 4 and 12 characters long and can only consist out of (a-z, A-Z, 0-9)" << std::endl;
-			return (1);
+			return (EXIT_FAILURE);
 		}
 		Server server(port, argv[2]);
 		std::cout << "\033[33mServer starting...\033[0m" << std::endl;
 		server.start();
 		std::cout << "\033[0;97mServer listening on port: \033[32m" << server.getPort() << "\033[0m" << std::endl;
-		while (1)
+		while (EXIT_FAILURE)
 			server.run();
 	} catch (int errcode) {
 		return (errcode);
 	}
 
-	return (0);
+	return (EXIT_SUCCESS);
 }

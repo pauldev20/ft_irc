@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:41:44 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 17:09:03 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #define REPLY_MESSAGE(x) (std::string(":") + SERVERNAME + " " + x + "\r\n")
 #define ERR_REPLY(code, client, middle, message) (REPLY_MESSAGE(code + " " + (std::string(client->getNickname()) != "" ? (std::string(client->getNickname()) + " ") : "") + (std::string(middle) != "" ? (std::string(middle) + " ") : "") + ":" + message))
 #define BASIC_REPLY(cmd, middle, message) (REPLY_MESSAGE(cmd + " " + middle + " :" + message))
-#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " " + cmd + " " + middle + " :" + message + "\r\n")
+#define CMD_REPLY(client, cmd, middle, message) (std::string(":") + client->getNickname() + "!" + client->getUsername() + "@" + HOST + " " + cmd + (std::string(middle) != "" ? (" " + std::string(middle)) : "") + " :" + message + "\r\n")
 
 namespace	replies {
 	/* ---------------------------------- BASIC --------------------------------- */

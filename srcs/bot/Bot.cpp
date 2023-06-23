@@ -1,5 +1,5 @@
 
-#include "Bot.hpp"
+#include "bot/Bot.hpp"
 #include <iostream>
 #include <string>
 #include <cstring> // for std::strlen
