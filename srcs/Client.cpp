@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 11:13:06 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/11 07:32:02 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 19:17:15 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ Client::~Client() {
 /* -------------------------------------------------------------------------- */
 
 /**
- * The function receive data from a client and handles exceptions for different scenarios.
+ * The function receive data from a client and handles exceptions for
+ * different scenarios.
  */
 void	Client::receiveData(void) {
 	std::vector<char> 	buffer(MAX_BUF_LENGTH);
@@ -51,12 +52,13 @@ void	Client::receiveData(void) {
 }
 
 /**
- * This function reads and returns a string from a receive buffer until it finds a "\r\n" sequence.
+ * This function reads and returns a string from a receive buffer until
+ * it finds a "\r\n" sequence.
  *
- * @return This function returns a string containing the data received by the client up until the first
- * occurrence of "\r\n" (carriage return and line feed). If "\r\n" is not found in the receive buffer,
- * an empty string is returned. The function also updates the receive buffer to remove the data that
- * has been returned.
+ * @return This function returns a string containing the data received by the
+ * client up until the first occurrence of "\r\n" (carriage return and line feed). 
+ * If "\r\n" is not found in the receive buffer, an empty string is returned.
+ * The function also updates the receive buffer to remove the data that has been returned.
  */
 std::string	Client::readReceivedData(void) {
 	std::string buffCpy = this->receiveBuffer;
@@ -69,9 +71,11 @@ std::string	Client::readReceivedData(void) {
 }
 
 /**
- * The function sends data from a client to a server and prints the sent data to the console.
+ * The function sends data from a client to a server and prints the sent 
+ * data to the console.
  *
- * @return The function does not have a return type specified, so it does not return anything.
+ * @return The function does not have a return type specified, so it does
+ * not return anything.
  */
 void		Client::sendData(std::string str) {
 	int ret = send(this->fd, str.c_str(), str.length(), 0);
@@ -89,8 +93,8 @@ void		Client::sendData(std::string str) {
 /**
  * The function returns the file descriptor of the client.
  * 
- * @return The `getFd` function is returning the value of the `fd` member variable of the `Client`
- * class.
+ * @return The `getFd` function is returning the value of the `fd`
+ * member variable of the `Client` class.
  */
 int			Client::getFd(void) const {
 	return (fd);
@@ -99,17 +103,18 @@ int			Client::getFd(void) const {
 /**
  * This function sets the disconnected status of a client.
  * 
- * @param disconnected A boolean variable that indicates whether the client is disconnected or not. If
- * the value is true, it means the client is disconnected, and if the value is false, it means the
- * client is still connected. The function sets the value of this variable based on the input
- * parameter.
+ * @param disconnected A boolean variable that indicates whether the client is
+ * disconnected or not. If the value is true, it means the client is disconnected,
+ * and if the value is false, it means the client is still connected.
+ * The function sets the value of this variable based on the input parameter.
  */
 void		Client::setDisconnected(bool disconnected) {
 	this->disconnected = disconnected;
 }
 
 /**
- * The function returns a boolean value indicating whether the client is disconnected or not.
+ * The function returns a boolean value indicating whether
+ * the client is disconnected or not.
  * 
  * @return A boolean value indicating whether the client is disconnected or not.
  */
@@ -118,10 +123,12 @@ bool		Client::isDisconnected(void) const {
 }
 
 /**
- * The function returns a boolean value indicating whether the client is registered or not.
+ * The function returns a boolean value indicating whether the
+ * client is registered or not.
  * 
- * @return The function `isRegistered` is returning a boolean value, which indicates whether the client
- * is registered or not. The value of `registered` is returned.
+ * @return The function `isRegistered` is returning a boolean value,
+ * which indicates whether the client is registered or not.
+ * The value of `registered` is returned.
  */
 bool		Client::isRegistered(void) const {
 	return (registered);
@@ -151,9 +158,10 @@ bool		Client::isAuthenticated(void) const {
 /**
  * This function sets the authentication status of a client.
  * 
- * @param authenticated "authenticated" is a boolean variable that represents whether the client has
- * been authenticated or not. If it is set to true, it means that the client has been successfully
- * authenticated, and if it is set to false, it means that the client has not been authenticated or has
+ * @param authenticated "authenticated" is a boolean variable that
+ * represents whether the client has been authenticated or not.
+ * If it is set to true, it means that the client has been successfully authenticated,
+ * and if it is set to false, it means that the client has not been authenticated or has
  * been logged out. The function
  */
 void		Client::setAuthenticated(bool authenticated) {
@@ -163,9 +171,10 @@ void		Client::setAuthenticated(bool authenticated) {
 /**
  * This function sets the username for a client object in C++.
  * 
- * @param username The parameter "username" is a string variable that represents the username that we
- * want to set for a client object. The function "setUsername" takes this parameter and sets the
- * username of the client object to the value of the parameter.
+ * @param username The parameter "username" is a string variable that
+ * represents the username that we want to set for a client object.
+ * The function "setUsername" takes this parameter and sets the username of
+ * the client object to the value of the parameter.
  */
 void		Client::setUsername(std::string username) {
 	this->username = username;
@@ -183,8 +192,9 @@ std::string	const &Client::getUsername(void) const {
 /**
  * This function sets the full name of a client object in C++.
  * 
- * @param fullName fullName is a parameter of type std::string that represents the full name of a
- * client. The function sets the value of the fullName member variable of the Client class to the value
+ * @param fullName fullName is a parameter of type std::string that
+ * represents the full name of a client. The function sets the value of
+ * the fullName member variable of the Client class to the value
  * passed as the parameter.
  */
 void		Client::setFullName(std::string fullName) {
@@ -194,8 +204,8 @@ void		Client::setFullName(std::string fullName) {
 /**
  * The function returns a constant reference to the full name of a client.
  * 
- * @return A constant reference to a `std::string` object representing the full name of a `Client`
- * object.
+ * @return A constant reference to a `std::string`
+ * object representing the full name of a `Client` object.
  */
 std::string	const &Client::getFullName(void) const {
 	return (fullName);
@@ -204,8 +214,9 @@ std::string	const &Client::getFullName(void) const {
 /**
  * This function sets the nickname of a client object in C++.
  * 
- * @param nickname The parameter "nickname" is a string that represents the new nickname that the
- * client wants to set. The function sets the client's nickname to this new value.
+ * @param nickname The parameter "nickname" is a string that represents
+ * the new nickname that the client wants to set. The function sets the
+ * client's nickname to this new value.
  */
 void		Client::setNickname(std::string nickname) {
 	this->nickname = nickname;

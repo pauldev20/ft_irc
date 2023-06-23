@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 01:07:49 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/23 17:01:41 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 19:19:09 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@
 /* -------------------------------------------------------------------------- */
 
 /**
- * The function checks if a given string represents a valid port number and returns it as an integer if
- * it is valid, otherwise it returns -1.
+ * The function checks if a given string represents a valid port number and
+ * returns it as an integer if it is valid, otherwise it returns -1.
  * 
  * @param port The parameter "port" is a string that represents a port number.
  * 
- * @return The function `validPort` returns an integer value. If the input `port` is not a valid port
- * number, the function returns `-1`. Otherwise, it returns the integer value of the port number.
+ * @return The function `validPort` returns an integer value. If the input
+ * `port` is not a valid port number, the function returns `-1`. Otherwise,
+ * it returns the integer value of the port number.
  */
 static int	validPort(std::string port)
 {
@@ -42,13 +43,15 @@ static int	validPort(std::string port)
 	return (portVal);
 }
 /**
- * The function checks if a given password is valid based on its length and character set.
+ * The function checks if a given password is valid based
+ * on its length and character set.
  * 
- * @param password The parameter "password" is a string variable that represents the password that
- * needs to be validated.
+ * @param password The parameter "password" is a string variable that
+ * represents the password that needs to be validated.
  * 
- * @return The function `validPassword` returns a boolean value (`true` or `false`) depending on
- * whether the input `password` meets certain criteria.
+ * @return The function `validPassword` returns a boolean value
+ * (`true` or `false`) depending on whether the input `password` meets
+ * certain criteria.
  */
 
 static bool	validPassword(std::string password)

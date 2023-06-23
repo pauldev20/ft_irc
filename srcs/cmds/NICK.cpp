@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 23:17:01 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:53:17 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:49:34 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 /**
  * The function checks if a given nickname is valid based on certain criteria.
  * 
- * @param nickname The parameter "nickname" is a constant reference to a string, which is the nickname
- * that needs to be checked for validity.
+ * @param nickname The parameter "nickname" is a constant reference to a string,
+ * which is the nickname that needs to be checked for validity.
  * 
  * @return a boolean value, either true or false.
  */
@@ -38,15 +38,17 @@ NICK::NICK(void) : Command(true, false) {
 }
 
 /**
- * This function checks if a client's chosen nickname is valid and available, and sets it if so.
+ * This function checks if a client's chosen nickname is
+ * valid and available, and sets it if so.
  * 
- * @param message A reference to a Message object, which contains information about the client's
- * message.
+ * @param message A reference to a Message object, which contains
+ * information about the client's message.
  * @param server A pointer to the Server object that the client is connected to.
- * @param client The "client" parameter is a pointer to the client who sent the NICK command.
+ * @param client The "client" parameter is a pointer to
+ * the client who sent the NICK command.
  * 
- * @return nothing (void). It sends a reply message to the client if certain conditions are met, but it
- * does not return any value.
+ * @return nothing (void). It sends a reply message to the client if certain
+ * conditions are met, but it does not return any value.
  */
 void NICK::exec(Message& message, Server* server, Client* client) {
 	(void)server;

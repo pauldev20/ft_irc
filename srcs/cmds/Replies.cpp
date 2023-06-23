@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 20:19:14 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/23 17:09:03 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:58:46 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,29 @@ namespace	replies {
 	}
 
 	/* --------------------------------- ERRORS --------------------------------- */
-	// Returned to indicate a failed attempt at registering a connection for which a password was required and was either not given or incorrect.
+	// Returned to indicate a failed attempt at registering a connection
+	// for which a password was required and was either not given or incorrect.
 	std::string ERR_PASSWDMISMATCH(Client *client)
 	{
 		return (ERR_REPLY("464", client, "", "Password incorrect"));
 	}
 
-	// Returned by the server to indicate that the client must be registered before the server will allow it to be parsed in detail.
+	// Returned by the server to indicate that the client must be registered
+	// before the server will allow it to be parsed in detail.
 	std::string ERR_NOTREGISTERED(Client *client)
 	{
 		return (ERR_REPLY("451", client, "", "You have not registered"));
 	}
 
-	// Returned by the server by numerous commands to indicate to the client that it didn't supply enough parameters.
+	// Returned by the server by numerous commands to indicate to the client
+	// that it didn't supply enough parameters.
 	std::string ERR_NEEDMOREPARAMS(Client *client, std::string const &cmd)
 	{
 		return (ERR_REPLY("461", client, cmd, "Not enough parameters"));
 	}
 
-	// Returned by the server to any link which tries to change part of the registered details (such as password or user details from second USER message).
+	// Returned by the server to any link which tries to change part of the
+	// registered details (such as password or user details from second USER message).
 	std::string ERR_ALREADYREGISTRED(Client *client)
 	{
 		return (ERR_REPLY("462", client, " ", "You may not reregister"));
@@ -65,19 +69,22 @@ namespace	replies {
 		return (ERR_REPLY("403", client, channel_name, "No such channel"));
     }
 
-	// Returned by the server whenever a client tries to perform a channel effecting command for which the client isn't a member.
+	// Returned by the server whenever a client tries to perform a channel
+	// effecting command for which the client isn't a member.
     std::string ERR_NOTONCHANNEL(Client *client, const std::string channel_name)
     {
 		return (ERR_REPLY("442", client, channel_name, "You're not on that channel"));
     }
 
-	// Returned by the server to indicate that the target user of the command is not on the given channel.
+	// Returned by the server to indicate that the target user of the
+	// command is not on the given channel.
     std::string ERR_USERNOTINCHANNEL(Client *client, const std::string channel_name)
     {
 		return (ERR_REPLY("441", client, channel_name, "They aren't on that channel"));
     }
 
-	// Any command requiring 'chanop' privileges (such as MODE messages) must return this error if the client making the attempt is not a chanop on the specified channel.
+	// Any command requiring 'chanop' privileges (such as MODE messages) must
+	// return this error if the client making the attempt is not a chanop on the specified channel.
     std::string ERR_CHANOPRIVSNEEDED(Client *client, const std::string channel_name)
     {
 		return (ERR_REPLY("482", client, channel_name, "You're not channel operator"));
@@ -107,7 +114,8 @@ namespace	replies {
 	}
 
 	/* ------------------------------ NICK_COMMAND ------------------------------ */
-	// Returned when a NICK message is processed that results in an attempt to change to a currently existing nickname.
+	// Returned when a NICK message is processed that results in an attempt to
+	// change to a currently existing nickname.
 	std::string ERR_NICKNAMEINUSE(Client *client, std::string const &nick)
 	{
 		return (ERR_REPLY("433", client, nick, "Nickname is already in use"));
@@ -117,7 +125,8 @@ namespace	replies {
 	{
 		return (ERR_REPLY("431", client, "", "No nickname given"));
 	}
-	// Returned after receiving a NICK message which contains characters which do not fall in the defined set. See section x.x.x for details on valid nicknames.
+	// Returned after receiving a NICK message which contains characters
+	// which do not fall in the defined set. See section x.x.x for details on valid nicknames.
     std::string ERR_ERRONEUSNICKNAME(Client *client, std::string const &nick)
     {
 		return (ERR_REPLY("432", client, nick, "Erroneus nickname"));
