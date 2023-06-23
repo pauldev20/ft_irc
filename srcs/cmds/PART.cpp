@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 11:08:13 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:53:41 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:55:39 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ PART::PART(void) : Command() {
 }
 
 /**
- * The function removes a client from one or more channels and sends a message to the remaining clients
- * in the channel(s) about the client's departure.
+ * The function removes a client from one or more channels and sends a message
+ * to the remaining clients in the channel(s) about the client's departure.
  * 
- * @param message The message object that contains the command and its parameters sent by the client.
- * @param server A pointer to the Server object that the PART command is being executed on.
+ * @param message The message object that contains the command and its
+ * parameters sent by the client.
+ * @param server A pointer to the Server object that the PART command
+ * is being executed on.
  * @param client The client who sent the PART command.
  */
 void PART::exec(Message& message, Server* server, Client* client) {

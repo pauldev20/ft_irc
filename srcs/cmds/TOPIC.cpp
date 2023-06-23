@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 07:35:30 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/11 07:35:32 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:59:19 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@ TOPIC::TOPIC(void) : Command() {
 }
 
 /**
- * This function allows a client to set or retrieve the topic of a channel in an IRC server.
+ * This function allows a client to set or retrieve the topic of a
+ * channel in an IRC server.
  * 
- * @param message The message object that contains the command and its parameters sent by the client.
- * @param server A pointer to the Server object that the TOPIC command is being executed on.
- * @param client The "client" parameter is a pointer to the client who sent the message that triggered
- * the execution of this function.
+ * @param message The message object that contains the command and its
+ * parameters sent by the client.
+ * @param server A pointer to the Server object that the TOPIC
+ * command is being executed on.
+ * @param client The "client" parameter is a pointer to the
+ * client who sent the message that triggered the execution of this function.
  * 
  * @return nothing (void).
  */
