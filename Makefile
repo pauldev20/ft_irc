@@ -6,7 +6,7 @@
 #    By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 17:21:47 by pgeeser           #+#    #+#              #
-#    Updated: 2023/06/23 18:35:38 by pgeeser          ###   ########.fr        #
+#    Updated: 2023/06/23 19:23:32 by pgeeser          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,7 @@ $(NAME) $(BOTNAME): $(OBJS) $(BOTOBJS)
 	@echo "$(GREEN)OUTPUT:		$(NAME)$(RESET)"
 	@echo "$(BLUE)LINKING:	$(HIGHIWHITE)$(BOTNAME)$(RESET)"
 	@$(CC) $(CPPFLAGS) $(BOTOBJS) -o $(BOTNAME)
-	@echo "$(GREEN)OUTPUT:		$(NAME)$(RESET)"
+	@echo "$(GREEN)OUTPUT:		$(BOTNAME)$(RESET)"
 
 # ----------------------------------- OTHER ---------------------------------- #
 
