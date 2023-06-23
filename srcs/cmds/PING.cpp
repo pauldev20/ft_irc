@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 01:05:02 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:54:00 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:40:13 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,12 @@ PING::PING(void) : Command(false, false) {
 void PING::exec(Message& message, Server* server, Client* client) {
 	(void)server;
 	std::vector<std::string> params = message.getParams();
-	client->sendData(replies::RPL_PING(params[0]));
+	if (params.size() == 1) {
+		client->sendData(replies::RPL_PING(params[0]));
+	} else {
+		std::string pings = "";
+		for (size_t i = 1; i < params.size(); i++)
+			pings += params[i] + " ";
+		client->sendData(replies::RPL_PING(pings));
+	}
 }

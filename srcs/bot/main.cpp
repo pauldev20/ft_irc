@@ -3,9 +3,6 @@
 #include <iostream>
 #include <cstdlib>
 
-#define EXIT_FAILURE 1
-#define EXIT_SUCCESS 0
-
 typedef struct s_data
 {
 	int			port;
