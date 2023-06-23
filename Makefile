@@ -6,7 +6,7 @@
 #    By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 17:21:47 by pgeeser           #+#    #+#              #
-#    Updated: 2023/06/09 19:29:24 by pgeeser          ###   ########.fr        #
+#    Updated: 2023/06/23 18:35:38 by pgeeser          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,11 @@
 # ---------------------------------------------------------------------------- #
 
 NAME		:= ircserv
+BOTNAME		:= ircbot
 CC			:= c++
-CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
+CPPFLAGS	:= -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g
+
+INCLUDES	:= -I./includes
 
 # ----------------------------------- MAIN ----------------------------------- #
 SRCFILES	:= main.cpp Server.cpp Client.cpp Message.cpp Parser.cpp Executer.cpp Debug.cpp Channel.cpp
@@ -27,7 +30,8 @@ SRCFILES	+= cmds/Command.cpp cmds/Replies.cpp cmds/CAP.cpp cmds/PASS.cpp \
 			   cmds/PRIVMSG.cpp cmds/JOIN.cpp cmds/PART.cpp cmds/MODE.cpp \
 			   cmds/TOPIC.cpp cmds/INVITE.cpp cmds/KICK.cpp\
 
-INCLUDES	:= -I./includes
+# ------------------------------------ BOT ----------------------------------- #
+BOTFILES	:= bot/main.cpp bot/Bot.cpp
 
 # ---------------------------------------------------------------------------- #
 #                                     DIRS                                     #
@@ -52,6 +56,8 @@ RESET		:=	\033[0m
 
 SRCFILES	:= $(addprefix $(SRCDIR)/, $(SRCFILES))
 OBJS		:= $(addprefix $(OBJDIR)/, $(SRCFILES:.cpp=.o))
+BOTFILES	:= $(addprefix $(SRCDIR)/, $(BOTFILES))
+BOTOBJS		:= $(addprefix $(OBJDIR)/, $(BOTFILES:.cpp=.o))
 
 # ----------------------------------- MAIN ----------------------------------- #
 
@@ -60,14 +66,17 @@ $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	@$(CC) $(INCLUDES) $(CPPFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS)
+$(NAME) $(BOTNAME): $(OBJS) $(BOTOBJS)
 	@echo "$(BLUE)LINKING:	$(HIGHIWHITE)$(NAME)$(RESET)"
 	@$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)
+	@echo "$(GREEN)OUTPUT:		$(NAME)$(RESET)"
+	@echo "$(BLUE)LINKING:	$(HIGHIWHITE)$(BOTNAME)$(RESET)"
+	@$(CC) $(CPPFLAGS) $(BOTOBJS) -o $(BOTNAME)
 	@echo "$(GREEN)OUTPUT:		$(NAME)$(RESET)"
 
 # ----------------------------------- OTHER ---------------------------------- #
 
-all: $(NAME)
+all: $(NAME) $(BOTNAME)
 
 clean:
 	@echo "$(RED)CLEANING...$(RESET)"
@@ -76,6 +85,7 @@ clean:
 
 fclean: clean
 	@rm -rf $(NAME)
+	@rm -rf $(BOTNAME)
 
 re: fclean
 	@$(MAKE) all

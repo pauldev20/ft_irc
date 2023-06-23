@@ -6,7 +6,7 @@
 /*   By: pgeeser <pgeeser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 19:41:03 by pgeeser           #+#    #+#             */
-/*   Updated: 2023/06/09 22:50:53 by pgeeser          ###   ########.fr       */
+/*   Updated: 2023/06/23 18:42:33 by pgeeser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 /*                                Class Methods                               */
 /* -------------------------------------------------------------------------- */
 
-Command::Command(bool needsPass, bool needsRegistration, bool needsParamsCount) : checkRegister(needsRegistration), checkPass(needsPass), checkParamsCount(needsParamsCount) {
+Command::Command(bool needsPass, bool needsRegistration, bool needsParamsCount)
+	: checkRegister(needsRegistration), checkPass(needsPass), checkParamsCount(needsParamsCount) {
 }
 
 Command::~Command() {
@@ -94,7 +95,8 @@ std::vector<std::string> Command::splitString(const std::string& input, char del
  * doing anything.
  */
 void	Command::checkRegistered(Client *client) const {
-	if (client->getNickname().empty() || client->getUsername().empty() || client->getFullName().empty() || client->isRegistered())
+	if (client->getNickname().empty() || client->getUsername().empty()
+		|| client->getFullName().empty() || client->isRegistered())
 		return ;
 	client->setRegistered(true);
 	client->sendData(replies::RPL_WELCOME(client));
