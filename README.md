@@ -1,6 +1,6 @@
 <div align="center">
     <img src="https://em-content.zobj.net/source/apple/391/globe-with-meridians_1f310.png" align="center" width=180 height=180/>
-    <h1>ft_irc Project</h1>
+    <h1>ft_irc</h1>
     <p align="center">
         <a href="#question-about-this-project">About This Project</a>
         ·
